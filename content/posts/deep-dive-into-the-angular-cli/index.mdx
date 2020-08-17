@@ -1,0 +1,406 @@
+---
+title: Deep dive into the Angular CLI
+date: 2018-04-17
+tags:
+  - Angular
+---
+
+The [**Angular CLI**](https://cli.angular.io/) is a command line interface for Angular. Its primary purpose is to assist developers with building Angular applications. Angular CLI was introduced together with the second version of Angular. Angular CLI allows you to generate and serving an Angular project as well as generate the Angular files (e.g. components, services, directives, pipes, interfaces, etc).
+
+![Angular CLI](./angular-cli.png)
+
+---
+
+- [**Introduction**](https://edvins.io/deep-dive-into-the-angular-cli/#introduction)
+- [`ng new`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-new)
+- [`ng serve`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-serve)
+- [`ng generate`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-generate)
+- [`ng test`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-test)
+- [`ng lint`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-lint)
+- [`ng build`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-build)
+- **[Tips](https://edvins.io/deep-dive-into-the-angular-cli/#tips)**
+
+---
+
+## Introduction
+
+> In order to start your work with **Angular CLI** you need to install it globally by running, `npm install -g @angular/cli` so you could be able to work with it within any folder.
+
+There are certain pre-requirements which need to be installed first. Angular CLI is dependable on Node 6.9.0 or higher, as well as NPM version 3 or higher.
+
+> The simplest way to check which version of the Angular CLI is running on your machine, you can just simply run `ng v` command in the console. As an example output you should be able to see:
+>
+>     Angular CLI: 1.6.7
+>     Node: 8.9.4
+>     OS: darwin x64
+
+---
+
+## `ng new`
+
+Using the Angular CLI makes it easy to create a new Angular application which works, right out of the box. It's worth to mention, that just created project follows the **[Angular style guide](https://angular.io/guide/styleguide)**.
+
+> Let's see how it works in action. In terminal run `ng new recipe-book`. In this case `recipe-book` is an example project name, you can replace with anything you like.
+
+The application generation process takes few minutes, in order to create components and install node modules. When the project is created, you should see a success message.
+
+```
+$ ng new recipe-book
+create recipe-book/README.md (1027 bytes)
+create recipe-book/.angular-cli.json (1247 bytes)
+create recipe-book/.editorconfig (245 bytes)
+create recipe-book/.gitignore (529 bytes)
+create recipe-book/src/assets/.gitkeep (0 bytes)
+create recipe-book/src/environments/environment.prod.ts (51 bytes)
+create recipe-book/src/environments/environment.ts (387 bytes)
+create recipe-book/src/favicon.ico (5430 bytes)
+create recipe-book/src/index.html (298 bytes)
+create recipe-book/src/main.ts (370 bytes)
+create recipe-book/src/polyfills.ts (2405 bytes)
+create recipe-book/src/styles.css (80 bytes)
+create recipe-book/src/test.ts (642 bytes)
+create recipe-book/src/tsconfig.app.json (211 bytes)
+create recipe-book/src/tsconfig.spec.json (283 bytes)
+create recipe-book/src/typings.d.ts (104 bytes)
+create recipe-book/e2e/app.e2e-spec.ts (294 bytes)
+create recipe-book/e2e/app.po.ts (208 bytes)
+create recipe-book/e2e/tsconfig.e2e.json (235 bytes)
+create recipe-book/karma.conf.js (923 bytes)
+create recipe-book/package.json (1296 bytes)
+create recipe-book/protractor.conf.js (722 bytes)
+create recipe-book/tsconfig.json (363 bytes)
+create recipe-book/tslint.json (3012 bytes)
+create recipe-book/src/app/app.module.ts (316 bytes)
+create recipe-book/src/app/app.component.css (0 bytes)
+create recipe-book/src/app/app.component.html (1141 bytes)
+create recipe-book/src/app/app.component.spec.ts (986 bytes)
+create recipe-book/src/app/app.component.ts (207 bytes)
+Installing packages for tooling via yarn.
+yarn install v1.3.2
+info No lockfile found.
+[1/4] 🔍  Resolving packages...
+warning karma > log4js > nodemailer@2.7.2: All versions below 4.0.1 of Nodemailer are deprecated. See https://nodemailer.com/status/
+warning karma > log4js > loggly > request > node-uuid@1.4.8: Use uuid module instead
+warning karma > log4js > nodemailer > mailcomposer@4.0.1: This project is unmaintained
+warning karma > log4js > nodemailer > socks@1.1.9: If using 2.x branch, please upgrade to at least 2.1.6 to avoid a serious bug with socket data flow and an import issue introduced in 2.1.0
+warning karma > log4js > nodemailer > mailcomposer > buildmail@4.0.1: This project is unmaintained
+warning karma > log4js > mailgun-js > proxy-agent > socks-proxy-agent > socks@1.1.10: If using 2.x branch, please upgrade to at least 2.1.6 to avoid a serious bug with socket data flow and an import issue introduced in 2.1.0
+[2/4] 🚚  Fetching packages...
+[3/4] 🔗  Linking dependencies...
+[4/4] 📃  Building fresh packages...
+success Saved lockfile.
+✨  Done in 95.28s.
+Installed packages for tooling via yarn.
+Successfully initialized git.
+Project 'recipe-book' successfully created.
+```
+
+Angular CLI creates a folder with the same name as the project name. In our case its `recipe-book`. Let's quickly go through the files and folders which were just created.
+
+```
+recipe-book
+├── README.md
+├── e2e
+├── karma.conf.js
+├── node_modules
+├── package.json
+├── protractor.conf.js
+├── src
+├── tsconfig.json
+├── tslint.json
+└── yarn.lock
+```
+
+- Starting at the top, there is a `README.md` which has a basic overview of Angular CLI and available commands you can use.
+- The `e2e` folder is responsible for end-to-end tests.
+- The `karma.conf.js` is a config file for Karma which is used for unit testing.
+- The `node_modules` folder as you might already guess it's a folder where all of the packages and libraries were installed which are defined in `package.json`.
+- The `package.json` is the main place for your project configuration like `scripts` and `dependencies`.
+- The `protractor.conf.js` is a config file for Protractor which is used for end-to-end testing.
+- The `tsconfig.json` is a config file for TypeScript.
+- The `tslint.json` is a TypeScript linter which checks our code against style rules defined in this file.
+- The `yarn.lock` or `package-lock.json` are the lock files generated by `yarn` or `npm` depends which tool for installing packages you use.
+- Finally, the `src` folder is the place where in the future you are going to add all new `components`, `services`, `modules`, and other files for your application.
+
+```
+src
+├── app
+│   ├── app.component.css
+│   ├── app.component.html
+│   ├── app.component.spec.ts
+│   ├── app.component.ts
+│   └── app.module.ts
+├── assets
+├── environments
+│   ├── environment.prod.ts
+│   └── environment.ts
+├── favicon.ico
+├── index.html
+├── main.ts
+├── polyfills.ts
+├── styles.css
+├── test.ts
+├── tsconfig.app.json
+├── tsconfig.spec.json
+└── typings.d.ts
+```
+
+> Structure of the `src` folder is pretty much self-explanatory. But still, let's have a quick look at it.
+
+- By default, `app` folder is a starting point for our application.
+- Angular CLI is smart enough to detect the environment you work on and serve appropriate files based on that. The `environments` is build environments. From a preview, you may notice, that it has two files - `environment.prod.ts`and `environment.ts` as you might already guess one file is responsible for `development` while the other one for `production` environment.
+- Angular CLI generates a default `favicon` which is used as a placeholder and can be replaced later on.
+- The `index.html` is the first thing the user sees when accessing our application.
+- The `main.ts` is the core file which responsible for bootstrapping of our application.
+- The `polyfills.ts` file incorporates the mandatory and many of the optional polyfills as JavaScript `import` statements.
+- The `styles.css` and `test.ts` these files are related to applying styles and initialising the Angular testing environment.
+- Both `tsconfig.*.json` files are for TypeScript configuration. `tsconfig.app.json` is used for compiling the code, while `tsconfig.spec.json` for compiling the tests.
+- The `typings.d.ts` file provides the required typings for TypeScript.
+
+---
+
+## `ng serve`
+
+Yay, we have just generated a new application, but what we need to do to run it? It's really simple, all you need to do is to run `ng serve` in your terminal.
+
+> The `ng-serve` command starts a development server which listens on port `4200` by default. In case where port `4200` is already in use or you want to run it on a different port number, use `--port` to specify a different port. Example: `$ ng serve --port 1337` Now when the development server is running, open your browser on `http://localhost:1337/`.
+
+```
+$ ng serve
+** NG Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+Date: 2018-04-13T09:59:15.362Z                                            l Hash: b1af346cc725e7d9fcb5
+Time: 7418ms
+chunk {inline} inline.bundle.js (inline) 5.79 kB [entry] [rendered]
+chunk {main} main.bundle.js (main) 25.8 kB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js (polyfills) 562 kB [initial] [rendered]
+chunk {styles} styles.bundle.js (styles) 34 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js (vendor) 7.44 MB [initial] [rendered]
+
+webpack: Compiled successfully.
+```
+
+---
+
+## `ng generate`
+
+Whoa, your application is up and running and can be accessed through the browser. Now it's the time to expand it!
+
+> The Angular CLI has a truly awesome command to scaffold new blueprints - `ng generate` or `ng g` as an alias.
+
+Here is a list of all possible blueprints you can scaffold using `ng generate`
+
+- `component`
+- `directive`
+- `pipe`
+- `service`
+- `class`
+- `guard`
+- `interface`
+- `enum`
+- `module`
+
+All you need to do is to run `ng g [blueprint-to-scaffold] [your-blueprint-name]`. Let's imagine we need to create a new `recipes` component. Then we just run `ng g component recipes`.
+
+```
+$ ng g component recipes
+create src/app/recipes/recipes.component.css (0 bytes)
+create src/app/recipes/recipes.component.html (26 bytes)
+create src/app/recipes/recipes.component.spec.ts (635 bytes)
+create src/app/recipes/recipes.component.ts (273 bytes)
+update src/app/app.module.ts (402 bytes)
+```
+
+> The Angular CLI adds reference to `components`, `directives` and `pipes` automatically in the `app.module.ts`.
+
+Additionally, it's worth to mention the fact that `ng generate` support relative path generation for components. Let's quickly go through the certain amount of options `ng generate` offers us. In the first example, we are located in `src/app/recipes`:
+
+1.  When we run `ng g component recipe`, new component is going to be generated in `src/app/recipes/recipe`.
+2.  When we run `ng g component ./recipe`, new component is going to be generated in `src/app/recipe`.
+
+In the second example, we are located in the `src/app`:
+
+1.  When we run `ng g component recipes/recipe`, new component is going to be generated in `src/app/recipes/recipe`.
+
+---
+
+## `ng test`
+
+Testing your application is a good practice, but often developers tend to ignore this step whenever it's a business or personal projects due to lack of the time or desire.
+
+> "Write your \*\*\*\*\*\*\* tests, always" — **[Mattias Petter Johansson](https://twitter.com/mpjme)**
+
+The Angular CLI is doing a great job at simplifying the developer lives by auto-generating testing files for us. The Angular CLI offers you unit and end-to-end testing. To run unit tests, open the terminal and run `ng test`. This step builds the Angular application and runs the test runner. You should see two different outputs: output in a console and browsers which was launched by Karma test runner.
+
+```
+$ ng test
+10% building modules 1/1 modules 0 active13 04 2018 09:18:54.509:WARN [karma]: No captured browser, open http://localhost:9876/
+13 04 2018 09:18:54.515:INFO [karma]: Front-end scripts not present. Compiling...
+13 04 2018 09:19:00.730:WARN [karma]: No captured browser, open http://localhost:9876/
+13 04 2018 09:19:00.995:INFO [karma]: Karma v2.0.0 server started at http://0.0.0.0:9876/
+13 04 2018 09:19:00.995:INFO [launcher]: Launching browser Chrome with unlimited concurrency
+13 04 2018 09:19:01.000:INFO [launcher]: Starting browser Chrome
+13 04 2018 09:19:02.686:INFO [Chrome 65.0.3325 (Mac OS X 10.13.3)]: Connected on socket jISkDcWPkf6iDQRWAAAA with id 62575173
+Chrome 65.0.3325 (Mac OS X 10.13.3): Executed 0 of 4 SUCCESS (0 secs / 0 secChrome 65.0.3325 (Mac OS X 10.13.3): Executed 1 of 4 SUCCESS (0 secs / 0.151Chrome 65.0.3325 (Mac OS X 10.13.3): Executed 2 of 4 SUCCESS (0 secs / 0.203Chrome 65.0.3325 (Mac OS X 10.13.3): Executed 3 of 4 SUCCESS (0 secs / 0.238Chrome 65.0.3325 (Mac OS X 10.13.3): Executed 4 of 4 SUCCESS (0 secs / 0.283Chrome 65.0.3325 (Mac OS X 10.13.3): Executed 4 of 4 SUCCESS (0.328 secs / 0.283 secs)
+```
+
+The same procedure goes for running end-to-end tests using protractor. You just run the `ng e2e` in a terminal.
+
+```
+$ ng e2e
+** NG Live Development Server is listening on localhost:49152, open your browser on http://localhost:49152/ **
+Date: 2018-04-13T08:29:04.113Z                                            l Hash: 8a08417e4497e11cece3
+Time: 7613ms
+chunk {inline} inline.bundle.js, inline.bundle.js.map (inline) 5.83 kB [entry] [rendered]
+chunk {main} main.bundle.js, main.bundle.js.map (main) 11.1 kB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js, polyfills.bundle.js.map (polyfills) 203 kB [initial] [rendered]
+chunk {styles} styles.bundle.js, styles.bundle.js.map (styles) 11.4 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js, vendor.bundle.js.map (vendor) 2.76 MB [initial] [rendered]
+(node:30726) [DEP0022] DeprecationWarning: os.tmpDir() is deprecated. Use os.tmpdir() instead.
+
+webpack: Compiled successfully.
+[09:29:04] I/file_manager - creating folder /Users/edvinsantonovs/Documents/repos/recipe-book/node_modules/webdriver-manager/selenium
+[09:29:05] I/update - chromedriver: unzipping chromedriver_2.37.zip
+[09:29:05] I/update - chromedriver: setting permissions to 0755 for /Users/edvinsantonovs/Documents/repos/recipe-book/node_modules/webdriver-manager/selenium/chromedriver_2.37
+[09:29:05] I/launcher - Running 1 instances of WebDriver
+[09:29:05] I/direct - Using ChromeDriver directly...
+Jasmine started
+
+  recipe-book App
+    ✓ should display welcome message
+
+Executed 1 of 1 spec SUCCESS in 0.685 sec.
+```
+
+In this case, the browser pops up, executes the application and dismiss once again after a short moment.
+
+---
+
+## `ng lint`
+
+When you start a new project with `ng new`, Angular CLI automatically generates a `tslint.json` with the set of rules of best practices for Angular. You can change them to suit your needs.
+
+```
+{
+  "rulesDirectory": [
+    "node_modules/codelyzer"
+  ],
+  "rules": {
+    "arrow-return-shorthand": true,
+    "callable-types": true,
+    "class-name": true,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "curly": true,
+    "deprecation": {
+      "severity": "warn"
+    },
+    "eofline": true,
+    "forin": true,
+    "import-blacklist": [
+      true,
+      "rxjs",
+      "rxjs/Rx"
+    ],
+    "import-spacing": true,
+    "indent": [
+      true,
+      "spaces"
+    ],
+    ...
+  }
+}
+```
+
+To check if your project has any linting problems, just run `ng lint` in the terminal.
+
+> In the majority of the cases, you will either see that all files successfully passed linting
+>
+>     $ ng lint
+>
+>     All files pass linting.
+>
+> or you will have a list of the files with lint error and description
+>
+>     $ ng lint
+>
+>     ERROR: ../recipe-book/src/app/app.module.ts[1, 31]: " should be '
+>     ERROR: ../recipe-book/src/app/app.module.ts[2, 26]: " should be '
+>     ERROR: ../recipe-book/src/app/app.module.ts[4, 30]: " should be '
+>     ERROR: ../recipe-book/src/app/app.module.ts[5, 34]: " should be '
+>
+>     Lint errors found in the listed files.
+
+---
+
+## `ng build`
+
+Last but not the least command of the Angular CLI — `ng build`.
+
+> The `ng build` command compiles the application into an output directory.
+
+```
+$ ng build
+Date: 2018-04-13T09:25:33.673Z                                            l Hash: d08ebffadf328ed32e55
+Time: 7260ms
+chunk {inline} inline.bundle.js, inline.bundle.js.map (inline) 5.83 kB [entry] [rendered]
+chunk {main} main.bundle.js, main.bundle.js.map (main) 10.3 kB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js, polyfills.bundle.js.map (polyfills) 203 kB [initial] [rendered]
+chunk {styles} styles.bundle.js, styles.bundle.js.map (styles) 11.4 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js, vendor.bundle.js.map (vendor) 2.44 MB [initial] [rendered]
+```
+
+When the building is finished, you can find your application in the `/dist` directory.
+
+```
+dist
+├── favicon.ico
+├── index.html
+├── inline.bundle.js
+├── inline.bundle.js.map
+├── main.bundle.js
+├── main.bundle.js.map
+├── polyfills.bundle.js
+├── polyfills.bundle.js.map
+├── styles.bundle.js
+├── styles.bundle.js.map
+├── vendor.bundle.js
+└── vendor.bundle.js.map
+```
+
+We just built our project, and you already can see the difference between the build and source code. The built project which is located in `/dist` looks tiny compared to the source code. That's great isn't it, but hold on there is one more trick!
+
+> By default, the `development` build target and environment are used.
+
+Luckily enough, `ng build` offers us an option to specify build target(`--target=production` or `--target=development`) and environment file to be used with that build(`--environment=dev` or `--environment=prod`). Let's run production build by typing `ng build --prod` in a terminal. Whoa! It made our `/dist` folder even smaller with only a few files are left there.
+
+```
+dist
+├── 3rdpartylicenses.txt
+├── favicon.ico
+├── index.html
+├── inline.ba64e9064e468420379a.bundle.js
+├── main.e41bc4358dddb8b53359.bundle.js
+├── polyfills.46af3f84a403e219371b.bundle.js
+└── styles.9c0ad738f18adc3d19ed.bundle.css
+```
+
+You might notice, several things:
+
+- There are no more `*.map` generated files.
+- There are hashes in generated file names.
+
+> Hashes in the file names are used as a part of the cache-busting technique. Every time we do the changes to our application, we need to redeploy the application to the server. In order to prevent our files to be cached on the server we add hashes to the file names. On every run of `ng build --prod` command, compiler randomly changes the hashes, so the server would treat the changed files as new ones.
+
+---
+
+## Tips
+
+Here is a list of tips I came across which might simplify your work with Angular CLI.
+
+- To create a new application without installing the node packages you can run `ng new --skip-install`.  Don't forget to install node modules later on.
+- To create a new application and change the default style file extension you can run `ng new --style [scss | sass | less | styl]`.
+- Shorthand to generate a new component is `ng g c [your-blueprint-name]`.
+- To generate a new component without test file, you need to run `ng g c [your-blueprint-name] --spec false`.
+- To run tests with coverage `ng test --code-coverage`. The coverage report will be in the `/coverage` directory.

@@ -1,0 +1,76 @@
+---
+title: How to loop in JSX
+date: 2018-12-05
+tags:
+  - React
+---
+
+There are certain ways how you can loop JSX in React. The most popular, yet simple, way is to use `[map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)` function.
+
+> The `map()` method creates a new array with the results of calling a provided function on every element in the calling array.
+
+---
+
+Let’s imagine we have a simple application where we have to list programming languages. We call render on them one by one by calling `<ListItem>` and passing language as a prop.
+
+```jsx
+import React from 'react';
+
+const List = ({ children }) => <ul>{children}</ul>;
+
+const ListItem = ({ language }) => <li>{language}</li>;
+
+const App = () => (
+  <List>
+    <ListItem language="JavaScript" />
+    <ListItem language="Java" />
+    <ListItem language="TypeScript" />
+  </List>
+);
+
+export default App;
+```
+
+In our case we have only 3 languages we need to render, but what would we need to do if the requirement was to render dynamic data which was coming from an API? Current approach would be insufficient, so we would need to update the component logic. There are several solutions to this problem.
+
+## Solution
+
+One of the options is to simply `map` through an array of elements directly in JSX.
+
+```jsx
+import React from 'react';
+
+const languages = ['JavaScript', 'Java', 'TypeScript'];
+
+const List = ({ children }) => <ul>{children}</ul>;
+
+const ListItem = ({ language }) => <li>{language}</li>;
+
+const App = () => (
+  <List>
+    {languages.map((language, index) => (
+      <ListItem key={index} language={language} />
+    ))}
+  </List>
+);
+
+export default App;
+```
+
+Another solution is very similar to the first one and the real difference is that we move the looping logic out of the JSX and create a new `listItems` variable instead.
+
+```jsx
+import React from 'react';
+
+const languages = ['JavaScript', 'Java', 'TypeScript'];
+
+const List = ({ children }) => <ul>{children}</ul>;
+
+const ListItem = ({ language }) => <li>{language}</li>;
+
+const listItems = languages.map((language, index) => <ListItem key={index} language={language} />);
+
+const App = () => <List>{listItems}</List>;
+
+export default App;
+```

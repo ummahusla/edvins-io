@@ -1,0 +1,66 @@
+---
+title: Introduction to React Fragments
+date: 2019-03-05
+tags:
+  - React
+---
+
+In this article, you will learn how to use **React Fragments** effectively in order to return multiple elements. React Fragments were originally introduced in React v16 and instantly became popular within the React community. React Fragments lets you group a list of children without adding extra `div` tags. That is a one small step for you, one giant leap for smaller and cleaner DOM.
+
+---
+
+Let's reflect on this using a casual situation which we come across on a daily basis.
+
+```jsx
+const App = () => (
+  <Header />
+  <Content />
+  <Footer />
+);
+```
+
+This piece of code looks straight-forward enough to fully understand it, yet no matter how it looks, it is going to bring `Parse Error: Adjacent JSX elements must be wrapped in an enclosing tag`. In this situation we usually were fixing it with wrapping everything within the `div` tags and it was working quite well, yet it had one downside - it was adding extra elements to the DOM.
+
+```jsx
+const App = () => (
+  <div>
+    <Header />
+    <Content />
+    <Footer />
+  </div>
+);
+```
+
+With the release of the React v16, React Fragments API has being introduced which the core idea was to remove the need for wrapping everything within an extra `div` tags.
+
+```jsx
+const App = () => (
+  <React.Fragment>
+    <Header />
+    <Content />
+    <Footer />
+  </React.Fragment>
+);
+```
+
+Simple as that we make our DOM cleaner!
+
+---
+
+> Related — [**How to loop JSX in React**](https://edvins.io/how-to-loop-jsx-in-react/)
+
+---
+
+## Shorthand
+
+Please be aware that shorthand syntax is only available in **Babel 7+**!
+
+```jsx
+const App = () => (
+  <>
+    <Header />
+    <Content />
+    <Footer />
+  </>
+);
+```

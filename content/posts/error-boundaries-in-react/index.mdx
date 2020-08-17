@@ -1,0 +1,80 @@
+---
+title: Error Boundaries in React
+date: 2019-05-23
+tags:
+  - React
+---
+
+In this article, you will learn more about **Error Boundaries in React**. Sometimes we all were in situations when an error was breaking the whole application require you to start the debugging process to figure out what went wrong. With the release of React 16 where Error Boundaries were introduced, it became incredibly easier to create safer components which therefore catch JavaScript errors and/or display a fallback UI instead. Worth to mention that Error Boundaries catches errors anywhere in its child component tree.
+
+> Error boundaries catch errors during rendering, in lifecycle methods, and in constructors of the whole tree below them.   Please keep in mind that error boundaries **do not catch errors** for:
+>
+> - Event handlers
+> - Asynchronous code (e.g. `setTimeout`)
+> - Server side rendering
+> - Errors thrown in the error boundary itself (rather than its children)
+
+---
+
+### Create an Error Boundary component
+
+In order to create an **Error Boundary** component, we need to define either one or both `static getDerivedStateFromError()` or `componentDidCatch()` lifecycle methods.
+
+```jsx
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasError: false
+    };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    // do some logging here..
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Oops! Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+Okay, so what happens here?
+
+- First of all, we add a `constructor` which holds the state attribute – `hasError`.
+- Then, `static getDerivedStateFromError` which updates the state so the next render would know it in order to display a fallback UI component.
+- Next is `componentDidCatch` is a lifecycle method which is a good place to do some logging to the error tracking services (e.g [sentry.io](https://sentry.io/welcome/)).
+
+> Please keep in mind that from time to time, you can see the practice of setting the state (e.g. like `this.setState({ hasError: true })`) inside the `componentDidCatch` method, yet according to the official React documentation, it's better to use the specific method for this case – `static getDerivedStateFromError`.
+
+- The last step is to add a conditional rendering of the fallback UI component in `render()` by evaluating state attribute `hasError`.
+  - In cases when it's `true` then it means we have an error here so we display a text message `Oops! Something went wrong.`, otherwise – we render the component.
+
+---
+
+### How to use an Error Boundary component
+
+Usage is pretty much self-explanatory; all you need to do is to wrap the component you want to have error boundary with `ErrorBoundary` component.
+
+```jsx
+<ErrorBoundary>
+  <FooBar />
+</ErrorBoundary>
+```
+
+---
+
+### Error Boundary and Higher-Order Component
+
+I guess many of us came across with an idea of HOC which would wrap the child component, yet according to Dan's tweet, it's not really necessary.
+
+https://twitter.com/dan_abramov/status/890716011133100032
