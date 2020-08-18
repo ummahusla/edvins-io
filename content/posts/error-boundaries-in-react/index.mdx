@@ -14,7 +14,11 @@ In this article, you will learn more about **Error Boundaries in React**. Someti
 > - Server side rendering
 > - Errors thrown in the error boundary itself (rather than its children)
 
+<br/>
+
 ---
+
+<br/>
 
 ### Create an Error Boundary component
 
@@ -59,7 +63,11 @@ Okay, so what happens here?
 - The last step is to add a conditional rendering of the fallback UI component in `render()` by evaluating state attribute `hasError`.
   - In cases when it's `true` then it means we have an error here so we display a text message `Oops! Something went wrong.`, otherwise – we render the component.
 
+<br/>
+
 ---
+
+<br/>
 
 ### How to use an Error Boundary component
 
@@ -71,7 +79,11 @@ Usage is pretty much self-explanatory; all you need to do is to wrap the compone
 </ErrorBoundary>
 ```
 
+<br/>
+
 ---
+
+<br/>
 
 ### Error Boundary and Higher-Order Component
 
