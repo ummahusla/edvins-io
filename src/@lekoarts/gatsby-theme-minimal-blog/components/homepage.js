@@ -8,7 +8,7 @@ import useMinimalBlogConfig from '@lekoarts/gatsby-theme-minimal-blog/src/hooks/
 import replaceSlashes from '@lekoarts/gatsby-theme-minimal-blog/src/utils/replaceSlashes';
 
 import Hero from '../texts/hero';
-import ProjectListing from './ProjectListing';
+import ProjectListing from '../../../components/projectListing';
 
 const Homepage = ({ posts }) => {
   const { basePath, blogPath } = useMinimalBlogConfig();
