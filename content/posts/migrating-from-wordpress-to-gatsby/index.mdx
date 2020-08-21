@@ -2,7 +2,6 @@
 title: Migrating from WordPress to Gatsby
 date: 2020-08-20
 tags:
-  - Notes
   - Gatsby
   - WordPress
 ---
@@ -27,7 +26,7 @@ The second version (v2.0.0) of edvins.io was built around 2 weeks ago, while I w
 
 #### Migration & Development
 
-I've used [`gatsby-theme-minimal-blog`](https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog) as a Gatsby starter template. Next step was to start adding features I wanted my blog to have (e.g. filtering by tag), etc. The most important thing was to understand how [Shadowing mechanism in Gatsby](https://www.gatsbyjs.org/docs/themes/shadowing/) works. I'm still working on adding new features (e.g. search by blog post name) and I fully [open-sourced this project](https://github.com/ummahusla/edvins-io), in case you want to have a look at the code.
+I've used [gatsby-theme-minimal-blog](https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog) as a Gatsby starter template. Next step was to start adding features I wanted my blog to have (e.g. filtering by tag), etc. The most important thing was to understand how [Shadowing mechanism in Gatsby](https://www.gatsbyjs.org/docs/themes/shadowing/) works. I'm still working on adding new features (e.g. search by blog post name) and I fully [open-sourced this project](https://github.com/ummahusla/edvins-io), in case you want to have a look at the code.
 
 The most time-consuming part was to convert blog posts from HTML to Markdown. Luckily, I had less than 10 posts, so using a [Turndown](https://domchristie.github.io/turndown/) (random HTML to Markdown converter) was more than enough.
 
@@ -35,7 +34,18 @@ Although, I finally had a chance to learn the fundamentals of GraphQL (Gatsby is
 
 #### Deployment
 
-Gatsby builds static files as an output, so there is an unlimited number of deployment options. I went with Netlify due to its simplicity in set up and automatic deployments. Effectively, it means that every time I do a new `git push` to `master`, new build image is automatically generated and deployed for me. Moreover, it's worth to mention that free tier is more than enough to host static files, saving ~\$84 / per year.
+Gatsby builds static files as an output, so there is an unlimited number of deployment options. I went with Netlify due to its simplicity in set up and automatic deployments. Effectively, it means that every time I do a new `git push` to `master`, new build image is automatically generated and deployed for me.
+
+Moreover, it's worth to mention that:
+
+- Every time you open a pull request, or push new changes to a branch, Netlify automatically builds a preview with a unique URL, which makes testing even easier.
+- Free tier is more than enough to host static files in my case, saving me ~\$84 / per year.
+
+<br />
+
+---
+
+<br />
 
 ### Next steps
 
