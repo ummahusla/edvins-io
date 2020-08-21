@@ -4,14 +4,14 @@ date: 2020-08-20
 tags:
   - Notes
   - Gatsby
-  - Wordpress
+  - WordPress
 ---
 
-Initial version (v.1.0.0) of edvins.io was built around 2 years ago based on [Underscores](https://underscores.me/) as a starter WordPress theme. I've create a custom design which was heavily inspired by [Todd Motto's](http://toddmotto.com/) personal blog (before he shut it down).
+Initial version (v.1.0.0) of edvins.io was built around 2 years ago based on [Underscores](https://underscores.me/) as a starter WordPress theme. I've created a custom design which was heavily inspired by [Todd Motto](http://toddmotto.com/)'s blog (before he shut it down).
 
-I hosted it on DigitalOcean's cheapest droplet with a back-up option. Roughly, it cost me \$7 per month to maintain it. It wasn't too bad, but clearly there were cheaper options. The main reason behind choosing DigitalOcean was a console level of access. Basically, I used Git as a version control, so deploying a new version was just simply pushing local changes and pulling it on server trough the terminal/console.
+I hosted it on DigitalOcean's cheapest droplet with a back-up option. Roughly, it cost me \$7 per month to maintain it. It wasn't too bad, but clearly, there were cheaper options. The main reason behind choosing DigitalOcean was a console level of access. I used Git as version control, so deploying a new version was just simply pushing local changes and pulling it on server trough the terminal/console.
 
-On a side note, I've been using WordPress CMS for years for personal and client projects since 2012. I really enjoyed working with it due to its simplicity and ability to go way beyong the blog functionality by using plugins like `Advanced Custom Fields` and `Custom Post Type UI`, etc.
+On a side note, I've been using WordPress CMS for years for personal and client projects since 2012. I enjoyed working with it due to its simplicity and ability to go way beyond the blog functionality by using plugins like `Advanced Custom Fields` and `Custom Post Type UI`, etc.
 
 <br />
 
@@ -21,21 +21,21 @@ On a side note, I've been using WordPress CMS for years for personal and client 
 
 ### Time for a change
 
-Second version (v2.0.0) of edvins.io was built around 2 weeks ago, while I was on holidays. The ultimate goal was to migrate from WordPress to Gatsby as its faster, optimised and way more modern.
+The second version (v2.0.0) of edvins.io was built around 2 weeks ago, while I was on holidays. The ultimate goal was to migrate from WordPress to Gatsby as its faster, optimised and way more modern.
 
-> [Gatsby](https://www.gatsbyjs.com/) is a React-based, GraphQL powered, static site generator. It uses powerful preconfiguration to build a website that uses only static files for incredibly fast page loads, service workers, code splitting, server-side rendering, intelligent image loading, asset optimization, and data prefetching, Markdown support, fast build and deployment times, etc.
+> [Gatsby](https://www.gatsbyjs.com/) is a React-based, GraphQL powered, static site generator. It uses powerful pre-configuration to build a website that uses only static files for incredibly fast page loads, service workers, code splitting, server-side rendering, intelligent image loading, asset optimization, and data prefetching, Markdown support, fast build and deployment times, etc.
 
 #### Migration & Development
 
 I've used [`gatsby-theme-minimal-blog`](https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog) as a Gatsby starter template. Next step was to start adding features I wanted my blog to have (e.g. filtering by tag), etc. The most important thing was to understand how [Shadowing mechanism in Gatsby](https://www.gatsbyjs.org/docs/themes/shadowing/) works. I'm still working on adding new features (e.g. search by blog post name) and I fully [open-sourced this project](https://github.com/ummahusla/edvins-io), in case you want to have a look at the code.
 
-The most time-consuming part was to actually convert blog posts from HTML to Markdown. Luckily, I had less than 10 posts, so using a [Turndown](https://domchristie.github.io/turndown/) (random HTML to Markdown converter) was more than enough.
+The most time-consuming part was to convert blog posts from HTML to Markdown. Luckily, I had less than 10 posts, so using a [Turndown](https://domchristie.github.io/turndown/) (random HTML to Markdown converter) was more than enough.
 
 Although, I finally had a chance to learn the fundamentals of GraphQL (Gatsby is powered by GraphQL) to understand how it works under the hood. I used [How To GraphQL](https://www.howtographql.com/) (free & open-source) which I found as a recommendation in Gatsby's docs.
 
 #### Deployment
 
-Gatsby builds static files as an output, so there are unlimited number of deployment options. I went with Netlify due to its simplicity in set up and automatic deployments. Effectively, it means that every time I do a new `git push` to `master`, new build image is automatically generated and deployed for me. Moreover, it's worth to mention that free tier is more than enough to host static files, saving ~\$84 / per year.
+Gatsby builds static files as an output, so there is an unlimited number of deployment options. I went with Netlify due to its simplicity in set up and automatic deployments. Effectively, it means that every time I do a new `git push` to `master`, new build image is automatically generated and deployed for me. Moreover, it's worth to mention that free tier is more than enough to host static files, saving ~\$84 / per year.
 
 ### Next steps
 
