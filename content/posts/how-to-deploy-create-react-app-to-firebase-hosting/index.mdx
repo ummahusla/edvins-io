@@ -1,0 +1,507 @@
+---
+title: How to deploy Create-React-App to Firebase Hosting
+date: 2020-08-21
+tags:
+  - React
+  - Firebase
+---
+
+In this step-by-step tutorial, I will show you how to deploy React application to the [Firebase Hosting](https://firebase.google.com/docs/hosting).
+
+> Firebase Hosting provides fast and secure hosting for your web app, static and dynamic content, and microservices.
+
+![Firebase](./firebase-logo.png)
+
+<br />
+
+---
+
+<br />
+
+## Initial setup
+
+We are going to need an application which we are going to deploy. For the demonstation purposes, I'm going to scaffold a new [create-react-app](https://create-react-app.dev/) aplication and name it as `deploy-cra-to-firebase`.
+
+```
+$ npx create-react-app deploy-cra-to-firebase
+```
+
+<br />
+
+---
+
+<br />
+
+## Install Firebase CLI
+
+Next step is to install the [Firebase CLI](https://github.com/firebase/firebase-tools) (actually its called `firebase-tools`, but I still reference it as `firebase-cli` for some reason.) which provides a variety of tools for managing, viewing, and deploying to Firebase projects.
+
+```
+$ npm install -g firebase-tools
+```
+
+## Firebase login
+
+In order to use a Firebase Hosting, you need to have an account for it. So you will need either create a new one or use the existing one. When it's sorted, just run next command.
+
+```
+$ firebase login
+```
+
+## Firebase project and hosting setup
+
+Now its the time to initialise Firebase. You will be asked a variety of questions related to project and hosting setup. Don't worry if you made a mistake while completing this step. You can amend those settings except `unique project id`. I've used `deploy-my-cra-to-firebase` for both `Project ID` and `Project Name`.
+
+```
+$ firebase init
+```
+
+In Firebase Hosting setup section make sure you answer like this.
+
+- What do you want to use as your public directory? `build`
+- Configure as a single-page app (rewrite all urls to /index.html) `Yes`
+- File build/index.html already exists. Overwrite? `Yes`
+
+```
+$ firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase
+
+? Which Firebase CLI features do you want to set up for this folder? Press
+Space to select features, then Enter to confirm your choices. Hosting: Conf
+igure and deploy Firebase Hosting sites
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+? Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project.
+? Please specify a unique project id (warning: cannot be modified afterward
+) [6-30 characters]:
+ deploy-my-cra-to-firebase
+? What would you like to call your project? (defaults to your project ID)
+✔ Creating Google Cloud Platform project
+✔ Adding Firebase resources to Google Cloud Platform project
+
+🎉🎉🎉 Your Firebase project is ready! 🎉🎉🎉
+
+Project information:
+   - Project ID: deploy-my-cra-to-firebase
+   - Project Name: deploy-my-cra-to-firebase
+
+Firebase console is available at
+https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
+i  Using project deploy-my-cra-to-firebase (deploy-my-cra-to-firebase)
+
+=== Hosting Setup
+
+Your public directory is the folder (relative to your project directory) that
+will contain Hosting assets to be uploaded with firebase deploy. If you
+have a build process for your assets, use your build's output directory.
+
+? What do you want to use as your public directory? build
+? Configure as a single-page app (rewrite all urls to /index.html)? Yes
+? File build/index.html already exists. Overwrite? Yes
+✔  Wrote build/index.html
+
+i  Writing configuration info to firebase.json...
+i  Writing project information to .firebaserc...
+
+✔  Firebase initialization complete!
+```
+
+When setup is complete, you should see auto-generated `firebase.json` and `.firebaserc` files which look like this.
+
+- `firebase.json`
+
+```
+{
+  "hosting": {
+    "public": "build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+- `.firebaserc`
+
+```
+{
+  "projects": {
+    "default": "deploy-my-cra-to-firebase"
+  }
+}
+```
+
+<br />
+
+---
+
+<br />
+
+## Build
+
+- `$ yarn build`
+
+## Firebase deploy
+
+- `$ firebase deplop`
+
+## Done
+
+- Visit https://deploy-my-cra-to-firebase.firebaseapp.com/
+
+---
+
+---
+
+Build process:
+
+```
+deploy-cra-to-firebase master ✗ 58m △ ◒ ➜ yarn run build
+yarn run v1.22.4
+$ react-scripts build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  39.4 KB  build/static/js/2.107361f6.chunk.js
+  784 B    build/static/js/runtime-main.722af0ec.js
+  655 B    build/static/js/main.c1df01c6.chunk.js
+  547 B    build/static/css/main.5f361e03.chunk.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+✨  Done in 11.83s.
+```
+
+---
+
+Firebase deploy command
+
+```
+deploy-cra-to-firebase master ✗ 58m △ ◒ ➜ firebase deploy
+
+=== Deploying to 'deploy-my-cra-to-firebase'...
+
+i  deploying hosting
+i  hosting[deploy-my-cra-to-firebase]: beginning deploy...
+i  hosting[deploy-my-cra-to-firebase]: found 19 files in build
+✔  hosting[deploy-my-cra-to-firebase]: file upload complete
+i  hosting[deploy-my-cra-to-firebase]: finalizing version...
+✔  hosting[deploy-my-cra-to-firebase]: version finalized
+i  hosting[deploy-my-cra-to-firebase]: releasing new version...
+✔  hosting[deploy-my-cra-to-firebase]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
+Hosting URL: https://deploy-my-cra-to-firebase.web.app
+```
+
+---
+
+DUMP
+
+```eploy-cra-to-firebase master ✗ 6m △ ➜ yarn build
+yarn run v1.22.4
+$ react-scripts build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  39.4 KB  build/static/js/2.107361f6.chunk.js
+  784 B    build/static/js/runtime-main.722af0ec.js
+  647 B    build/static/js/main.af8f432f.chunk.js
+  547 B    build/static/css/main.5f361e03.chunk.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+✨  Done in 46.72s.
+deploy-cra-to-firebase master ✗ 7m △ ➜ npm install -g firebase-tools
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm WARN deprecated har-validator@5.1.5: this library is no longer supported
+/usr/local/bin/firebase -> /usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js
+
+> protobufjs@6.10.1 postinstall /usr/local/lib/node_modules/firebase-tools/node_modules/protobufjs
+> node scripts/postinstall
+
+npm WARN ws@7.3.1 requires a peer of bufferutil@^4.0.1 but none is installed. You must install peer dependencies yourself.
+npm WARN ws@7.3.1 requires a peer of utf-8-validate@^5.0.2 but none is installed. You must install peer dependencies yourself.
+
++ firebase-tools@8.8.1
+added 593 packages from 364 contributors in 104.687s
+deploy-cra-to-firebase master ✗ 17m △ ➜ firebase login
+
+i  Firebase optionally collects CLI usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you.
+
+? Allow Firebase to collect CLI usage and error reporting information? Yes
+i  To change your data collection preference at any time, run `firebase logout` and log in again.
+
+Visit this URL on this device to log in:
+https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=636078826&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+
+Waiting for authentication...
+
+✔  Success! Logged in as ummahusla@gmail.com
+deploy-cra-to-firebase master ✗ 19m △ ➜ firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase
+
+? Which Firebase CLI features do you want to set up for this folder? Press
+Space to select features, then Enter to confirm your choices. (Press <space
+> to select, <a> to toggle all, <i> to invert selection)
+
+Error: Must select at least one feature. Use SPACEBAR to select features, or provide a feature with firebase init [feature_name]
+deploy-cra-to-firebase master ✗ 22m △ ⍉ ➜ firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase
+
+? Which Firebase CLI features do you want to set up for this folder? Press
+Space to select features, then Enter to confirm your choices. Hosting: Conf
+igure and deploy Firebase Hosting sites
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+? Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project.
+? Please specify a unique project id (warning: cannot be modified afterward
+) [6-30 characters]:
+ deploy-cra-to-firebase
+? What would you like to call your project? (defaults to your project ID)
+✔ Creating Google Cloud Platform project
+✔ Adding Firebase resources to Google Cloud Platform project
+
+🎉🎉🎉 Your Firebase project is ready! 🎉🎉🎉
+
+Project information:
+   - Project ID: deploy-cra-to-firebase
+   - Project Name: deploy-cra-to-firebase
+
+Firebase console is available at
+https://console.firebase.google.com/project/deploy-cra-to-firebase/overview
+i  Using project deploy-cra-to-firebase (deploy-cra-to-firebase)
+
+=== Hosting Setup
+deploy-cra-to-firebase master ✗ 27m △ ➜ firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase
+
+? Which Firebase CLI features do you want to set up for this folder? Press
+Space to select features, then Enter to confirm your choices. Hosting: Conf
+igure and deploy Firebase Hosting sites
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+? Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project.
+? Please specify a unique project id (warning: cannot be modified afterward
+) [6-30 characters]:
+ deploy-cra-to-firebase
+? What would you like to call your project? (defaults to your project ID)
+✖ Creating Google Cloud Platform project
+
+Error: Failed to create project because there is already a project with ID deploy-cra-to-firebase. Please try again with a unique project ID.
+
+deploy-cra-to-firebase master ✗ 51m △ ◒ ➜ firebase deploy
+
+=== Deploying to 'deploy-my-cra-to-firebase'...
+
+i  deploying hosting
+i  hosting[deploy-my-cra-to-firebase]: beginning deploy...
+i  hosting[deploy-my-cra-to-firebase]: found 19 files in build
+✔  hosting[deploy-my-cra-to-firebase]: file upload complete
+i  hosting[deploy-my-cra-to-firebase]: finalizing version...
+✔  hosting[deploy-my-cra-to-firebase]: version finalized
+i  hosting[deploy-my-cra-to-firebase]: releasing new version...
+✔  hosting[deploy-my-cra-to-firebase]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
+Hosting URL: https://deploy-my-cra-to-firebase.web.app
+deploy-cra-to-firebase master ✗ 53m △ ◒ ➜ yarn build
+yarn run v1.22.4
+$ react-scripts build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  39.4 KB  build/static/js/2.107361f6.chunk.js
+  784 B    build/static/js/runtime-main.722af0ec.js
+  647 B    build/static/js/main.af8f432f.chunk.js
+  547 B    build/static/css/main.5f361e03.chunk.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+✨  Done in 15.45s.
+deploy-cra-to-firebase master ✗ 53m △ ◒ ➜ firebase deploy
+
+=== Deploying to 'deploy-my-cra-to-firebase'...
+
+i  deploying hosting
+i  hosting[deploy-my-cra-to-firebase]: beginning deploy...
+i  hosting[deploy-my-cra-to-firebase]: found 19 files in build
+✔  hosting[deploy-my-cra-to-firebase]: file upload complete
+i  hosting[deploy-my-cra-to-firebase]: finalizing version...
+✔  hosting[deploy-my-cra-to-firebase]: version finalized
+i  hosting[deploy-my-cra-to-firebase]: releasing new version...
+✔  hosting[deploy-my-cra-to-firebase]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
+Hosting URL: https://deploy-my-cra-to-firebase.web.app
+deploy-cra-to-firebase master ✗ 54m △ ◒ ➜ firebase serve
+
+=== Serving from '/Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase'...
+
+i  hosting: Serving hosting files from: build
+✔  hosting: Local server: http://localhost:5000
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:38 +0000] "GET / HTTP/1.1" 200 2251 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:38 +0000] "GET /static/css/main.5f361e03.chunk.css HTTP/1.1" 200 943 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:38 +0000] "GET /static/js/main.af8f432f.chunk.js HTTP/1.1" 200 1250 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:38 +0000] "GET /static/js/2.107361f6.chunk.js HTTP/1.1" 200 129474 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:38 +0000] "GET /static/media/logo.5d5d9eef.svg HTTP/1.1" 200 2671 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:40 +0000] "GET /manifest.json HTTP/1.1" 200 492 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:40 +0000] "GET /favicon.ico HTTP/1.1" 200 3150 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+i  hosting: 127.0.0.1 - - [21/Aug/2020:14:17:40 +0000] "GET /logo192.png HTTP/1.1" 200 5347 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+^CShutting down...
+deploy-cra-to-firebase master ✗ 56m △ ◒ ➜ yarn build && firebase deploy
+yarn run v1.22.4
+$ react-scripts build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  39.4 KB  build/static/js/2.107361f6.chunk.js
+  784 B    build/static/js/runtime-main.722af0ec.js
+  647 B    build/static/js/main.af8f432f.chunk.js
+  547 B    build/static/css/main.5f361e03.chunk.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  bit.ly/CRA-deploy
+
+✨  Done in 14.63s.
+
+=== Deploying to 'deploy-my-cra-to-firebase'...
+
+i  deploying hosting
+i  hosting[deploy-my-cra-to-firebase]: beginning deploy...
+i  hosting[deploy-my-cra-to-firebase]: found 19 files in build
+✔  hosting[deploy-my-cra-to-firebase]: file upload complete
+i  hosting[deploy-my-cra-to-firebase]: finalizing version...
+✔  hosting[deploy-my-cra-to-firebase]: version finalized
+i  hosting[deploy-my-cra-to-firebase]: releasing new version...
+✔  hosting[deploy-my-cra-to-firebase]: release complete
+
+✔  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
+Hosting URL: https://deploy-my-cra-to-firebase.web.app
+deploy-cra-to-firebase master ✗ 57m △ ◒ ➜ yarn run build
+yarn run v1.22.4
+$ react-scripts build
+^C
+deploy-cra-to-firebase master ✗ 58m △ ◒ ⍉ ➜ rm -rf build
+deploy-cra-to-firebase master ✗ 58m △ ◒ ➜ ls
+README.md     node_modules  public        yarn.lock
+firebase.json package.json  src
+
+```
