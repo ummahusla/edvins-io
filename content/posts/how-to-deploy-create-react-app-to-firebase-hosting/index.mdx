@@ -20,7 +20,7 @@ In this step-by-step tutorial, I will show you how to deploy React application t
 
 ## Initial setup
 
-We are going to need an application which we are going to deploy. For the demonstation purposes, I'm going to scaffold a new [create-react-app](https://create-react-app.dev/) aplication and name it as `deploy-cra-to-firebase`.
+We are going to need an application which we are going to deploy. For the demonstation purposes, I'm going to scaffold a new [create-react-app](https://create-react-app.dev/) application and name it as `deploy-cra-to-firebase`.
 
 ```
 $ npx create-react-app deploy-cra-to-firebase
@@ -36,7 +36,7 @@ $ cd deploy-cra-to-firebase
 
 ## Install Firebase CLI
 
-Next step is to install the [Firebase CLI](https://github.com/firebase/firebase-tools) (actually its called `firebase-tools`, but I still reference it as `firebase-cli` for some reason.) which provides a variety of tools for managing, viewing, and deploying to Firebase projects.
+Next step is to install the [Firebase CLI](https://github.com/firebase/firebase-tools) (actually its called `firebase-tools`, but I still reference it as `firebase-cli` for some reason) which provides a variety of tools for managing, viewing, and deploying to Firebase projects.
 
 ```
 $ npm install -g firebase-tools
@@ -50,7 +50,7 @@ $ npm install -g firebase-tools
 
 ## Firebase login
 
-In order to use a Firebase Hosting, you need to have an account for it. So you will need either create a new one or use the existing one. When it's sorted, just run next command.
+In order to use a Firebase Hosting, you need to have an account for it. So you will need either create a new one or use the existing one. When it's sorted, just run next command and proceed with sing in flow until its complete.
 
 ```
 $ firebase login
@@ -64,13 +64,15 @@ $ firebase login
 
 ## Firebase project and hosting setup
 
-Now its the time to initialise Firebase. You will be asked a variety of questions related to project and hosting setup. Don't worry if you made a mistake while completing this step. You can amend those settings except `unique project id`. I've used `deploy-my-cra-to-firebase` for both `Project ID` and `Project Name`.
+Now its the time to initialise Firebase. You will be asked a variety of questions related to project and hosting setup. Don't worry if you made a mistake while completing this step. You can amend those settings except `unique project id`.
+
+I've used `deploy-my-cra-to-firebase` for both `Project ID` and `Project Name`.
 
 ```
 $ firebase init
 ```
 
-In Firebase Hosting setup section make sure you answer like this.
+Keep in mind for the these important questions in Firebase Hosting section:
 
 - What do you want to use as your public directory? `build`
 - Configure as a single-page app (rewrite all urls to `/index.html`) `Yes`
@@ -171,7 +173,11 @@ When setup is complete, you should see auto-generated `firebase.json` and `.fire
 
 ## Build
 
+Now it's the time to build our React app and make it ready to be deploy. In order to do so, make sure you are located in the correct folder - `deploy-cra-to-firebase`. Then all you need to do is to run next command.
+
 - `$ yarn build`
+
+You should see the build process in the console. When it's done, we can proceed to our final step.
 
 ```
 yarn run v1.22.4
@@ -210,7 +216,11 @@ Find out more about deployment here:
 
 ## Firebase deploy
 
-- `$ firebase deplop`
+This is the final step we need to do, but before doing it, make sure you have `/build` folder is created by `yarn build`. Then run the next command.
+
+- `$ firebase deploy`
+
+Once again, you can see the deployment process in the console.
 
 ```
 === Deploying to 'deploy-my-cra-to-firebase'...
@@ -226,10 +236,11 @@ i  hosting[deploy-my-cra-to-firebase]: releasing new version...
 
 ✔  Deploy complete!
 
-Project Console: https://console.firebase.google.com/project/deploy-my-cra-to-firebase/overview
-Hosting URL: https://deploy-my-cra-to-firebase.web.app
+...
 ```
 
-## Done
+When it's done, you will be able to access your freshly deployment React application:
 
-- Visit https://deploy-my-cra-to-firebase.firebaseapp.com/
+- https://deploy-my-cra-to-firebase.firebaseapp.com/
+
+✨ That's pretty much it!
