@@ -20,7 +20,7 @@ In this step-by-step tutorial, I will show you how to deploy React application t
 
 ## Initial setup
 
-We are going to need an application which we are going to deploy. For the demonstation purposes, I'm going to scaffold a new [create-react-app](https://create-react-app.dev/) application and name it as `deploy-cra-to-firebase`.
+We are going to need an application which we are going to deploy. For the demonstration purposes, I'm going to scaffold a new [create-react-app](https://create-react-app.dev/) application and name it as `deploy-cra-to-firebase`.
 
 ```
 $ npx create-react-app deploy-cra-to-firebase
@@ -50,7 +50,7 @@ $ npm install -g firebase-tools
 
 ## Firebase login
 
-In order to use a Firebase Hosting, you need to have an account for it. So you will need either create a new one or use the existing one. When it's sorted, just run next command and proceed with sing in flow until its complete.
+In order to use a Firebase Hosting, you need to have an account for it. So you will need either create a new one or use the existing one. When it's sorted, just run next command and proceed with the sign-in flow until its complete.
 
 ```
 $ firebase login
@@ -64,7 +64,7 @@ $ firebase login
 
 ## Firebase project and hosting setup
 
-Now its the time to initialise Firebase. You will be asked a variety of questions related to project and hosting setup. Don't worry if you made a mistake while completing this step. You can amend those settings except `unique project id`.
+Now it's the time to initialise Firebase. You will be asked a variety of questions related to the project and hosting setup. Don't worry if you made a mistake while completing this step. You can amend those settings except `unique project id`.
 
 I've used `deploy-my-cra-to-firebase` for both `Project ID` and `Project Name`.
 
@@ -72,7 +72,7 @@ I've used `deploy-my-cra-to-firebase` for both `Project ID` and `Project Name`.
 $ firebase init
 ```
 
-Keep in mind for the these important questions in Firebase Hosting section:
+Keep in mind for these important questions in Firebase Hosting section:
 
 - What do you want to use as your public directory? `build`
 - Configure as a single-page app (rewrite all urls to `/index.html`) `Yes`
@@ -91,8 +91,7 @@ You're about to initialize a Firebase project in this directory:
   /Users/edvinsantonovs/Documents/repos/deploy-cra-to-firebase
 
 ? Which Firebase CLI features do you want to set up for this folder? Press
-Space to select features, then Enter to confirm your choices. Hosting: Conf
-igure and deploy Firebase Hosting sites
+Space to select features, then Enter to confirm your choices. Hosting: Configure and deploy Firebase Hosting sites
 
 === Project Setup
 
@@ -136,7 +135,7 @@ i  Writing project information to .firebaserc...
 ✔  Firebase initialization complete!
 ```
 
-When setup is complete, you should see auto-generated `firebase.json` and `.firebaserc` files which looks like this.
+When setup is complete, you should see auto-generated `firebase.json` and `.firebaserc` files which look like this.
 
 - `firebase.json`
 
@@ -173,7 +172,7 @@ When setup is complete, you should see auto-generated `firebase.json` and `.fire
 
 ## Build
 
-Now it's the time to build our React app and make it ready to be deploy. In order to do so, make sure you are located in the correct folder - `deploy-cra-to-firebase`. Then all you need to do is to run next command.
+Now it's the time to build our React app and make it ready to be deployed. In order to do so, make sure you are located in the correct folder - `deploy-cra-to-firebase`. Then all you need to do is to run the next command.
 
 - `$ yarn build`
 
@@ -239,7 +238,7 @@ i  hosting[deploy-my-cra-to-firebase]: releasing new version...
 ...
 ```
 
-When it's done, you will be able to access your freshly deployment React application:
+When it's done, you will be able to access your fresh deployment React application:
 
 - https://deploy-my-cra-to-firebase.firebaseapp.com/
 
