@@ -15,19 +15,19 @@ const Homepage = ({ posts }) => {
 
   const projects = [
     {
+      name: 'Cultivate',
+      status: 'Development',
+      description: 'Habit tracking application to cultivate new habits.',
+      tags: ['React', 'Redux', 'Firebase', 'Serverless'],
+      link: 'https://cult-80c16-dev.web.app/',
+    },
+    {
       name: "Edvins's Blog",
       status: 'Launched',
       description:
         'Personal blog about software development and entrepreneurship.',
       tags: ['React', 'Gatsby', 'GraphQL'],
       link: 'https://edvins.io/',
-    },
-    {
-      name: 'Again',
-      status: 'Development',
-      description: 'Habit tracking application to cultivate new habits.',
-      tags: ['React', 'Redux', 'Firebase', 'Serverless'],
-      link: 'https://cult-80c16-dev.web.app/',
     },
     {
       name: 'react-simple-card',
