@@ -19,7 +19,7 @@ const Homepage = ({ posts }) => {
       status: 'Development',
       description: 'Habit tracking application to cultivate new habits.',
       tags: ['React', 'Redux', 'Firebase', 'Serverless'],
-      link: 'https://cult-80c16-dev.web.app/',
+      link: 'https://cultivate.so/',
     },
     {
       name: "Edvins's Blog",
