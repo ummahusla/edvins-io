@@ -4,6 +4,7 @@ date: 2021-01-26
 tags:
   - React
   - Redux
+banner: ./redux-toolkit-thumbnail.png
 ---
 
 Recently, I've discovered `redux-toolkit` which is the official, opinionated, batteries-included toolset for efficient Redux development. It's intended to be the standard way to write Redux logic. Moreover, redux template for `create-react-app` is now using `redux-toolkit` by default.
@@ -185,6 +186,12 @@ Now it's time to test our application! Try to increase or decrease the amount an
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
 ></iframe>
 
+<br />
+
+---
+
+<br />
+
 ## Blacklist and whitelist
 
 To prevent any performance issues, you can decide which parts of the state you want to persist. Take a look at the example below, and amend `persistConfig` in `src/app/store.js` as per your needs.
@@ -204,6 +211,12 @@ const persistConfig = {
   whitelist: ['navigation'], // only navigation will be persisted
 };
 ```
+
+<br />
+
+---
+
+<br />
 
 ## Demo and source code
 
