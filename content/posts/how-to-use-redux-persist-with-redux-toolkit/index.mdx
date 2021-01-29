@@ -1,10 +1,11 @@
 ---
 title: How to use Redux-Persist with Redux-Toolkit
 date: 2021-01-29
+description: Redux Toolkit is the official, opinionated, batteries-included toolset for efficient Redux development. It's intended to be the standard way to write Redux logic.
 tags:
   - React
   - Redux
-banner: ./redux-toolkit-thumbnail.png
+banner: ./intro.png
 ---
 
 Recently, I've discovered `redux-toolkit` which is the official, opinionated, batteries-included toolset for efficient Redux development. It's intended to be the standard way to write Redux logic. Moreover, redux template for `create-react-app` is now using `redux-toolkit` by default.
@@ -61,9 +62,7 @@ src
 
 Now, let's have a quick look at `src/app/store.js` and `src/index.js` files. These are 2 files where we will do all of the required changes.
 
-- `src/app/store.js`
-
-```js
+```js:title=src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 
@@ -74,9 +73,9 @@ export default configureStore({
 });
 ```
 
-- `src/index.js`
+<br />
 
-```js
+```js:title=src/index.js
 // ...
 
 import store from './app/store';
@@ -117,11 +116,9 @@ Now, we should be up and running, and we should see our counter example applicat
 
 Now let's do some changes to the following files.
 
-- `src/app/store.js`
-
 The general idea is that on line `18` in `src/app/store.js` you can define, which `reducers` you want to make persistent. You need to carefully decide how many levels of state you want to "merge". The default is 1 level. More information - [state reconciler docs](https://github.com/rt2zz/redux-persist#state-reconciler).
 
-```js {2-5,9-11,13-16,18,20-24,26}
+```js:title=src/app/store.js {2-5,9-11,13-16,18,20-24,26}
 import { configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
@@ -150,11 +147,9 @@ const store = configureStore({
 export default store;
 ```
 
-- `src/index.js`
-
 Here we add `persistStore` and `PersistGate`. `PersistGate` delays the rendering of your app's UI until your persisted state has been retrieved and saved to redux.
 
-```js {3-4,6,11-13}
+```js:title=src/index.js {3-4,6,11-13}
 // ...
 
 import { PersistGate } from 'redux-persist/integration/react';
@@ -196,7 +191,7 @@ Now it's time to test our application! Try to increase or decrease the amount an
 
 To prevent any performance issues, you can decide which parts of the state you want to persist. Take a look at the example below, and amend `persistConfig` in `src/app/store.js` as per your needs.
 
-```js
+```js:title=src/app/store.js
 // blacklist
 const persistConfig = {
   key: 'root',
