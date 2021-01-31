@@ -10,7 +10,7 @@ module.exports = {
     siteUrl: `https://edvins.io/`,
     siteDescription: `Personal blog about software development and side hustle.`,
     siteLanguage: `en`,
-    siteImage: `/banner.jpg`,
+    siteImage: `/banner.png`,
     author: `@edvinsantonovs`,
   },
   plugins: [
@@ -81,12 +81,12 @@ module.exports = {
     },
     `gatsby-plugin-offline`,
     `gatsby-plugin-netlify`,
-    // `gatsby-plugin-webpack-bundle-analyser-v2`,
     {
       resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [`gatsby-remark-responsive-iframe`],
       },
     }
+    // `gatsby-plugin-webpack-bundle-analyser-v2`,
   ],
 };
