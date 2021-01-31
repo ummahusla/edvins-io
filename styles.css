@@ -1,4 +1,9 @@
+/* Theme overwrites */
 .gatsby-resp-image-wrapper {
   box-shadow: none !important;
   border: 1px solid #ccc;
+}
+
+.hr {
+  margin: 32px 0 !important;
 }
