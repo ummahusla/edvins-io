@@ -1,8 +1,10 @@
 ---
 title: Show and hide password in React
+description: In this article, you’ll learn how to show and hide password input field in React.js using basic state manipulations. Moreover, you will learn how to make this component more re-usable to suit your needs.
 date: 2018-12-18
 tags:
   - React
+banner: ./intro.png
 ---
 
 In this article, you’ll learn how to show and hide password input field in React.js using basic state manipulations. Moreover, you will learn how to make this component more re-usable to suit your needs. Initially, let's start by creating a `PasswordShowHide` component which has `hidden` state parameter set to `true` by default. As well as generic `input` and `button` elements.
@@ -13,7 +15,7 @@ class PasswordShowHide extends Component {
     super(props);
 
     this.state = {
-      hidden: true
+      hidden: true,
     };
   }
 
@@ -43,7 +45,7 @@ class PasswordShowHide extends Component {
     super(props);
 
     this.state = {
-      hidden: true
+      hidden: true,
     };
     this.toggleShow = this.toggleShow.bind(this);
   }
@@ -67,11 +69,7 @@ export default PasswordShowHide;
 
 You've made it so far. Now we toggle state upon the button click. But what next?
 
-<br/>
-
 ---
-
-<br/>
 
 ### Making a better component
 
@@ -86,7 +84,7 @@ class PasswordShowHide extends Component {
 
     this.state = {
       hidden: true,
-      password: ''
+      password: '',
     };
 
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -124,21 +122,13 @@ class PasswordShowHide extends Component {
 export default PasswordShowHide;
 ```
 
-<br/>
-
 ---
-
-<br/>
 
 ### Conclusion
 
 Now when the implementation is finished, we can finally start using this component. We  can either call `<PasswordShowHide />` component as it is or `<PasswordShowHide password="qwerty1337" />` (e.g.`<PasswordShowHide password={bla.bla.bla.password} />`) and pass `password` as a prop in order to pre-populate the `input` field.
 
-<br/>
-
 ---
-
-<br/>
 
 ### Demo
 
