@@ -1,10 +1,12 @@
 ---
 title: Migrating from WordPress to Gatsby
+description: My story behind ditching PHP and migrating WordPress website to using React, GraphQL and Gatsby.
 date: 2020-08-20
 tags:
   - Gatsby
   - WordPress
   - CMS
+banner: ./intro.png
 ---
 
 Initial version (v.1.0.0) of edvins.io was built around 2 years ago using [WordPress](https://wordpress.org/) based on [Underscores](https://underscores.me/) as a starter theme. I've created a custom design which was heavily inspired by [Todd Motto](http://toddmotto.com/)'s blog (before he shut it down).
@@ -13,19 +15,13 @@ I hosted it on [DigitalOcean](https://digitalocean.com/)'s cheapest droplet with
 
 On a side note, I've been using WordPress CMS for years for personal and client projects since 2012. I enjoyed working with it due to its simplicity and ability to go way beyond the blog functionality by using plugins like `Advanced Custom Fields` and `Custom Post Type UI`, etc.
 
-<br />
-
 ---
-
-<br />
 
 ### Time for a change
 
 The second version (v2.0.0) of edvins.io was built around 2 weeks ago, while I was on holidays. My ultimate goal was to migrate from WordPress to [Gatsby](http://gatsbyjs.com/).
 
 > [Gatsby](https://www.gatsbyjs.com/) is a React-based, GraphQL powered, static site generator. It uses powerful pre-configuration to build a website that uses only static files for incredibly fast page loads, service workers, code splitting, server-side rendering, intelligent image loading, asset optimization, and data prefetching, Markdown support, fast build and deployment times, etc.
-
-<br />
 
 #### Migration & Development
 
@@ -34,8 +30,6 @@ I've used [gatsby-theme-minimal-blog](https://github.com/LekoArts/gatsby-themes/
 The most time-consuming part was to convert blog posts from HTML to Markdown. Luckily, I had less than 10 posts, so using a [Turndown](https://domchristie.github.io/turndown/) (random HTML to Markdown converter) was more than enough.
 
 Although, I finally had a chance to learn the fundamentals of GraphQL (Gatsby is powered by GraphQL) to understand how it works under the hood. I used [How To GraphQL](https://www.howtographql.com/) (free & open-source) which I found as a recommendation in Gatsby's docs.
-
-<br />
 
 #### Deployment
 
@@ -46,11 +40,7 @@ Moreover, it's worth to mention that:
 - Every time you open a pull request, or push new changes to a branch, Netlify automatically builds a preview with a unique URL, which makes testing even easier.
 - Free tier is more than enough to host static files in my case, saving me <!-- prettier-ignore -->~$84 / per year.
 
-<br />
-
 ---
-
-<br />
 
 ### Next steps
 

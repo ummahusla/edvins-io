@@ -1,8 +1,10 @@
 ---
 title: Error Boundaries in React
 date: 2019-05-23
+description: With the release of React 16 where Error Boundaries were introduced, it became incredibly easier to create safer components which therefore catch JavaScript errors and/or display a fallback UI instead.
 tags:
   - React
+banner: ./intro.png
 ---
 
 In this article, you will learn more about **Error Boundaries in React**. Sometimes we all were in situations when an error was breaking the whole application require you to start the debugging process to figure out what went wrong. With the release of React 16 where Error Boundaries were introduced, it became incredibly easier to create safer components which therefore catch JavaScript errors and/or display a fallback UI instead. Worth to mention that Error Boundaries catches errors anywhere in its child component tree.
@@ -14,11 +16,7 @@ In this article, you will learn more about **Error Boundaries in React**. Someti
 > - Server side rendering
 > - Errors thrown in the error boundary itself (rather than its children)
 
-<br/>
-
 ---
-
-<br/>
 
 ### Create an Error Boundary component
 
@@ -30,7 +28,7 @@ class ErrorBoundary extends React.Component {
     super(props);
 
     this.state = {
-      hasError: false
+      hasError: false,
     };
   }
 
@@ -63,11 +61,7 @@ Okay, so what happens here?
 - The last step is to add a conditional rendering of the fallback UI component in `render()` by evaluating state attribute `hasError`.
   - In cases when it's `true` then it means we have an error here so we display a text message `Oops! Something went wrong.`, otherwise – we render the component.
 
-<br/>
-
 ---
-
-<br/>
 
 ### How to use an Error Boundary component
 
@@ -79,11 +73,7 @@ Usage is pretty much self-explanatory; all you need to do is to wrap the compone
 </ErrorBoundary>
 ```
 
-<br/>
-
 ---
-
-<br/>
 
 ### Error Boundary and Higher-Order Component
 

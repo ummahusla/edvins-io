@@ -31,7 +31,7 @@ const ProjectListing = ({ projects, className }) => (
             fontSize: [1, 1, 2],
           }}
         >
-          <p>{project.description}</p>
+          <span>{project.description}</span>
         </p>
       </Box>
     ))}

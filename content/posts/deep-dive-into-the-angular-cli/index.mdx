@@ -1,19 +1,17 @@
 ---
 title: Deep dive into the Angular CLI
 date: 2018-04-17
+description: The Angular CLI is a command line interface for Angular. Its primary purpose is to assist developers with building Angular applications. Angular CLI was introduced together with the second version of Angular.
 tags:
   - Angular
+banner: ./intro.png
 ---
 
 The [**Angular CLI**](https://cli.angular.io/) is a command line interface for Angular. Its primary purpose is to assist developers with building Angular applications. Angular CLI was introduced together with the second version of Angular. Angular CLI allows you to generate and serving an Angular project as well as generate the Angular files (e.g. components, services, directives, pipes, interfaces, etc).
 
 ![Angular CLI](./angular-cli.png)
 
-<br/>
-
 ---
-
-<br/>
 
 - [**Introduction**](https://edvins.io/deep-dive-into-the-angular-cli/#introduction)
 - [`ng new`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-new)
@@ -24,11 +22,7 @@ The [**Angular CLI**](https://cli.angular.io/) is a command line interface for A
 - [`ng build`](https://edvins.io/deep-dive-into-the-angular-cli/#ng-build)
 - **[Tips](https://edvins.io/deep-dive-into-the-angular-cli/#tips)**
 
-<br/>
-
 ---
-
-<br/>
 
 ## Introduction
 
@@ -42,11 +36,7 @@ There are certain pre-requirements which need to be installed first. Angular CLI
 >     Node: 8.9.4
 >     OS: darwin x64
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng new`
 
@@ -169,11 +159,7 @@ src
 - Both `tsconfig.*.json` files are for TypeScript configuration. `tsconfig.app.json` is used for compiling the code, while `tsconfig.spec.json` for compiling the tests.
 - The `typings.d.ts` file provides the required typings for TypeScript.
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng serve`
 
@@ -195,11 +181,7 @@ chunk {vendor} vendor.bundle.js (vendor) 7.44 MB [initial] [rendered]
 webpack: Compiled successfully.
 ```
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng generate`
 
@@ -241,11 +223,7 @@ In the second example, we are located in the `src/app`:
 
 1.  When we run `ng g component recipes/recipe`, new component is going to be generated in `src/app/recipes/recipe`.
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng test`
 
@@ -297,11 +275,7 @@ Executed 1 of 1 spec SUCCESS in 0.685 sec.
 
 In this case, the browser pops up, executes the application and dismiss once again after a short moment.
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng lint`
 
@@ -360,11 +334,7 @@ To check if your project has any linting problems, just run `ng lint` in the ter
 >
 >     Lint errors found in the listed files.
 
-<br/>
-
 ---
-
-<br/>
 
 ## `ng build`
 
@@ -425,11 +395,7 @@ You might notice, several things:
 
 > Hashes in the file names are used as a part of the cache-busting technique. Every time we do the changes to our application, we need to redeploy the application to the server. In order to prevent our files to be cached on the server we add hashes to the file names. On every run of `ng build --prod` command, compiler randomly changes the hashes, so the server would treat the changed files as new ones.
 
-<br/>
-
 ---
-
-<br/>
 
 ## Tips
 
