@@ -7,3 +7,10 @@
 hr {
   margin: 32px 0 0 0 !important;
 }
+
+/* Post page */
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
