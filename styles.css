@@ -14,3 +14,16 @@ hr {
   justify-content: space-between;
   align-items: center;
 }
+
+.post-meta-share-icons {
+  display: flex;
+  align-items: center;
+}
+
+.post-meta-share-icons svg {
+  margin-right: 10px;
+}
+
+.post-meta-share-icons svg:last-child {
+  margin-right: 0;
+}
