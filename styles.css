@@ -15,15 +15,49 @@ hr {
   align-items: center;
 }
 
-.post-meta-share-icons {
+.post-meta-share {
   display: flex;
   align-items: center;
 }
 
-.post-meta-share-icons svg {
+.post-meta-share-icons {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.post-meta-share > div:first-child {
+  margin-left: 0;
+}
+
+.post-meta-share > div {
+  margin-left: 5px;
   margin-right: 10px;
 }
 
-.post-meta-share-icons svg:last-child {
+.post-meta-separator {
+  margin-right: 10px;
+}
+
+.post-meta-share-icons button {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.post-meta-share-icons svg {
+  color: var(--theme-ui-colors-secondary, #5f6c80);
+}
+
+.post-meta-share-icons button:hover {
+  transform: scale(1.15);
+  transition: transform ease 1.25;
+}
+
+.post-meta-share-icons button:focus {
+  outline: 0;
+}
+
+.post-meta-share-icons button:last-child {
   margin-right: 0;
 }

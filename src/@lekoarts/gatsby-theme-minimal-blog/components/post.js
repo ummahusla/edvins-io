@@ -5,28 +5,26 @@ import { MDXRenderer } from "gatsby-plugin-mdx";
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
 import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-tags';
-import { Facebook, Twitter, Linkedin } from 'react-feather';
+import { Facebook, Twitter, Linkedin, Pocket } from 'react-feather';
 import {
   FacebookShareButton,
   LinkedinShareButton,
-  TwitterShareButton
+  TwitterShareButton,
+  PocketShareButton
 } from "react-share";
-import useSiteMetadata from '@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-minimal-blog-config';
 
 const px = [`32px`, `16px`, `8px`, `4px`];
 const shadow = px.map((v) => `rgba(0, 0, 0, 0.15) 0px ${v} ${v} 0px`);
 
 const Post = ({ data: { post } }) => {
-  // const { siteURL } = useSiteMetadata();
-
-  // console.log(`${siteURL}${location.pathname}`);
-  // console.log(location);
+  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const description = post.description ? post.description : post.excerpt;
 
   return (
     <Layout>
       <SEO
         title={post.title}
-        description={post.description ? post.description : post.excerpt}
+        description={description}
         image={post.banner ? post.banner.childImageSharp.resize.src : undefined}
         pathname={post.slug}
         canonicalUrl={post.canonicalUrl}
@@ -37,36 +35,47 @@ const Post = ({ data: { post } }) => {
       </Heading>
 
       <div className="post-meta" sx={{ color: `secondary`, mt: 3, a: { color: `secondary` }, fontSize: [1, 1, 2] }}>
-        <div>
-          <time>{post.date}</time>
-
-          {post.tags && (
-            <React.Fragment>
-              {` — `}
-              <ItemTags tags={post.tags} />
-            </React.Fragment>
+        <div className="post-meta-share">
+          {post.date && (
+            <div>
+              <time>{post.date}</time>
+            </div>
           )}
 
-          {post.timeToRead && ` — `}
+          {post.tags && (
+            <div>
+              <span className="post-meta-separator">{` — `}</span>
 
-          {post.timeToRead && <span>{post.timeToRead} min read</span>}
+              <ItemTags tags={post.tags} />
+            </div>
+          )}
+
+          {post.timeToRead &&
+            <div>
+              <span className="post-meta-separator">{` — `}</span>
+
+              <span>{post.timeToRead} min read</span>
+            </div>
+          }
         </div>
+      </div>
 
-        <div className="post-meta-share-icons">
-            Share:
+      <div className="post-meta-share-icons">
+        <FacebookShareButton url={url} quote={description}>
+          <Facebook strokeWidth={1.25} />
+        </FacebookShareButton>
 
-            <Facebook strokeWidth={1.25} />
+        <LinkedinShareButton url={url} title={post.title} summary={description}>
+          <Linkedin strokeWidth={1.25} />
+        </LinkedinShareButton>
 
-            <Twitter strokeWidth={1.25} />
+        <TwitterShareButton url={url} title={description}>
+          <Twitter strokeWidth={1.25} />
+        </TwitterShareButton>
 
-            <Linkedin strokeWidth={1.25} />
-
-            <FacebookShareButton quote={post.description ? post.description : post.excerpt} />
-
-            <LinkedinShareButton />
-
-            <TwitterShareButton />
-        </div>
+        <PocketShareButton url={url} title={description}>
+          <Pocket strokeWidth={1.25} />
+        </PocketShareButton>
       </div>
 
       <section
