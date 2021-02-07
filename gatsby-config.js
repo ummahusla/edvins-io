@@ -4,11 +4,11 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitle: `Edvins\'s Blog`,
-    siteTitleAlt: `Edvins\'s Blog`,
-    siteHeadline: `Edvins\'s Blog - Blog about software development and side hustle.`,
+    siteTitle: `Edvins Antonovs`,
+    siteTitleAlt: `Edvins Antonovs`,
+    siteHeadline: `Edvins Antonovs - Blog about software development and side hustle.`,
     siteUrl: `https://edvins.io/`,
-    siteDescription: `Personal blog about software development and side hustle.`,
+    siteDescription: `My digital garden`,
     siteLanguage: `en`,
     siteImage: `/banner.png`,
     author: `@edvinsantonovs`,

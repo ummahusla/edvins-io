@@ -4,6 +4,7 @@ description: There are certain ways how you can loop JSX in React. The most popu
 date: 2018-12-05
 tags:
   - React
+  - JSX
 banner: ./intro.png
 ---
 
@@ -70,9 +71,7 @@ const List = ({ children }) => <ul>{children}</ul>;
 
 const ListItem = ({ language }) => <li>{language}</li>;
 
-const listItems = languages.map((language, index) => (
-  <ListItem key={index} language={language} />
-));
+const listItems = languages.map((language, index) => <ListItem key={index} language={language} />);
 
 const App = () => <List>{listItems}</List>;
 
