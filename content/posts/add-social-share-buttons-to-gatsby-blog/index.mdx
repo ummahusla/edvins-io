@@ -8,9 +8,9 @@ tags:
 banner: ./intro.png
 ---
 
-In this short and sweet blog post, you will learn how to implement social share buttons for your Gatsby blog. To simplify the implementation process we will use `react-share` and `react-feather` packages.
+In this short and sweet blog post, you will learn how to implement social share buttons for your Gatsby blog. To simplify the implementation we will use react-share and react-feather packages.
 
-> You might noticed, that recently I've implemented social share buttons for my blog. That's why I got inspired to write this blog post and share my approach.
+> You might already notice, that recently I've implemented social share buttons for my blog. That's why I got inspired to write this blog post and share my approach.
 
 ---
 
@@ -18,20 +18,20 @@ In this short and sweet blog post, you will learn how to implement social share 
 
 ### Packages
 
-I will take to the assumption that already have a Gatsby blog running our, so all you need to do is to add next packages. If not - check out [Gatsby starter themes](https://www.gatsbyjs.com/starters).
+I will take to the assumption that you already have a Gatsby blog up and running. So all you need to do is to add the next packages. If not - check out [Gatsby starter themes](https://www.gatsbyjs.com/starters).
 
 ```
 yarn add react-share react-feather
 ```
 
-Short description about packages we are going to use:
+Short description of the packages we are going to use:
 
-- `react-share` is a package which contains social media share buttons and share counts for React.
-- `react-feather` is a collection of simply beautiful open source icons based on [Feather](https://feathericons.com/) icon set for React.
+- react-share is a package which contains social media share buttons and shares counts for React.
+- react-feather is a collection of simply beautiful open source icons based on [Feather](https://feathericons.com/) icon set for React.
 
 ### Blog post template
 
-My blog post template implementation may vary from yours. As an example, I will use [post template](https://github.com/LekoArts/gatsby-themes/blob/master/themes/gatsby-theme-minimal-blog/src/components/post.tsx) from the started them which I used to build this blog.
+My blog post template implementation may vary from yours. I will use the [post template](https://github.com/LekoArts/gatsby-themes/blob/master/themes/gatsby-theme-minimal-blog/src/components/post.tsx) from the started theme which I used to build this blog.
 
 This is how my `post.js` looks like before I've started the social share buttons implementation.
 
@@ -111,7 +111,7 @@ const Post = ({ data: { post } }) => {
 
 First of all, we will start with implementing `<ShareButtons />` component, which we will use in the blog post template. We are doing this, to keep the code reusability to the highest possible level, due to the fact, that those share buttons might be re-used somewhere else.
 
-For my case, I've went with Facebook, Twitter, LinkedIn and Pocket buttons. But you can add any of the 19 buttons which `react-share` package offers.
+For my case, I've gone with Facebook, Twitter, LinkedIn and Pocket buttons. But you can add any of the 19 buttons which `react-share` package offers.
 
 ```jsx:title=share-buttons.js
 // ...
@@ -147,7 +147,7 @@ const ShareButtons = ({ url, title, description }) => (
 // ...
 ```
 
-Icon component on line `2` can be replaced with text or icon and text instead.
+`Icon` component on line `2` can be replaced with text or icon and text instead.
 
 ```jsx {2}
 <FacebookShareButton url={url} quote={description}>
@@ -159,7 +159,7 @@ Icon component on line `2` can be replaced with text or icon and text instead.
 
 Now, let's update the `post.js` and see our buttons in action!
 
-> Note: Not all social share buttons will work localhost correctly. As an example, Facebook will throw an error while Twitter and LinkedIn should work fine.
+> Not all social share buttons will work localhost correctly. As an example, Facebook will throw an error while Twitter and LinkedIn should work fine.
 
 ```jsx:title=post.js {7,53}
 // ...
@@ -232,14 +232,14 @@ const Post = ({ data: { post } }) => {
 // ...
 ```
 
-To make it work, we done only 2 changes:
+To make it work, we do only two changes:
 
-1. Get the url of the post (line `7`).
-2. Render `<ShareComponent />` component and pass `url`, `title` and `description` (line `53`).
+1. Get the URL of the post (line `7`)
+2. Render `<ShareComponent />` component and pass `url`, `title` and `description` (line `53`)
 
 ### Adding styles
 
-I've tried to keep meta section and social share buttons to look as minimalistic as possible. Here is my styles for that section, but you can style it anyway you like it.
+I've tried to keep the meta section and social share buttons to look as minimalistic as possible. Here are my styles for that section, but you can style it any way you like it.
 
 ```css
 .post-meta {
@@ -298,7 +298,7 @@ I've tried to keep meta section and social share buttons to look as minimalistic
 
 ### See it in action
 
-Just open any post in [my blog](https://edvins.io/blog) and you should see the social share buttons in the post header.
+Just open any post in [my blog](https://edvins.io/blog) to see the social share buttons in the post header.
 
 ## Appendix
 
