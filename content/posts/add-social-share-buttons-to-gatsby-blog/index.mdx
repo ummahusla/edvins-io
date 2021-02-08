@@ -62,29 +62,7 @@ const Post = ({ data: { post } }) => {
         className="post-meta"
         sx={{ color: `secondary`, mt: 3, a: { color: `secondary` }, fontSize: [1, 1, 2] }}
       >
-        <div className="post-meta-share">
-          {post.date && (
-            <div>
-              <time>{post.date}</time>
-            </div>
-          )}
-
-          {post.tags && (
-            <div>
-              <span className="post-meta-separator">{` — `}</span>
-
-              <ItemTags tags={post.tags} />
-            </div>
-          )}
-
-          {post.timeToRead && (
-            <div>
-              <span className="post-meta-separator">{` — `}</span>
-
-              <span>{post.timeToRead} min read</span>
-            </div>
-          )}
-        </div>
+        <div className="post-meta-share">{/* ... */}</div>
       </div>
 
       <section
@@ -161,7 +139,7 @@ Now, let's update the `post.js` and see our buttons in action!
 
 > Not all social share buttons will work localhost correctly. As an example, Facebook will throw an error while Twitter and LinkedIn should work fine.
 
-```jsx:title=post.js {7,53}
+```jsx:title=post.js {7,31}
 // ...
 
 const px = [`32px`, `16px`, `8px`, `4px`];
@@ -189,29 +167,7 @@ const Post = ({ data: { post } }) => {
         className="post-meta"
         sx={{ color: `secondary`, mt: 3, a: { color: `secondary` }, fontSize: [1, 1, 2] }}
       >
-        <div className="post-meta-share">
-          {post.date && (
-            <div>
-              <time>{post.date}</time>
-            </div>
-          )}
-
-          {post.tags && (
-            <div>
-              <span className="post-meta-separator">{` — `}</span>
-
-              <ItemTags tags={post.tags} />
-            </div>
-          )}
-
-          {post.timeToRead && (
-            <div>
-              <span className="post-meta-separator">{` — `}</span>
-
-              <span>{post.timeToRead} min read</span>
-            </div>
-          )}
-        </div>
+        <div className="post-meta-share">{/* ... */}</div>
       </div>
 
       <ShareButtons url={url} title={post.title} description={description} />
@@ -242,34 +198,10 @@ To make it work, we do only two changes:
 I've tried to keep the meta section and social share buttons to look as minimalistic as possible. Here are my styles for that section, but you can style it any way you like it.
 
 ```css
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.post-meta-share {
-  display: flex;
-  align-items: center;
-}
-
-.post-meta-share > div {
-  margin-left: 5px;
-  margin-right: 10px;
-}
-
-.post-meta-share > div:first-child {
-  margin-left: 0;
-}
-
 .post-meta-share-icons {
   display: flex;
   align-items: center;
   margin-top: 16px;
-}
-
-.post-meta-separator {
-  margin-right: 10px;
 }
 
 .post-meta-share-icons button {
@@ -298,7 +230,9 @@ I've tried to keep the meta section and social share buttons to look as minimali
 
 ### See it in action
 
-Just open any post in [my blog](https://edvins.io/blog) to see the social share buttons in the post header.
+![Social share buttons in Gatsby blog](./example.png)
+
+Alternatively, you can open any post in [my blog](https://edvins.io/blog) to see the social share buttons in the post header.
 
 ## Appendix
 
