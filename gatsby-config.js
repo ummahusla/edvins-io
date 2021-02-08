@@ -6,7 +6,7 @@ module.exports = {
   siteMetadata: {
     siteTitle: `Edvins Antonovs`,
     siteTitleAlt: `Edvins Antonovs`,
-    siteHeadline: `Edvins Antonovs - Blog about software development and side hustle.`,
+    siteHeadline: `Edvins Antonovs - My digital garden`,
     siteUrl: `https://edvins.io/`,
     siteDescription: `My digital garden`,
     siteLanguage: `en`,
@@ -72,8 +72,8 @@ module.exports = {
             type: `image/png`,
           },
           {
-            src: `/android-chrome-512x512.png`,
-            sizes: `512x512`,
+            src: `/android-chrome-256x256.png`,
+            sizes: `256x256`,
             type: `image/png`,
           },
         ],
