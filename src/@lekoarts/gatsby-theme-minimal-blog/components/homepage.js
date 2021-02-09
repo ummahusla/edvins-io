@@ -22,7 +22,7 @@ const Homepage = ({ posts }) => {
       link: 'https://cultivate.so/',
     },
     {
-      name: "Edvins's Blog",
+      name: "Edvins's Digital Garden",
       status: 'Launched',
       description:
         'Personal blog about software development and entrepreneurship.',
