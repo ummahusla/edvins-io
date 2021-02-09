@@ -4,11 +4,11 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitle: `Edvins\'s Blog`,
-    siteTitleAlt: `Edvins\'s Blog`,
-    siteHeadline: `Edvins\'s Blog - Blog about software development and side hustle.`,
+    siteTitle: `Edvins Antonovs`,
+    siteTitleAlt: `Edvins Antonovs`,
+    siteHeadline: `Edvins Antonovs - My digital garden`,
     siteUrl: `https://edvins.io/`,
-    siteDescription: `Personal blog about software development and side hustle.`,
+    siteDescription: `My digital garden`,
     siteLanguage: `en`,
     siteImage: `/banner.png`,
     author: `@edvinsantonovs`,
@@ -72,8 +72,8 @@ module.exports = {
             type: `image/png`,
           },
           {
-            src: `/android-chrome-512x512.png`,
-            sizes: `512x512`,
+            src: `/android-chrome-256x256.png`,
+            sizes: `256x256`,
             type: `image/png`,
           },
         ],

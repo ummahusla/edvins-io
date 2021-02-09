@@ -1,17 +1,10 @@
 /** @jsx jsx */
-import React from "react";
 import { jsx, Heading } from "theme-ui";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
 import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-tags';
-import { Facebook, Twitter, Linkedin, Pocket } from 'react-feather';
-import {
-  FacebookShareButton,
-  LinkedinShareButton,
-  TwitterShareButton,
-  PocketShareButton
-} from "react-share";
+import ShareButtons from './share-buttons';
 
 const px = [`32px`, `16px`, `8px`, `4px`];
 const shadow = px.map((v) => `rgba(0, 0, 0, 0.15) 0px ${v} ${v} 0px`);
@@ -60,23 +53,7 @@ const Post = ({ data: { post } }) => {
         </div>
       </div>
 
-      <div className="post-meta-share-icons">
-        <FacebookShareButton url={url} quote={description}>
-          <Facebook strokeWidth={1.25} />
-        </FacebookShareButton>
-
-        <LinkedinShareButton url={url} title={post.title} summary={description}>
-          <Linkedin strokeWidth={1.25} />
-        </LinkedinShareButton>
-
-        <TwitterShareButton url={url} title={description}>
-          <Twitter strokeWidth={1.25} />
-        </TwitterShareButton>
-
-        <PocketShareButton url={url} title={description}>
-          <Pocket strokeWidth={1.25} />
-        </PocketShareButton>
-      </div>
+      <ShareButtons url={url} title={post.title} description={description} />
 
       <section
         sx={{

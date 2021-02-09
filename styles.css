@@ -1,4 +1,4 @@
-/* Theme overwrites */
+/* General theme overwrites */
 .gatsby-resp-image-wrapper {
   box-shadow: none !important;
   border: 1px solid #ccc;
@@ -8,7 +8,7 @@ hr {
   margin: 32px 0 0 0 !important;
 }
 
-/* Post page */
+/* Post meta */
 .post-meta {
   display: flex;
   justify-content: space-between;
@@ -20,19 +20,19 @@ hr {
   align-items: center;
 }
 
-.post-meta-share-icons {
-  display: flex;
-  align-items: center;
-  margin-top: 16px;
+.post-meta-share > div {
+  margin-left: 5px;
+  margin-right: 10px;
 }
 
 .post-meta-share > div:first-child {
   margin-left: 0;
 }
 
-.post-meta-share > div {
-  margin-left: 5px;
-  margin-right: 10px;
+.post-meta-share-icons {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
 }
 
 .post-meta-separator {
