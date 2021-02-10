@@ -8,7 +8,7 @@ Proudly built with React, Gatsby and GraphQL and deployed to Netlify.
 
 ## Blog post template
 
-[Blog post template can be found](./BLOG_POST_TEMPLATE.md).
+- [Blog post template](./BLOG_POST_TEMPLATE.md)
 
 ## Notes
 
