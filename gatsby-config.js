@@ -32,7 +32,7 @@ module.exports = {
             slug: `/projects`,
           },
           {
-            title: `Self-Education`,
+            title: `Self-education`,
             slug: `/self-education`,
           },
         ],
