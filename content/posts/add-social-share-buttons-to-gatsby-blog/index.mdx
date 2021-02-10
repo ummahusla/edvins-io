@@ -1,6 +1,6 @@
 ---
 title: Add social share buttons to Gatsby blog
-description: In this short and sweet blog post, you will learn how to implement social share buttons for your Gatsby blog
+description: In this short and sweet blog post, I will share how to implement social share buttons for your Gatsby blog
 date: 2021-02-09
 tags:
   - React
@@ -8,9 +8,9 @@ tags:
 banner: ./intro.png
 ---
 
-In this short and sweet blog post, you will learn how to implement social share buttons for your Gatsby blog. To simplify the implementation we will use `react-share` and `react-feather` packages.
+In this short and sweet blog post, I will share how to implement social share buttons for your Gatsby blog. To simplify the implementation we will use `react-share` and `react-feather` packages.
 
-> You might already notice, that recently I've implemented social share buttons for my blog. That's why I got inspired to write this blog post and share my approach.
+> I've implemented social share buttons for my blog. That's why I got inspired to write this blog post and share my approach.
 
 ---
 
@@ -18,7 +18,7 @@ In this short and sweet blog post, you will learn how to implement social share 
 
 ### Packages
 
-I will take to the assumption that you already have a Gatsby blog up and running. So all you need to do is to add the next packages. If not - check out [Gatsby starter themes](https://www.gatsbyjs.com/starters).
+I will make to the assumption that you already have a Gatsby blog up and running. So all you need to do is to add the next packages. If not - check out [Gatsby starter themes](https://www.gatsbyjs.com/starters).
 
 ```
 yarn add react-share react-feather
@@ -87,9 +87,9 @@ const Post = ({ data: { post } }) => {
 
 ### Implementing share buttons component
 
-First of all, we will start with implementing `<ShareButtons />` component, which we will use in the blog post template. We are doing this, to keep the code reusability to the highest possible level, due to the fact, that those share buttons might be re-used somewhere else.
+First of all, we will start with implementing `<ShareButtons />` component, which we will use in the blog post template. We are doing this, to keep the code reusability to the highest possible level.
 
-For my case, I've gone with Facebook, Twitter, LinkedIn and Pocket buttons. But you can add any of the 19 buttons which `react-share` package offers.
+In my case I went with, I've gone with Facebook, Twitter, LinkedIn and Pocket buttons. But you can add any of the 19 buttons which `react-share` package offers.
 
 ```jsx:title=share-buttons.js
 // ...

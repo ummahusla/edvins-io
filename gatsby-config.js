@@ -31,6 +31,10 @@ module.exports = {
             title: `Projects`,
             slug: `/projects`,
           },
+          {
+            title: `Self-education`,
+            slug: `/self-education`,
+          },
         ],
         externalLinks: [
           {
