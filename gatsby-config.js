@@ -105,12 +105,6 @@ module.exports = {
       },
     },
     `gatsby-plugin-netlify`,
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [`gatsby-remark-responsive-iframe`],
-      },
-    }
     // `gatsby-plugin-webpack-bundle-analyser-v2`,
   ],
 };
