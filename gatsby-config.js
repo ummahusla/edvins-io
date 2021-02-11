@@ -86,10 +86,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-offline`,
       options: {
-        precachePages: [`/blog/*`],
         runtimeCaching: [
-          // previous definitions from the default config
-          (...),
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com/,
             handler: 'cacheFirst',
