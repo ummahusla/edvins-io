@@ -1,0 +1,67 @@
+---
+title: How to yarn audit fix
+description: Surprisingly, there is no npm audit fix alternative in yarn, yet there are several workarounds which you can do.
+date: 2021-02-11
+tags:
+  - Yarn
+  - Npm
+banner: ./intro.png
+---
+
+You might previously use commands like `npm audit` or `yarn audit` to perform a vulnerability audit against the installed packages. In case any vulnerable dependencies found to update it you could use built-in `npm audit fix` command. It would automatically install any compatible updates to vulnerable dependencies. Surprisingly, there is no `yarn` alternative to fix it in the way `npm` does, yet there are several workarounds which you can do.
+
+---
+
+## Use yarn-audit-fix package
+
+The very straight forward option is to use `yarn-audit-fix` [package](https://www.npmjs.com/package/yarn-audit-fix).
+
+1. Installation
+
+```
+yarn add yarn-audit-fix -D
+```
+
+Alternatively, you can use `npx`.
+
+```
+npx yarn-audit-fix
+```
+
+2. Usage
+
+```
+yarn-audit-fix
+```
+
+---
+
+## Use npm audit fix as a temporary option
+
+This is my preferable approach to fix vulnerable dependencies.
+
+1. Generate the `package-lock.json` file without installing node modules
+
+```
+npm install --package-lock-only
+```
+
+2. Fix the packages and update the `package-lock.json` file
+
+```
+npm audit fix
+```
+
+3. Remove the `yarn.lock` file and import the `package-lock.json` file into `yarn.lock`
+
+```
+rm yarn.lock
+
+yarn import
+```
+
+4. Remove the `package-lock.json` file
+
+```
+rm package-lock.json
+```
