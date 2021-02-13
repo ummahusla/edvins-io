@@ -83,34 +83,8 @@ module.exports = {
         ],
       },
     },
-    {
-      resolve: `gatsby-plugin-offline`,
-      options: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com/,
-            handler: 'cacheFirst',
-            options: {
-              cacheableResponse: {
-                statuses: [0, 200]
-              },
-              cacheName: 'google-fonts-webfonts',
-              expiration: {
-                maxAgeSeconds: 60 * 60,
-                maxEntries: 30
-              }
-            }
-          },
-        ]
-      },
-    },
+    `gatsby-plugin-offline`,
     `gatsby-plugin-netlify`,
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [`gatsby-remark-responsive-iframe`],
-      },
-    }
     // `gatsby-plugin-webpack-bundle-analyser-v2`,
   ],
 };
