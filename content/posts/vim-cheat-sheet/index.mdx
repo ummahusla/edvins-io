@@ -1,0 +1,115 @@
+---
+title: Vim cheat sheet
+description: The only vim cheat sheet you need
+date: 2021-02-14
+tags:
+  - Vim
+banner: ./intro.png
+---
+
+Nowadays, not many people still use [Vim](https://www.vim.org/), yet there are people like me who are still like to use it form time to time. This cheat sheet started as a [GitHub Gist](https://gist.github.com/ummahusla/98b381e0355e43973085) approximately 5 years ago, and it's still relevant and helpful for me today.
+
+---
+
+## Modes
+
+Vim has two modes insertion mode and command mode. The editor begins in command mode, where the cursor movement and text deletion and pasting occur. Insertion mode begins upon entering an insertion or change command. `[ESC]` returns the editor to command mode (where you can quit, for example by typing `:q!`). Most commands execute as soon as you type them except for "colon" commands which execute when you press the return key.
+
+---
+
+## Quitting
+
+- `:x` Exit, saving changes
+- `:q` Exit as long as there have been no changes
+- `ZZ` Exit and save changes if any have been made
+- `:q!` Exit and ignore any changes
+
+---
+
+## Inserting text
+
+- `i` Insert before cursor
+- `I` Insert before line
+- `a` Append after cursor
+- `A` Append after line
+- `o` Open a new line after current line
+- `O` Open a new line before current line
+- `r` Replace one character
+- `R` Replace many characters
+
+---
+
+## Motion
+
+- `h` Move left
+- `j` Move down
+- `k` Move up
+- `l` Move right
+- `w` Move to next word
+- `W` Move to next blank delimited word
+- `b` Move to the beginning of the word
+- `B` Move to the beginning of blank delimted word
+- `e` Move to the end of the word
+- `E` Move to the end of Blank delimited word
+- `(` Move a sentence back
+- `)` Move a sentence forward
+- `{` Move a paragraph back
+- `}` Move a paragraph forward
+- `0` Move to the begining of the line
+- `H` Move to top of screen
+- `M` Move to middle of screen
+- `L` Move to botton of screen
+- `%` Move to associated `( )`, `{ }`, `[ ]`
+
+---
+
+## Search for strings
+
+- `/str` Search forward for string
+- `?str` Search back for string
+- `n` Search for next instance of string
+- `N` Search for previous instance of string
+
+---
+
+## Deleting text
+
+Almost all deletion commands are performed by typing `d` followed by a motion. For example, `dw` deletes a word. A few other deletes are:
+
+- `x` Delete character to the right of cursor
+- `X` Delete character to the left of cursor
+- `D` Delete to the end of the line
+- `dd` Delete current line
+- `:d` Delete current line
+
+---
+
+## Replace
+
+The search and replace function is accomplished with the `:s` command. It is commonly used in combination with ranges or the `:g` command (below).
+
+- `:s/pattern/string/flags` Replace pattern with string according to flags. (Example: `:%s/foo/bar/`. Find each occurrence of `foo` (in all lines), and replace it with `bar`.)
+- `g` Flag - Replace all occurrences of pattern
+- `c` Flag - Confirm replaces.
+- `&` Repeat last `:s` command
+
+---
+
+## Files
+
+- `:w file` Write to file
+- `:r file` Read file in after line
+- `:n` Go to next file
+- `:p` Go to previos file
+- `:e file` Edit file
+- `!!program` Replace line with output from program
+
+---
+
+## Other
+
+- `~` Toggle upp and lower case
+- `J` Join lines
+- `.` Repeat last text-changing command
+- `u` Undo last change
+- `U` Undo all changes to line
