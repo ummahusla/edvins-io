@@ -14,6 +14,7 @@ const Tag = ({ posts, pageContext }) => {
   return (
     <Layout>
       <SEO title={`Tag: ${pageContext.name}`} />
+
       <Flex
         sx={{
           alignItems: `center`,
@@ -21,7 +22,7 @@ const Tag = ({ posts, pageContext }) => {
           flexFlow: `wrap`,
         }}
       >
-        <Styled.h2>{`Blog: ${pageContext.name}`}</Styled.h2>
+        <Styled.H2>{`Blog: ${pageContext.name}`}</Styled.H2>
       </Flex>
 
       <TagsList list={tags} />

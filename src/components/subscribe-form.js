@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import React from 'react';
 import { jsx } from 'theme-ui';
 import Title from '@lekoarts/gatsby-theme-minimal-blog/src/components/title';
 

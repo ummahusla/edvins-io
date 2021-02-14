@@ -14,6 +14,7 @@ const Blog = ({ posts }) => {
   return (
     <Layout>
       <SEO title="Blog" />
+
       <Flex
         sx={{
           alignItems: `center`,
@@ -21,7 +22,7 @@ const Blog = ({ posts }) => {
           flexFlow: `wrap`,
         }}
       >
-        <Styled.h2>Blog</Styled.h2>
+        <Styled.H2>Blog</Styled.H2>
       </Flex>
 
       <TagsList list={tags} />
