@@ -79,7 +79,7 @@ hr {
   width: 200px;
   height: 40px;
   padding: 0 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--theme-ui-colors-divide, #cbd5e0);
   border-radius: 5px;
 }
 
@@ -91,11 +91,11 @@ hr {
   color: var(--theme-ui-colors-heading, #fff);
   padding: 8px 16px;
   background-color: var(--theme-ui-colors-primary, #6b46c1);
-  transition: all 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
 }
 
 .revue-form-actions .revue-form-submit:hover {
-  transform: scale(1.05);
+  background-color: #55359f;
 }
 
 /* Profile page */
