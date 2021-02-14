@@ -61,3 +61,38 @@ hr {
 .post-meta-share-icons button:last-child {
   margin-right: 0;
 }
+
+/* Subscribe Form */
+.revue-embed {
+}
+
+.revue-embed-form {
+  display: flex;
+  align-items: center;
+}
+
+.revue-form-group {
+  display: flex;
+  width: 200px;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.revue-form-group label {
+}
+
+.revue-form-group .revue-form-field {
+  width: 200px;
+  height: 40px;
+  padding: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.revue-form-actions #member_submit {
+  cursor: pointer;
+  height: 40px;
+  color: var(--theme-ui-colors-heading, #fff);
+  padding: 8px 16px;
+  background-color: var(--theme-ui-colors-primary, #6b46c1);
+}

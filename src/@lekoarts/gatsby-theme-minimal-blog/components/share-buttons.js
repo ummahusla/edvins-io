@@ -8,25 +8,29 @@ import {
   PocketShareButton
 } from "react-share";
 
-const ShareButtons = ({ url, title, description }) => (
-  <div className="post-meta-share-icons">
-    <FacebookShareButton url={url} quote={description}>
-      <Facebook strokeWidth={1.25} />
-    </FacebookShareButton>
+const ShareButtons = ({ url, title, description }) => {
+  const twitterHandle = 'edvinsantonovs';
 
-    <LinkedinShareButton url={url} title={title} summary={description}>
-      <Linkedin strokeWidth={1.25} />
-    </LinkedinShareButton>
+  return (
+    <div className="post-meta-share-icons">
+      <FacebookShareButton url={url}>
+        <Facebook strokeWidth={1.25} />
+      </FacebookShareButton>
 
-    <TwitterShareButton url={url} title={description}>
-      <Twitter strokeWidth={1.25} />
-    </TwitterShareButton>
+      <LinkedinShareButton url={url}>
+        <Linkedin strokeWidth={1.25} />
+      </LinkedinShareButton>
 
-    <PocketShareButton url={url} title={description}>
-      <Pocket strokeWidth={1.25} />
-    </PocketShareButton>
-  </div>
-);
+      <TwitterShareButton url={url} via={twitterHandle}>
+        <Twitter strokeWidth={1.25} />
+      </TwitterShareButton>
+
+      <PocketShareButton url={url}>
+        <Pocket strokeWidth={1.25} />
+      </PocketShareButton>
+    </div>
+  );
+}
 
 export default ShareButtons;
 
