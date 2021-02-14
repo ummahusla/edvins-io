@@ -4,7 +4,8 @@ import { MDXRenderer } from "gatsby-plugin-mdx";
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
 import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-tags';
-import ShareButtons from './share-buttons';
+
+import ShareButtons from '../../../components/share-buttons';
 
 const px = [`32px`, `16px`, `8px`, `4px`];
 const shadow = px.map((v) => `rgba(0, 0, 0, 0.15) 0px ${v} ${v} 0px`);

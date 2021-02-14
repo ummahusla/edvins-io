@@ -93,6 +93,7 @@ const Homepage = ({ posts }) => {
           Read all posts
         </Link>
       </Title>
+
       <Listing posts={posts} showTags={true} />
 
       <Title text="Latest Projects">
@@ -100,6 +101,7 @@ const Homepage = ({ posts }) => {
           View all projects
         </Link>
       </Title>
+
       <ProjectListing projects={projects.slice(0, 3)} />
     </Layout>
   );

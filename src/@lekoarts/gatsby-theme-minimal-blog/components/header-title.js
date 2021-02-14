@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Link } from 'gatsby';
 import { jsx } from 'theme-ui';
+
 import replaceSlashes from '@lekoarts/gatsby-theme-minimal-blog/src/utils/replaceSlashes';
 import useSiteMetadata from '@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-site-metadata';
 import useMinimalBlogConfig from '@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-minimal-blog-config';
