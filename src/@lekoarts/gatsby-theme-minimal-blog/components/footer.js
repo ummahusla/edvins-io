@@ -2,7 +2,7 @@
 import React from 'react';
 import { jsx } from 'theme-ui';
 
-import SubscribeForm from './subscribe-form';
+import SubscribeForm from '../../../components/subscribe-form';
 
 const Footer = () => (
   <>
