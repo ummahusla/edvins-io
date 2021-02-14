@@ -43,6 +43,7 @@ hr {
   display: flex;
   align-items: center;
   margin-right: 10px;
+  transition: all 0.2s ease-out;
 }
 
 .post-meta-share-icons svg {
@@ -51,7 +52,6 @@ hr {
 
 .post-meta-share-icons button:hover {
   transform: scale(1.15);
-  transition: transform ease 1.25;
 }
 
 .post-meta-share-icons button:focus {
@@ -63,12 +63,9 @@ hr {
 }
 
 /* Subscribe Form */
-.revue-embed {
-}
-
 .revue-embed-form {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .revue-form-group {
@@ -78,21 +75,30 @@ hr {
   margin-right: 20px;
 }
 
-.revue-form-group label {
-}
-
 .revue-form-group .revue-form-field {
   width: 200px;
   height: 40px;
-  padding: 0 5px;
+  padding: 0 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.revue-form-actions #member_submit {
+.revue-form-actions .revue-form-submit {
   cursor: pointer;
   height: 40px;
+  border: 1px solid transparent;
+  border-radius: 5px;
   color: var(--theme-ui-colors-heading, #fff);
   padding: 8px 16px;
   background-color: var(--theme-ui-colors-primary, #6b46c1);
+  transition: all 0.2s ease-out;
+}
+
+.revue-form-actions .revue-form-submit:hover {
+  transform: scale(1.05);
+}
+
+/* Profile page */
+.about-profile {
+  width: 200px !important;
 }

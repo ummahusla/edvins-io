@@ -16,7 +16,7 @@ const SubscribeForm = () => {
           fontSize: [1, 1, 2],
         }}
       >
-        For monthly notes on software development, startups, and entrepreneurship.
+        For monthly notes on software development and entrepreneurship.
       </p>
 
       <div id="revue-embed">
@@ -61,7 +61,7 @@ const SubscribeForm = () => {
               }}
               htmlFor="member_email"
             >
-              Email address
+              Email
             </label>
 
             <input
@@ -81,6 +81,7 @@ const SubscribeForm = () => {
             <input
               type="submit"
               value="Subscribe"
+              className="revue-form-submit"
               name="member[subscribe]"
               id="member_submit"
               sx={{
