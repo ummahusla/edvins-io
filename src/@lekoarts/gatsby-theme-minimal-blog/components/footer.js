@@ -1,10 +1,11 @@
 /** @jsx jsx */
+import React from 'react';
 import { jsx } from 'theme-ui';
 
 import SubscribeForm from '../../../components/subscribe-form';
 
 const Footer = () => (
-  <>
+  <React.Fragment>
     <SubscribeForm />
 
     <footer
@@ -25,7 +26,7 @@ const Footer = () => (
         &copy; {new Date().getFullYear()} by Edvins Antonovs. All rights reserved.
       </div>
     </footer>
-  </>
+  </React.Fragment>
 );
 
 export default Footer;

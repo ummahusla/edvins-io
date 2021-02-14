@@ -22,7 +22,7 @@ const Tag = ({ posts, pageContext }) => {
           flexFlow: `wrap`,
         }}
       >
-        <Styled.H2>{`Blog: ${pageContext.name}`}</Styled.H2>
+        <Styled.h2>{`Blog: ${pageContext.name}`}</Styled.h2>
       </Flex>
 
       <TagsList list={tags} />

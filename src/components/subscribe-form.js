@@ -1,9 +1,10 @@
 /** @jsx jsx */
+import React from 'react';
 import { jsx } from 'theme-ui';
 import Title from '@lekoarts/gatsby-theme-minimal-blog/src/components/title';
 
 const SubscribeForm = () => (
-  <>
+  <React.Fragment>
     <Title text="Join the newsletter" />
 
     <p
@@ -90,7 +91,7 @@ const SubscribeForm = () => (
         </div>
       </form>
     </div>
-  </>
+  </React.Fragment>
 );
 
 export default SubscribeForm;

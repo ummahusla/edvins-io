@@ -22,7 +22,7 @@ const Blog = ({ posts }) => {
           flexFlow: `wrap`,
         }}
       >
-        <Styled.H2>Blog</Styled.H2>
+        <Styled.h2>Blog</Styled.h2>
       </Flex>
 
       <TagsList list={tags} />
