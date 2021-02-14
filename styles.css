@@ -97,8 +97,3 @@ hr {
 .revue-form-actions .revue-form-submit:hover {
   background-color: #55359f;
 }
-
-/* Profile page */
-.about-profile {
-  width: 200px !important;
-}
