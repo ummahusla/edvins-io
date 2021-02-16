@@ -1,0 +1,19 @@
+---
+title: How to remove duplicates from array in JavaScript
+description: Set with a combination of spread operator is the simplest way of removing duplicates from the array
+date: 2021-02-16
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+There are multiple ways how to remove a duplicate value from a JavaScript array using `indexOf()` and `filter()`, and `forEach()` and `include()` methods. Yet using `Set` with a combination of `spread operator` is the simplest approach.
+
+A `Set` is an iterable object which lets you store unique values of any type, whether primitive values or object references. We use the spread syntax (`...`) to convert the `Set` object to an array.
+
+```jsx
+const arr = [1, 2, 3, 5, 3, 8, 13, 13, 21, 5, 3, 2, 21];
+
+console.log([...new Set(arr)]);
+// Output: [1, 2, 3, 5, 8, 13, 21]
+```
