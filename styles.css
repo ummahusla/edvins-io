@@ -68,6 +68,13 @@ hr {
   align-items: flex-end;
 }
 
+@media only screen and (max-width: 425px) {
+  .revue-embed-form {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+}
+
 .revue-form-group {
   display: flex;
   width: 200px;
@@ -84,6 +91,7 @@ hr {
 }
 
 .revue-form-actions .revue-form-submit {
+  -webkit-appearance: none;
   cursor: pointer;
   height: 40px;
   border: 1px solid transparent;
