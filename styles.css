@@ -71,6 +71,11 @@ hr {
 @media only screen and (max-width: 425px) {
   .revue-embed-form {
     flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .revue-embed-form > div {
     margin-bottom: 10px;
   }
 }
