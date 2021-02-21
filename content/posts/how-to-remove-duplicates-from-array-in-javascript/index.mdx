@@ -11,7 +11,7 @@ There are multiple ways how to remove a duplicate value from a JavaScript array 
 
 A `Set` is an iterable object which lets you store unique values of any type, whether primitive values or object references. We use the spread syntax (`...`) to convert the `Set` object to an array.
 
-```jsx
+```js
 const arr = [1, 2, 3, 5, 3, 8, 13, 13, 21, 5, 3, 2, 21];
 
 console.log([...new Set(arr)]);
