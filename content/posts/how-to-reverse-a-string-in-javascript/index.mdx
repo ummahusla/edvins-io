@@ -1,0 +1,84 @@
+---
+title: How to reverse a string in JavaScript
+description: We will learn how to transform the given string and return a new string with reversed order of character
+date: 2021-09-22
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+Reversing a string is one of the common programming challenges you can come across. The idea of this challenge is to transform the given string and return a new string with reversed order of character. There are different techniques how you can approach implementing it like built-in JavaScript methods, for loop or even using a reduce function.
+
+**What we trying to achieve:**
+
+```jsx
+console.log(reverse('reverse'));
+// Output: "esrever"
+
+console.log(reverse('Hello World!'));
+// Output: "!dlroW olleH"
+```
+
+---
+
+## 1. Using `split()`, `reverse()`, and `join()`
+
+This is a self-explanatory method where we use a sequence of built-in JavaScript methods together.
+
+First of all, we `split()` the string into an array of substrings using a separator `""` to return a new array. Secondly, we use `reverse()` method to reverse the order of all elements in an array. Meaning that the first element becomes the last, and the last, and the last becomes the first. Finally, we use `join()` method to join all elements of the array into a new string.
+
+```jsx
+function reverse(str) {
+  return str.split('').reverse().join('');
+}
+
+console.log(reverse('edvins'));
+// Output: "snivde"
+```
+
+---
+
+## 2. Using `for` loop
+
+In this example, we are iterating through all characters in the string to return the reversed string as a result.
+
+```jsx
+function reverse(str) {
+  let result = '';
+
+  for (let char of str) {
+    result = char + result;
+  }
+
+  return result;
+}
+
+console.log(reverse('edvins'));
+// Output: "snivde"
+```
+
+---
+
+## 3. Using `reduce()`
+
+The `reduce()` method is used to execute a function on each element of the array, passing in the return value from the calculation on the preceding element. The final result of running the reducer across all elements of the array is a single value.
+
+In our case, we start by splitting our string using `split()`, then we use `reducer()` to execute `(rev, char) => char + rev` function, where `rev` represents a previous value, while `char` — the current one. Additionally, we pass `""` as a second parameter, it's out initial state.
+
+```jsx
+function reverse(str) {
+  return str.split('').reduce((rev, char) => char + rev, '');
+}
+
+console.log(reverse('edvins'));
+// Output: "snivde"
+```
+
+---
+
+## Appendix
+
+- [String.prototype.split()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+- [Array.prototype.reverse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+- [Array.prototype.join()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
+- [Array.prototype.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
