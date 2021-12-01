@@ -24,24 +24,21 @@ const Homepage = ({ posts }) => {
     {
       name: "Edvins's Digital Garden",
       status: 'Launched',
-      description:
-        'Personal blog about software development and entrepreneurship.',
+      description: 'Personal blog about software development and entrepreneurship.',
       tags: ['React', 'Gatsby', 'GraphQL'],
       link: 'https://edvins.io/',
     },
     {
       name: 'react-simple-card',
       status: 'Launched',
-      description:
-        'Simple, flexible and easy to use Card component written in React.',
+      description: 'Simple, flexible and easy to use Card component written in React.',
       tags: ['Open-Source', 'React'],
       link: 'https://www.npmjs.com/package/react-simple-card',
     },
     {
       name: 'Hustle Market',
       status: 'Abandoned',
-      description:
-        'Marketplace for buying and selling profitable online businesses.',
+      description: 'Marketplace for buying and selling profitable online businesses.',
       tags: ['React', 'Redux', 'Next', 'Firebase'],
       link: 'https://hustle.market/',
     },
@@ -55,7 +52,7 @@ const Homepage = ({ posts }) => {
     {
       name: 'Stealth Labs',
       status: 'Launched',
-      description: 'Digital agency which I use to work with my clients.',
+      description: 'My umbrella company which I use to work with my clients.',
       tags: ['React', 'Gatsby', 'GraphQL'],
       link: 'https://stealthlabs.io/',
     },
@@ -89,17 +86,13 @@ const Homepage = ({ posts }) => {
       </section>
 
       <Title text="Latest Posts">
-        <Link to={replaceSlashes(`/${basePath}/${blogPath}`)}>
-          Read all posts
-        </Link>
+        <Link to={replaceSlashes(`/${basePath}/${blogPath}`)}>Read all posts</Link>
       </Title>
 
       <Listing posts={posts} showTags={true} />
 
       <Title text="Latest Projects">
-        <Link to={replaceSlashes(`/${basePath}/projects`)}>
-          View all projects
-        </Link>
+        <Link to={replaceSlashes(`/${basePath}/projects`)}>View all projects</Link>
       </Title>
 
       <ProjectListing projects={projects.slice(0, 3)} />
