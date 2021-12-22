@@ -1,0 +1,51 @@
+---
+title: How to strip emojis from string in JavaScript
+date: 2021-12-22
+description: Combination of string.replace(), string.trim() methods and RegExp is the best approach to strip emoji from string.
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+There are multiple ways how to strip emoji symbols from a string in JavaScript. Yet the combination of `string.replace()`, `string.trim()` methods and `RegExp` works best in the majority of the cases.
+
+First of all, we use `replace()` and `RegExp` to remove any emojis from the string.
+
+At this point, you might think that’s all that we need, but practically, we still need to handle cases where there is a sequence of emojis used which creates whitespace after truncation.
+
+Then, we use `replace()` and `RegExp` once again. This time, we are only interested to remove multiple spaces. Worth mentioning that the starting and ending spaces will be kept and stripped down to a single space.
+
+Finally, we use `trim()` to remove any surrounding spaces from the string.
+
+```javascript
+const stripEmojis = (str) =>
+  str
+    .replace(
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+      ''
+    )
+    .replace(/\s+/g, ' ')
+    .trim();
+
+console.log(stripEmojis('🎄 edvins.io'));
+// Output: "edvins.io"
+
+console.log(stripEmojis('👍 Kanye 👍 West👍 👍'));
+// Output: "Kanye West"
+
+console.log(stripEmojis('🎄a🎄b🎄c🎄d🎄e🎄f🎄g🎄h'));
+// Output: "abcdefgh"
+
+console.log(
+  stripEmojis(
+    "Lorem 📝Ipsum is simply dummy text of the printing and 📝📝📝typesetting industry. Lorem Ipsum has been the industry's standard dummy 📝 text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into 📝 📝 📝 electronic typesetting, 📝remaining essentially unchanged. 📝 It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of 📝 Lorem Ipsum."
+  )
+);
+// Output: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+```
+
+## Appendix
+
+- [String.prototype.replace()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
+- [String.prototype.trim()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim)
+- [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
