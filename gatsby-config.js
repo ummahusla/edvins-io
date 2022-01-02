@@ -66,9 +66,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Edvins's Blog about software development and side hustle.`,
+        name: `Edvins's Blog about software development and side hustle`,
         short_name: `edvins-io`,
-        description: `Edvins\'s Blog - Blog about software development and side hustle.`,
+        description: `Edvins\'s Blog - Blog about software development and side hustle`,
         start_url: `/`,
         background_color: `#fff`,
         theme_color: `#6B46C1`,

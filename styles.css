@@ -2,6 +2,7 @@
 .gatsby-resp-image-wrapper {
   box-shadow: none !important;
   border: 1px solid #ccc;
+  margin-bottom: 2rem !important;
 }
 
 hr {
