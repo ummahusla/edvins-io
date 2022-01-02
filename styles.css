@@ -2,6 +2,17 @@
 .gatsby-resp-image-wrapper {
   box-shadow: none !important;
   border: 1px solid #ccc;
+  margin-bottom: 2rem !important;
+}
+
+.image-author {
+  font-size: 0.85em;
+  color: var(--theme-ui-colors-secondary, #5f6c80);
+  margin-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 hr {
