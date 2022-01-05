@@ -9,9 +9,11 @@ import replaceSlashes from '@lekoarts/gatsby-theme-minimal-blog/src/utils/replac
 
 import Hero from '../texts/hero';
 import ProjectListing from '../../../components/projectListing';
+import useAllPosts from '../../../hooks/use-all-posts';
 
-const Homepage = ({ posts }) => {
+const Homepage = () => {
   const { basePath, blogPath } = useMinimalBlogConfig();
+  const posts = useAllPosts();
 
   const projects = [
     {

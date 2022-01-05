@@ -5,33 +5,32 @@ import {
   FacebookShareButton,
   LinkedinShareButton,
   TwitterShareButton,
-  PocketShareButton
-} from "react-share";
+  PocketShareButton,
+} from 'react-share';
 
 const ShareButtons = ({ url, title, description }) => {
+  const strokeWidth = 1.25;
   const twitterHandle = 'edvinsantonovs';
 
   return (
     <div className="post-meta-share-icons">
       <FacebookShareButton url={url}>
-        <Facebook strokeWidth={1.25} />
+        <Facebook strokeWidth={strokeWidth} />
       </FacebookShareButton>
 
       <LinkedinShareButton url={url}>
-        <Linkedin strokeWidth={1.25} />
+        <Linkedin strokeWidth={strokeWidth} />
       </LinkedinShareButton>
 
       <TwitterShareButton url={url} via={twitterHandle}>
-        <Twitter strokeWidth={1.25} />
+        <Twitter strokeWidth={strokeWidth} />
       </TwitterShareButton>
 
       <PocketShareButton url={url}>
-        <Pocket strokeWidth={1.25} />
+        <Pocket strokeWidth={strokeWidth} />
       </PocketShareButton>
     </div>
   );
-}
+};
 
 export default ShareButtons;
-
-
