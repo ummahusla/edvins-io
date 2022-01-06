@@ -25,26 +25,17 @@ const ListingByYear = ({ posts, className, showTags = true }) => {
 
   return (
     <div sx={{ mb: [5, 6, 7] }} className={className}>
-      {yearsArray.map((year) => {
-        return (
-          <YearSection key={year} year={year}>
-            <div>
-              {posts.map((post) => {
-                if (getItemYear(post) === year) {
-                  return (
-                    <BlogListItem
-                      key={post.slug}
-                      post={post}
-                      showTags={showTags}
-                    />
-                  );
-                }
-                return undefined;
-              })}
-            </div>
-          </YearSection>
-        );
-      })}
+      {yearsArray.map((year) => (
+        <YearSection key={year} year={year}>
+          <div>
+            {posts.map((post) =>
+              getItemYear(post) === year ? (
+                <BlogListItem key={post.slug} post={post} showTags={showTags} />
+              ) : undefined
+            )}
+          </div>
+        </YearSection>
+      ))}
     </div>
   );
 };

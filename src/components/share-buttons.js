@@ -9,25 +9,26 @@ import {
 } from 'react-share';
 
 const ShareButtons = ({ url, title, description }) => {
-  const strokeWidth = 1.25;
-  const twitterHandle = 'edvinsantonovs';
+  const ICON_SIZE = 30;
+  const ICON_STROKE_WIDTH = 1.5;
+  const TWITTER_HANDLE = 'edvinsantonovs';
 
   return (
     <div className="post-meta-share-icons">
       <FacebookShareButton url={url}>
-        <Facebook strokeWidth={strokeWidth} />
+        <Facebook size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
       </FacebookShareButton>
 
       <LinkedinShareButton url={url}>
-        <Linkedin strokeWidth={strokeWidth} />
+        <Linkedin size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
       </LinkedinShareButton>
 
-      <TwitterShareButton url={url} via={twitterHandle}>
-        <Twitter strokeWidth={strokeWidth} />
+      <TwitterShareButton url={url} via={TWITTER_HANDLE}>
+        <Twitter size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
       </TwitterShareButton>
 
       <PocketShareButton url={url}>
-        <Pocket strokeWidth={strokeWidth} />
+        <Pocket size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
       </PocketShareButton>
     </div>
   );
