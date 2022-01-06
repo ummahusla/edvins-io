@@ -73,6 +73,23 @@ hr {
   margin-right: 0;
 }
 
+@media only screen and (max-width: 425px) {
+  .post-meta-share {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+  }
+
+  .post-meta-separator {
+    display: none;
+    margin-right: 0;
+  }
+
+  .post-meta-share > div {
+    margin-left: 0;
+  }
+}
+
 /* Subscribe Form */
 .revue-embed-form {
   display: flex;
