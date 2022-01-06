@@ -1,6 +1,7 @@
 /** @jsx jsx */
+import { useState } from 'react';
 import { jsx, Styled } from 'theme-ui';
-import { Flex } from '@theme-ui/components';
+import { Flex, Input } from '@theme-ui/components';
 import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
 
@@ -9,7 +10,14 @@ import ListingByYear from './listing-by-year';
 import TagsList from './tags-list';
 
 const Blog = ({ posts }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const tags = usePostTags();
+
+  const filteredPosts = posts.filter((post) => {
+    const postTitle = post.title.toLowerCase();
+
+    return postTitle.includes(searchQuery);
+  });
 
   return (
     <Layout>
@@ -25,9 +33,17 @@ const Blog = ({ posts }) => {
         <Styled.h2>Blog</Styled.h2>
       </Flex>
 
+      <Input
+        name="search"
+        mt={4}
+        mb={4}
+        placeholder="Begin typing to search ..."
+        onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+      />
+
       <TagsList list={tags} />
 
-      <ListingByYear posts={posts} sx={{ mt: [4, 5] }} />
+      <ListingByYear posts={filteredPosts} sx={{ mt: [4, 5] }} />
     </Layout>
   );
 };
