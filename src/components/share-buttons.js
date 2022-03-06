@@ -10,25 +10,24 @@ import {
 
 const ShareButtons = ({ url, title, description }) => {
   const ICON_SIZE = 30;
-  const ICON_STROKE_WIDTH = 1.5;
   const TWITTER_HANDLE = 'edvinsantonovs';
 
   return (
     <div className="post-meta-share-icons">
       <FacebookShareButton url={url}>
-        <Facebook size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+        <Facebook size={ICON_SIZE} />
       </FacebookShareButton>
 
       <LinkedinShareButton url={url}>
-        <Linkedin size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+        <Linkedin size={ICON_SIZE} />
       </LinkedinShareButton>
 
       <TwitterShareButton url={url} via={TWITTER_HANDLE}>
-        <Twitter size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+        <Twitter size={ICON_SIZE} />
       </TwitterShareButton>
 
       <PocketShareButton url={url}>
-        <Pocket size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+        <Pocket size={ICON_SIZE} />
       </PocketShareButton>
     </div>
   );
