@@ -10,12 +10,19 @@ import ListingByYear from './listing-by-year';
 import TagsList from './tags-list';
 
 const Blog = ({ posts }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  // get a list of all post tags
   const tags = usePostTags();
 
+  // search state
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // filter posts by search query
   const filteredPosts = posts.filter((post) => {
+    // search in title
     const postTitle = post.title.toLowerCase();
 
+    // returns an array with filtered posts based on the provided search query
+    // for cases when search query is empty - returns all posts
     return postTitle.includes(searchQuery);
   });
 
@@ -43,7 +50,7 @@ const Blog = ({ posts }) => {
 
       <TagsList list={tags} />
 
-      <ListingByYear posts={filteredPosts} sx={{ mt: [4, 5] }} />
+      <ListingByYear sx={{ mt: [4, 5] }} posts={filteredPosts} searchQuery={searchQuery} />
     </Layout>
   );
 };
