@@ -8,7 +8,7 @@ tags:
 banner: ./intro.png
 ---
 
-Congratulations, you have your Gatsby blog up and running. Now when it’s being populated with more content and you started to wonder how you can add search functionality for your readers? Well, that’s an easy task to do and probably won’t take more than 5 minutes worth of your time.
+Congratulations, you have your Gatsby blog up and running. It’s being populated with more content and now you start to wonder how you can add search functionality so it would be easier to find specific blog post? Well, that’s an easy task to do and probably won’t take more than 5 minutes of your time.
 
 Initially, I’ve implemented it for my own blog and you can [see it in action](https://edvins.io/blog).
 
@@ -16,11 +16,11 @@ Initially, I’ve implemented it for my own blog and you can [see it in action](
 
 ## Before we start
 
-First of all, let’s define the search scope. In my case, I’m interested that the search query would gather results within the `title` or `description`.
+First of all, let’s define the search scope. In my case, I’m interested search by `title` field.
 
-I write all of my content in [Markdown](https://www.gatsbyjs.com/docs/glossary/markdown/) and use [MDX](https://www.gatsbyjs.com/docs/glossary/mdx/) to enhance my experience so I could include React components in my blog posts and pages.
+Secondly, I write all of my content in [Markdown](https://www.gatsbyjs.com/docs/glossary/markdown/) and use [MDX](https://www.gatsbyjs.com/docs/glossary/mdx/) to enhance my experience so I could include React components in my blog posts and pages.
 
-Quick peek into `posts` GraphQL query. Looks pretty straight forward, right?
+Finally, here is quick peek into `posts` GraphQL query which I use. Looks pretty straight forward, right?
 
 ```graphql
 export const query = graphql`
@@ -65,7 +65,7 @@ Now we need to create an `input` field and handle the `onChange` event which wil
 />
 ```
 
-The general idea behind `filteredPosts` is to return an array with filtered posts based on the provided search query. For cases when search query is empty, we return all posts.
+The general idea behind `filteredPosts` is to return an array with filtered posts based on the provided search query. For cases where search query is empty, we return all posts.
 
 ```jsx
 const filteredPosts = posts.filter((post) => {
@@ -75,16 +75,15 @@ const filteredPosts = posts.filter((post) => {
 });
 ```
 
-Now let’s apply everything what we built so far to our `<Blog />` page which accepts an array of `posts` as a property.
+Now let’s apply everything what we have so far to our `<Blog />` page which accepts an array of `posts` as a property which we receive from `allPost` GraphQL query.
 
-`<ListingByYear />` component is responsible for rendering grouped posts by year. Notice that we pass `filteredPosts` and `searchQuery` to that component.
+`<ListingByYear />` component is responsible for rendering grouped posts by year. Notice that we pass `filteredPosts` and `searchQuery` to that component. In a moment, you will see why we do this.
 
 ```jsx
 ...
 
 const Blog = ({ posts }) => {
-  // Get a list of all post tags
-  const tags = usePostTags();
+  ...
 
   // search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -122,7 +121,7 @@ const Blog = ({ posts }) => {
 ...
 ```
 
-Perfect, so at this stage filtering functionality works as expected. Yet you might notice the case when no blog posts are found matching the search query, so we see an empty space there. It’s clearly a poor user experience which leads to a dead-end scenario. Then I’ve added a simple `NoMatchesFound` component which will be rendered for the cases where our `filteredPosts` array is empty we render a message `Sorry, no blog posts were found matching ...` to highlight the actual problem for a user to redefine his search term.
+Perfect, so at this stage filtering functionality works as expected. Yet you might notice lots of empty space for the case where no blog posts are found matching the search query. It’s clearly a poor user experience which leads to a dead-end scenario. This is why I’ve added a simple `NoMatchesFound` component which will be rendered for the cases when `filteredPosts` array is empty. This is when we render a message `Sorry, no blog posts were found matching ...` to give user a hint to redefine his search term to find better results.
 
 ```jsx
 ...
