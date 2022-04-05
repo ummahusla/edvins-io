@@ -1,0 +1,164 @@
+---
+title: Add search to a Gatsby blog
+date: 2022-04-03
+description: Implement a search feature in a Gatsby blog within less than 5 minutes.
+tags:
+  - React
+  - Gatsby
+banner: ./intro.png
+---
+
+Congratulations, you have your Gatsby blog up and running. Now you start wondering how you can add search functionality so it would be easier to find specific blog posts? Well, that’s an easy task to do and won’t take more than 5 minutes of your time.
+
+I’ve implemented it for my own blog and you can [see it in action](https://edvins.io/blog).
+
+---
+
+## Before we start
+
+First of all, let’s define the search scope. In my case, I’m interested search by `title` field.
+
+I use pretty standard Gatsby MDX starter template and I write all my content in Markdown. I also use MDX to enhance my experience so I could include React components in my blog posts and pages.
+
+Finally, here is a quick peek into the `posts` GraphQL query which I use. Looks pretty straightforward, right?
+
+```graphql
+export const query = graphql`
+  query($formatString: String!) {
+    allPost(sort: { fields: date, order: DESC }) {
+      nodes {
+        slug
+        title
+        date(formatString: $formatString)
+        excerpt
+        timeToRead
+        description
+        tags {
+          name
+          slug
+        }
+      }
+    }
+  }
+`
+```
+
+---
+
+## Implementation
+
+We are going to use React’s `useState` hook to store the search value.
+
+```jsx
+const [searchQuery, setSearchQuery] = useState('');
+```
+
+Now we need to create an `input` field and handle the `onChange` event. Which will trigger `setSearchQuery` whenever the input value is changed.
+
+> We use `toLowerCase()` to make our search case insensitive.
+
+```jsx
+<Input
+  ...
+  placeholder="Begin typing to search ..."
+  onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+/>
+```
+
+`filteredPosts` returns an array of filtered posts based on the provided search query. For cases where the search query is empty, it returns all posts.
+
+```jsx
+const filteredPosts = posts.filter((post) => {
+  const postTitle = post.title.toLowerCase();
+
+  return postTitle.includes(searchQuery);
+});
+```
+
+Now let’s apply everything what we have so far to our `<Blog />` page. Which accepts an array of `posts` as a property which we receive from `allPost` GraphQL query.
+
+`<ListingByYear />` component handles rendering grouped posts by year. Notice that we pass `filteredPosts` and `searchQuery` to that component. In a moment, you will see why we do this.
+
+```jsx
+...
+
+const Blog = ({ posts }) => {
+  ...
+
+  // search state
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // filter posts by search query
+  const filteredPosts = posts.filter((post) => {
+    // search in title
+    const postTitle = post.title.toLowerCase();
+
+    // return an array with filtered posts if search query is not empty
+    // if search query is empty, return all posts
+    return postTitle.includes(searchQuery);
+  });
+
+  return (
+    <Layout>
+      ...
+
+      <Input
+        ...
+        placeholder="Begin typing to search ..."
+        onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+      />
+
+      ...
+
+      <ListingByYear
+        posts={filteredPosts}
+        searchQuery={searchQuery}
+      />
+    </Layout>
+  );
+};
+
+...
+```
+
+Perfect, so at this stage filtering functionality works as expected. Yet there is a white space for cases when no blog posts found matching the search query. It’s a poor user experience which leads to a dead-end scenario. To improve that behavior I've added `<NoMatchesFound />` component. It acts as a hint to a user to redefine his search as well as renders a `Sorry, no blog posts were found matching ...` message.
+
+```jsx
+...
+
+const NoMatchesFound = ({ searchQuery }) => (
+  <section>
+    <h2>No matches found</h2>
+    <div>
+      <p
+        ...
+      >
+        {searchQuery && (
+          <>
+            Sorry, no blog posts were found matching your search for <strong>{searchQuery}</strong>.
+          </>
+        )}
+      </p>
+    </div>
+  </section>
+);
+
+...
+
+const ListingByYear = ({ posts, searchQuery = '', ... }) => {
+  ...
+
+  return (
+    <div sx={{ mb: [5, 6, 7] }} className={className}>
+      {posts.length ? (
+          // render filtered posts
+          ...
+      ) : (
+        <NoMatchesFound searchQuery={searchQuery} />
+      )}
+    </div>
+  );
+};
+
+...
+```
