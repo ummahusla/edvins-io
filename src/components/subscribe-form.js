@@ -1,27 +1,31 @@
 /** @jsx jsx */
-import React from 'react';
 import { jsx } from 'theme-ui';
 import Title from '@lekoarts/gatsby-theme-minimal-blog/src/components/title';
 
 const SubscribeForm = () => (
-  <React.Fragment>
-    <Title text="Join the newsletter" />
+  <div
+    sx={{
+      mt: 5,
+    }}
+  >
+    <Title text="Subscribe to the newsletter" />
 
     <p
       sx={{
-        color: `text`,
+        color: `secondary`,
         mt: 1,
         fontSize: [1, 1, 2],
       }}
     >
-      For monthly notes on software development and entrepreneurship.
+      Get emails from me about web development, tech and entrepreneurship.
     </p>
 
     <div id="revue-embed">
       <form
         className="revue-embed-form"
         action="https://www.getrevue.co/profile/edvins/add_subscriber"
-        method="post" id="revue-form"
+        method="post"
+        id="revue-form"
         name="revue-form"
         target="_blank"
       >
@@ -64,7 +68,7 @@ const SubscribeForm = () => (
 
           <input
             className="revue-form-field"
-            placeholder="elon.musk@tesla.com"
+            placeholder="elon@tesla.com"
             type="email"
             name="member[email]"
             id="member_email"
@@ -91,9 +95,7 @@ const SubscribeForm = () => (
         </div>
       </form>
     </div>
-  </React.Fragment>
+  </div>
 );
 
 export default SubscribeForm;
-
-
