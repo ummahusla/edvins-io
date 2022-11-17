@@ -18,7 +18,7 @@ const Homepage = () => {
   const projects = [
     {
       name: 'Cultivate',
-      status: 'Development',
+      status: 'Abandoned',
       description: 'Habit tracking application to cultivate new habits.',
       tags: ['React', 'Redux', 'Firebase', 'Serverless'],
       link: 'https://cultivate.so/',
