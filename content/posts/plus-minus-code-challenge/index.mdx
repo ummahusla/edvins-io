@@ -1,0 +1,82 @@
+---
+title: Plus Minus code challenge
+description: My approach solving HackerRank's Plus Minus code challenge
+date: 2022-11-19
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach solving [HackerRank’s Plus Minus Code Challenge](https://www.hackerrank.com/challenges/plus-minus/problem) code challenge.
+
+---
+
+### Problem
+
+Given an array of integers, calculate the ratios of its elements that are positive, negative, and zero. Print the decimal value of each fraction on a new line with places after the decimal.
+
+### Input format
+
+The first line contains an integer, `n`, the size of the array.
+
+The second line contains `n` space-separated integers that describe `arr[n]`.
+
+### Output format
+
+Print 3 lines with proportion of positive values, proportion of negative values and proportion of zeros, each to 6 decimals.
+
+### Sample input
+
+```
+STDIN           Function
+-----           --------
+6               arr[] size n = 6
+-4 3 -9 0 4 1   arr = [-4, 3, -9, 0, 4, 1]
+```
+
+### Sample output
+
+```
+0.500000
+0.333333
+0.166667
+```
+
+---
+
+### Solution
+
+Initially, we start by creating positive (`pos`), negative (`neg`), and zeros (`zer`) variables and assigning each variable to `0`.
+
+After that we loop through the given array and using `Math.sign()` we figure out whenever a number is positive, negative or zero. Then we just increment (`++`) the appropriate variable.
+
+Finally, we divide each variable's value by array length (`arr.length`) and add use `Number.toFixed(6)` to format it to 6 decimals.
+
+Solution complexity: `O(n)`.
+
+```js
+function plusMinus(arr) {
+  let pos = 0,
+    neg = 0,
+    zer = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (Math.sign(arr[i]) === 1) pos++;
+    else if (Math.sign(arr[i]) === -1) neg++;
+    else if (Math.sign(arr[i]) === 0) zer++;
+  }
+
+  console.log((pos / arr.length).toFixed(6));
+  console.log((neg / arr.length).toFixed(6));
+  console.log((zer / arr.length).toFixed(6));
+}
+```
+
+---
+
+### Appendix
+
+- [Increment (++)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment)
+- [Math.sign()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign)
+- [Number.prototype.toFixed()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed)
