@@ -1,0 +1,60 @@
+---
+title: Lonely Integer code challenge
+description: My approach solving HackerRank's Lonely Integer code challenge
+date: 2022-11-20
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach solving [HackerRank’s Lonely Integer](https://www.hackerrank.com/challenges/lonely-integer/problem) code challenge.
+
+---
+
+### Problem
+
+Given an array of integers, where all elements but one occur twice, find the unique element.
+
+### Example
+
+`a = [1, 2, 3, 4, 3, 2, 1]`
+
+The unique element is `4`.
+
+### Input format
+
+The first line contains a single integer, `n`, the number of integers in the array.
+
+The second line contains `n` space-separated integers that describe the values in `a`.
+
+### Returns
+
+Returns `int` value of the element that occurs only once.
+
+---
+
+### Solution
+
+First, we start by creating a `count` function which accepts the value (`v`) we want to search for. Within the function, we run the `Array.filter()` method to create a new copy of a given array and populate it with the filtered value(s) (`v`). Then `Array.length` returns the exact number of times the value (`v`) appeared in the given array.
+
+After that, we run a classic `for` loop where within each iteration, we pass the current array's item to the `count()` function and see if the result is equal to `1`. If so, we return the current value (`arr[i]`) as it is unique and appears only once.
+
+```js
+function lonelyinteger(a) {
+  const count = (v) => a.filter((i) => i == v).length;
+
+  for (let i = 0; i < a.length; i++) {
+    if (count(a[i]) === 1) {
+      return a[i];
+    }
+  }
+}
+```
+
+---
+
+### Appendix
+
+- [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+- [Array.length](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
