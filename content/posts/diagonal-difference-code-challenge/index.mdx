@@ -83,7 +83,7 @@ For the secondary diagonal, things are a bit different. We need to descend, so w
 
 Below is an example of our `for` loop at this stage.
 
-```js
+```js {3}
 for (let i = 0; i < arr.length; i++) {
   pri.push(arr[i][i]);
   sec.push(arr[arr.length - 1 - i][i]);
