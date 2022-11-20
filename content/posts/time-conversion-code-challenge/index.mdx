@@ -1,0 +1,113 @@
+---
+title: Time Conversion code challenge
+description: My approach solving HackerRank's Time Conversion code challenge
+date: 2022-11-20
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach solving [HackerRank’s Time Conversion](https://www.hackerrank.com/challenges/time-conversion/problem) code challenge.
+
+---
+
+### Problem
+
+Given a time in 12-hour AM/PM format, convert it to military (24-hour) time.
+
+### Example
+
+`s = "12:01:00PM"`
+
+Return `'12:01:00'`.
+
+`s = "12:01:00AM"`
+
+Return `'00:01:00'`.
+
+### Input format
+
+A single string `s` that represents a time in 12-hour clock format (i.e.: `hh:mm:ssAM` or `hh:mm:ssPM`).
+
+### Output format
+
+Return the time in 24 hour format string.
+
+### Sample input
+
+```
+07:05:45PM
+```
+
+### Sample output
+
+```
+19:05:45
+```
+
+---
+
+### Solution
+
+We use `String.split()` by `:` on the given `time` string to convert it into a temporary array (`tmp`).
+
+After that, we extract hours (`h`), minutes (`m`), and seconds (`s`).
+
+While the extraction, we use `Number()` to convert the hours' value from string to number and the `String.slice()` method to extract seconds without the `AM`/`PM` indicator.
+
+Then we use the `Array.includes()` method to check out whenever it's a `PM` indicator and store the results in a boolean variables `isPm`.
+
+After the data extraction, we need to understand how many conversion cases we need to cover. Following the example in the code challenge description, I come up with the following:
+
+- midday `12:01:00PM` => `12:01:00`
+- midnight `12:01:00AM` => `00:01:00`
+- morning `01:01:00AM` => `01:01:00` or `11:01:00AM` => `11:01:00`
+- evening `07:01:00PM` => `19:01:00`
+
+Implementation starts with the `convert()` function creation which accepts the hour (`h`) value as a parameter. Using`if` statements, we evaluate the existing values for hours (`h`) and the `isPm` indicator and return the relevant hour value for each case.
+
+Finally, we return a string with a new converted date.
+
+```js
+function timeConversion(time) {
+  const tmp = time.split(':');
+  const h = Number(tmp[0]),
+    m = tmp[1],
+    s = tmp[2].slice(0, 2);
+  const isPm = tmp[2].includes('PM') ? true : false;
+
+  const convert = (h) => {
+    // 12:01:00PM => 12:01:00
+    if (h === 12 && isPm) {
+      return 12;
+    }
+
+    // 12:01:00AM => 00:01:00
+    if (h === 12 && !isPm) {
+      return '00';
+    }
+
+    // 01:01:00AM => 01:01:00
+    // 11:01:00AM => 11:01:00
+    if (!isPm) {
+      return h < 10 ? `0${h}` : h;
+    }
+
+    // 07:01:00PM => 19:01:00
+    return h + 12;
+  };
+
+  return `${convert(h)}:${m}:${s}`;
+}
+```
+
+---
+
+### Appendix
+
+- [String.split()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+- [Number()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/Number)
+- [String.slice()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice)
+- [String.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes)
+- [Template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
