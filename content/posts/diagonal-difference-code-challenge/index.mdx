@@ -56,7 +56,7 @@ Finally, here we have a `for` loop where all the fun starts to kick in. Let's re
 9 8 9
 ```
 
-Following the example above, our primary diagonal will have `1 + 5 + 9`, while the secondary diagonal will be` 9 + 5 + 3`. Okay, what now? We must access a 2D array - `arr[i][j]`. Where `[i]` represents the row's index, while `[j]` is the element's index within the selected row.
+Following the example above, our primary diagonal will have `1 + 5 + 9`, while the secondary diagonal will be `9 + 5 + 3`. Okay, what now? We must access a 2D array - `arr[i][j]`. Where `[i]` represents the row's index, while `[j]` is the element's index within the selected row.
 
 Below is the two-dimensional visualisation of our initial example.
 
@@ -91,6 +91,8 @@ for (let i = 0; i < arr.length; i++) {
 ```
 
 Now it's time to calculate sums of primary and secondary diagonal values computed using the earlier created `arrSum` function and subtract the secondary from the primary. Finally, we can return the result of the `Math.abs()` where we passed the substracted value of both arrays.
+
+Solution complexity: `O(n)`.
 
 ```js
 function diagonalDifference(arr) {
