@@ -6,3 +6,67 @@ tags:
   - React
 banner: ./intro.png
 ---
+
+I have constantly been debating whether I need a comment system. Previously, I've been a WordPress user for many years and always had comments turned on. Since I moved from WordPress ~2 years ago and built this blog using GatsbyJS, I decided not to have any comments. Maybe I was fed up with constant bots which were spamming me.
+
+I also had previous experience with the Disqus comment system, but I'm not a big fan of ads and wanted a lightweight solution for my static website. I also didn't want to implement a comment system for myself, it could be an excellent option to use it as a learning experience to code and write about it, but sadly I only have a little time for this.
+
+As time passed, my writing list became more prominent, and more people were trying to reach me. That's when I started thinking I needed a comment system.
+
+In the past few years, I have seen many technical blogs adopting [utterances](https://utteranc.es/) as a comment system. Utterances built on the GitHub Issues means that all data is stored at GitHub. Additionally, it's free and open-source, and there is no tracking or ads. Moreover, everyone except my wife or mom, who reads my blog, is probably a developer or future developer and has a GitHub account to leave a comment.
+
+### How Utterances works
+
+> When Utterances loads, the GitHub issue searches API to find the issue associated with the page based on `url`, `pathname` or `title`. If it cannot find an issue that matches the page, no problem, `utterances-bot` will automatically create an issue the first time someone comments.
+
+### Setup
+
+The whole setup took me roughly 10 minutes to do.
+
+I've gone through the [configuration](https://utteranc.es/) section to understand how it works.
+
+Then I searched for existing npm packages and selected the most downloaded/up-to-date one -`utterances-react`.
+
+Then created a new `Comments` component file and used the `utterances-react` package example code. I changed a few settings like `repo`, but then I realised I have a dark mode switch on my website. Therefore I want my comment box to adapt to the select colour mode. I use `theme-ui`, so I extracted the `colorMode` from the `useColorMode()` hook and used it to determine the currently active theme.
+
+```jsx:title=comments.js {2,5-16}
+const Comments = () => {
+  const [colorMode] = useColorMode();
+
+  return (
+    <Utterances
+      repo="ummahusla/edvins-io"
+      issueTerm="pathname"
+      theme={colorMode === 'dark' ? 'github-dark' : 'github-light'}
+      crossorigin="anonymous"
+      async={false}
+      style={`
+      & .utterances {
+        max-width: 950px;
+      }
+    `}
+    />
+  );
+};
+```
+
+The last step is to use `<Comments />` where we want to display that comment section. In my case, it's the bottom of the`post.js` file.
+
+```jsx:title=post.js {9}
+const Post = (...) => {
+  return (
+    <Layout>
+      ...
+      <section>
+        <MDXRenderer>{post.body}</MDXRenderer>
+      </section>
+      <section>
+        <Comments />
+      </section>
+      ...
+    </Layout>
+  );
+};
+```
+
+My blog is open-source, so you can see the actual Pull Request for me adding utterances [here](https://github.com/ummahusla/edvins-io/pull/25/files).
