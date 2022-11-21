@@ -6,6 +6,7 @@ import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-tags';
 
 import ShareButtons from '../../../components/share-buttons';
+import Comments from '../../../components/comments';
 import { formatToUniversalDate } from '../../../utils/formatToUniversalDate';
 
 const px = [`32px`, `16px`, `8px`, `4px`];
@@ -68,6 +69,10 @@ const Post = ({ data: { post } }) => {
         }}
       >
         <MDXRenderer>{post.body}</MDXRenderer>
+      </section>
+
+      <section>
+        <Comments />
       </section>
     </Layout>
   );
