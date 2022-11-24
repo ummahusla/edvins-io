@@ -1,0 +1,94 @@
+---
+title: Breaking the Records code challenge
+description: My approach solving HackerRank's Breaking the Records code challenge
+date: 2022-11-24
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach solving [HackerRank’s Breaking the Records](https://www.hackerrank.com/challenges/breaking-best-and-worst-records/problem) code challenge.
+
+---
+
+### Problem
+
+Maria plays college basketball and wants to go pro. Each season she maintains a record of her play. She tabulates the number of times she breaks her season record for most points and least points in a game. Points scored in the first game establish her record for the season, and she begins counting from there.
+
+### Example
+
+`scores = [12, 24, 10, 24]`
+
+Scores are in the same order as the games played. She tabulates her results as follows:
+
+```
+                                   Count
+  Game  Score  Minimum  Maximum   Min Max
+    0      12     12       12       0   0
+    1      24     12       24       0   1
+    2      10     10       24       1   1
+    3      24     10       24       1   1
+```
+
+Given the scores for a season, determine the number of times Maria breaks her records for most and least points scored during the season.
+
+### Returns
+
+int[2]: An array with the numbers of times she broke her records. Index `0` is for breaking most points records, and index `1` is for breaking least points records.
+
+### Input format
+
+The first line contains an integer `n`, the number of games.
+
+The second line contains `n` space-separated integers describing the respective values of `scores0, scores1,...scoresn-1`.
+
+### Sample input
+
+```
+9
+10 5 20 20 4 5 2 25 1
+```
+
+### Sample output
+
+```
+2 4
+```
+
+### Solution
+
+Breaking the record was a relatively easy challenge to implement. Initially, we created a bunch of variables to hold max (`hiScore`) and min (`loBroke`) values and variables for the cases when the high (`hiBroke`) and lowest (`loBroke`) scores were updated. For the values which hold the actual score, we assign it to the first array's element.
+
+Then we start the `for` loop and go through every array element. We compare the current value (`scores[i]`) twice during each loop.
+
+The first time, we want to check if the current value is bigger than the current highest score (`hiScore`) value. If so, it becomes the new highest score value, and we bump `hiBroke` by `1` as it is a new record break.
+
+During the second comparison, we do the same, but this time we check for the current value (`scores[i]`) being less than the lowest score (`loScore`). The same story happens here; if it's less, it means a new record break, and we update the `loScore` bump `loBroke` by `1`.
+
+```js
+function breakingRecords(scores) {
+  let hiScore = scores[0],
+    loScore = scores[0];
+  let hiBroke = 0,
+    loBroke = 0;
+
+  for (let i = 0; i < scores.length; i++) {
+    if (scores[i] > hiScore) {
+      hiScore = scores[i];
+      hiBroke++;
+    }
+
+    if (scores[i] < loScore) {
+      loScore = scores[i];
+      loBroke++;
+    }
+  }
+
+  return [hiBroke, loBroke];
+}
+```
+
+---
+
+### Appendix
