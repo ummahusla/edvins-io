@@ -1,0 +1,61 @@
+---
+title: Backspace String Compare
+description: My approach solving LeetCode's Backspace String Compare
+date: 2022-11-25
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach solving [LeetCode’s Backspace String Compare](https://leetcode.com/problems/backspace-string-compare/description/) code challenge.
+
+---
+
+### Problem
+
+Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors. `'#'` means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+
+---
+
+### Solution
+
+We start by creating a new function (`cleanString`) which accepts a string (`s`) as a variable. Then inside this function, we use `String.split()` to split a given string by letter and store the result in an array (`val`). We also create an array (`res`) to keep our final results.
+
+Then we iterate through an array where we check whenever the current value (`val[i]`) is not equal to `#` during each loop. Here two things can happen, if the value is not identical, we add it to the results array, and if it's equal, we remove the last array value (`Array.pop()`).
+
+Then all we need to do is to return a final result of the `cleanString` function by using `Array.join()` to convert it back to the string.
+
+Finally, we run the `cleanString` function against the given words twice to compare their equality. Based on the comparison results, we return a boolean value.
+
+```js
+var backspaceCompare = function (s, t) {
+  const cleanString = (s) => {
+    let val = s.split('');
+    let res = [];
+
+    for (let i = 0; i < val.length; i++) {
+      if (val[i] !== '#') {
+        res.push(val[i]);
+      } else {
+        res.pop();
+      }
+    }
+
+    return res.join('');
+  };
+
+  return cleanString(s) === cleanString(t) ? true : false;
+};
+```
+
+---
+
+### Appendix
+
+- [String.split()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+- [Array.push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+- [Array.pop()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
+- [Array.join()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
