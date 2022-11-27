@@ -1,0 +1,43 @@
+---
+title: Running sum of 1d array code challenge
+description: My approach to solving LeetCode's Running sum of 1d array code challenge
+date: 2022-11-25
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach to solving [LeetCode’s Running sum of 1d array](https://leetcode.com/problems/running-sum-of-1d-array/) code challenge.
+
+---
+
+### Problem
+
+Given an array `nums`. We define a running sum of an array as `runningSum[i] = sum(nums[0]…nums[i])`.
+
+Return the running sum of `nums`.
+
+### Solution
+
+We start by creating a new temporary array (`temp`) and populating it with the first array's element (`nums[0]`). We need to do this, as below we start for loop, where during each iteration, we will be using the last temporary array value (`temp[i - 1]`) and sum it with the current's loop value (`nums[i]`). We will push the result of this addition to the `temp` array.
+
+Finally, we return the `temp` array.
+
+```js
+var runningSum = function (nums) {
+  let temp = [nums[0]];
+
+  for (let i = 1; i < nums.length; i++) {
+    temp.push(temp[i - 1] + nums[i]);
+  }
+
+  return temp;
+};
+```
+
+---
+
+### Appendix
+
+- [Array.push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
