@@ -1,0 +1,54 @@
+---
+title: Richest customer wealth code challenge
+description: My approach to solving LeetCode's Richest customer wealth code challenge
+date: 2022-11-28
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach to solving [LeetCode’s Richest customer wealth](https://leetcode.com/problems/richest-customer-wealth/description/) code challenge.
+
+---
+
+### Problem
+
+You are given an `m x n` integer `grid` accounts where `accounts[i][j]` is the amount of money the `i​​​​​​​​​​​th`​​​​ customer has in the `j​​​​​​​​​​​th`​​​​ bank. Return the wealth that the richest customer has.
+
+A customer's wealth is the amount of money they have in all their bank accounts. The richest customer is the customer that has the maximum wealth.
+
+### Example
+
+```
+Input: accounts = [[2,8,7],[7,1,3],[1,9,5]]
+Output: 17
+```
+
+### Solution
+
+We start by creating a new temporary array (`temp`) and populating it with the first array's element (`nums[0]`). We need to do this, as below we start for loop, where during each iteration, we will be using the last temporary array value (`temp[i - 1]`) and sum it with the current's loop value (`nums[i]`). We will push the result of this addition to the `temp` array.
+
+Finally, we return the `temp` array.
+
+```js
+var maximumWealth = function (accounts) {
+  let rich = 0;
+
+  const sumUp = (arr) => arr.reduce((a, b) => a + b);
+
+  for (let i = 0; i < accounts.length; i++) {
+    if (sumUp(accounts[i]) > rich) {
+      rich = sumUp(accounts[i]);
+    }
+  }
+
+  return rich;
+};
+```
+
+---
+
+### Appendix
+
+- [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
