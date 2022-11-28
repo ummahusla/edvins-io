@@ -1,0 +1,67 @@
+---
+title: FizzBuzz code challenge
+description: My approach to solving LeetCode's FizzBuzz code challenge
+date: 2022-11-28
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach to solving [LeetCode’s FizzBuzz](https://leetcode.com/problems/fizz-buzz/description/) code challenge.
+
+---
+
+### Problem
+
+Given an integer `n`, return a string array `answer` (1-indexed) where:
+
+- `answer[i] == "FizzBuzz"` if i is divisible by `3` and `5`.
+- `answer[i] == "Fizz"` if `i` is divisible by `3`.
+- `answer[i] == "Buzz"` if `i` is divisible by `5`.
+- `answer[i] == i` (as a string) if none of the above conditions are true.
+
+### Example
+
+```
+Input: n = 15
+Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]
+```
+
+### Solution
+
+We start by creating a new temporary array (`temp`). Then we initialise for loop where we do have three checks to do during each iteration and push the result into the `temp` array.
+
+- If the number is divisible by `3` and not `5`.
+- If the number is divisible by `5` and not by `3`.
+- If the number is divisible by `15`.
+- If none of the above works, we return the current iterable and convert it as a string using the template literals.
+
+Finally, we return the `temp` array.
+
+```js
+var fizzBuzz = function (n) {
+  const temp = [];
+
+  for (let i = 1; i <= n; i++) {
+    if (i % 3 === 0 && i % 5 !== 0) {
+      temp.push('Fizz');
+    } else if (i % 5 === 0 && i % 3 !== 0) {
+      temp.push('Buzz');
+    } else if (i % 15 === 0) {
+      temp.push('FizzBuzz');
+    } else {
+      temp.push(`${i}`);
+    }
+  }
+
+  return temp;
+};
+```
+
+---
+
+### Appendix
+
+- [Array.push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+- [Template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
