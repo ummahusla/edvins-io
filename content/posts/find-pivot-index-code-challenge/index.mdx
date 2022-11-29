@@ -1,0 +1,68 @@
+---
+title: Find pivot index code challenge
+description: My approach to solving LeetCode's Find pivot index code challenge
+date: 2022-11-29
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+My approach to solving [LeetCode’s Find pivot index](https://leetcode.com/problems/find-pivot-index/description/) code challenge.
+
+---
+
+### Problem
+
+Given an array of integers `nums`, calculate the pivot index of this array.
+
+The pivot index is the index where the sum of all the numbers strictly to the left of the index is equal to the sum of all the numbers strictly to the index's right.
+
+If the index is on the left edge of the array, then the left sum is `0` because there are no elements to the left. This also applies to the right edge of the array.
+
+Return the leftmost pivot index. If no such index exists, return `-1`.
+
+### Example
+
+```
+Input: nums = [1,7,3,6,5,6]
+Output: 3
+Explanation:
+The pivot index is 3.
+Left sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11
+Right sum = nums[4] + nums[5] = 5 + 6 = 11
+```
+
+### Solution
+
+We create an initial array (`total`) where we calculate the total sum of the given array's (`nums`) elements using the `Array.reduce()` method. Also, we create `leftSum` and assign it to `0`.
+
+Then we start for a loop where we iterate through the `nums` array. We calculate `rightSum` during each iteration by subtracting the current iteration value and `leftSum` from the `total`. If the sums of the left and right parts are equal, we find the pivot index and return it. Otherwise, we update `leftSum` with the current iteration value and continue iterating through the array.
+
+If by the time we finish the iteration and haven't found the pivot index, we return `-1` according to the problem description.
+
+```js
+var pivotIndex = function (nums) {
+  const total = nums.reduce((a, b) => a + b);
+
+  let leftSum = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    rightSum = total - nums[i] - leftSum;
+
+    if (leftSum === rightSum) {
+      return i;
+    }
+
+    leftSum += nums[i];
+  }
+
+  return -1;
+};
+```
+
+---
+
+### Appendix
+
+- [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
