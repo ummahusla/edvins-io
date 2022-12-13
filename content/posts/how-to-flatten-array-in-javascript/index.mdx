@@ -1,0 +1,40 @@
+---
+title: How to flatten an array in JavaScript
+description: How to flatten an array in JavaScript without using Array.prototype.flat()
+date: 2022-12-13
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+During the interviews, you can come across code challenges where you need to implement your own version without using the native `Array.prototype.flat()` method. Roughly there are nearly ten ways how you can write it in JavaScript. It's a commonly asked question which checks your knowledge of JavaScript array methods and the concept of recursion.
+
+> Initially, I encountered this code challenge while preparing for front-end interviews on [GreatFrontEnd](https://www.greatfrontend.com/questions/javascript/flatten).
+
+The approach I use to solve this challenge is very straightforward. I start by creating an array (`temp`) which we will return at the end of the function.
+
+Then we loop through the element in the input array. If the element is an array, recursively flatten it and add its elements to the flattened array.
+
+```
+temp.concat(flatten(ele))
+```
+
+If the element is not an array, add it to the flattened array as is. Then we return the flattened array.
+
+```js
+function flatten(value) {
+  let temp = [];
+
+  for (let i = 0; i < value.length; i++) {
+    let ele = value[i];
+
+    if (Array.isArray(ele)) {
+      temp = temp.concat(flatten(ele));
+    } else {
+      temp.push(ele);
+    }
+  }
+
+  return temp;
+}
+```
