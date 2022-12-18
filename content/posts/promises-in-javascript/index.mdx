@@ -1,0 +1,66 @@
+---
+title: Promises in JavaScript
+description: JavaScript Promises are a powerful tool for handling asynchronous code in JavaScript
+slug: /promises-in-javascript
+date: 2022-12-18
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+Javascript promises are a powerful tool that allow developers to handle asynchronous code in a more efficient and organized way. They essentially provide a way to handle the outcome of a function that may or may not have completed execution by the time it is called.
+
+One of the benefits of using promises is that they allow for the chaining of asynchronous actions, meaning that the outcome of one function can be passed as input to another function and so on. This helps to eliminate the need for callback hell, where code becomes increasingly nested and difficult to read as more asynchronous functions are added.
+
+Here is an example of a simple promise in action:
+
+```js
+const fetchData = () => {
+  return new Promise((resolve, reject) => {
+    fetch('https://api.edvins.io/data')
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+fetchData()
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));
+```
+
+In this example, the `fetchData` function makes an API call to retrieve some data. The fetch method returns a promise, which we can then chain using the then method. If the promise is resolved, the data is logged to the console. If the promise is rejected, an error message is logged to the console.
+
+Promises also have a built-in method called catch, which allows us to handle any errors that may occur during the execution of the promise. This helps to ensure that our code does not break if something goes wrong.
+
+Promises can also be used to execute multiple asynchronous actions concurrently using the `Promise.all` method. This method takes an array of promises as an argument and returns a new promise that resolves when all of the promises in the array have resolved.
+
+Here is an example of how to use `Promise.all`:
+
+```js
+const fetchData = () => {
+  return new Promise((resolve, reject) => {
+    fetch('https://api.edvins.io/data')
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+const fetchImages = () => {
+  return new Promise((resolve, reject) => {
+    fetch('https://api.edvins.io/images')
+      .then((response) => response.json())
+      .then((images) => resolve(images))
+      .catch((error) => reject(error));
+  });
+};
+
+Promise.all([fetchData(), fetchImages()])
+  .then((results) => console.log(results))
+  .catch((error) => console.error(error));
+```
+
+In this example, we have two separate functions that make API calls to retrieve data and images. We use `Promise.all` to execute both of these functions concurrently and then log the results to the console when both promises have resolved.
+
+Overall, JavaScript promises are a useful tool for handling asynchronous code and can help to make our code more organized and easier to read. They provide a way to chain asynchronous actions and handle errors, as well as executing multiple actions concurrently. If you are working with asynchronous code in JavaScript, it is definitely worth learning how to use promises.
