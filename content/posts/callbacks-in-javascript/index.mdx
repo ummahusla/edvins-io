@@ -1,0 +1,48 @@
+---
+title: Callbacks in JavaScript
+description: At a high level, a callback is a function that is passed as an argument to another function, and is executed by that function at a later point in time.
+slug: /callbacks-in-javascript
+date: 2022-1221
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+Callbacks are a fundamental concept in JavaScript, and they are used in many different parts of the language. At a high level, a callback is a function that is passed as an argument to another function, and is executed by that function at a later point in time. This allows you to write code that is more flexible and easier to maintain, as you can reuse the same callback in multiple places and contexts.
+
+One common use case for callbacks is in asynchronous programming, where you need to perform a task that takes a long time to complete (such as making an HTTP request or reading a file from the filesystem). In these situations, you don't want to block the main thread of execution while you wait for the task to complete, so you can use a callback to specify the code that should be run once the task is finished.
+
+Here's an example of a simple callback in action:
+
+```js
+function greet(name, callback) {
+  console.log(`Hello, ${name}!`);
+  callback();
+}
+
+greet('John', function () {
+  console.log('The callback function has been called!');
+});
+```
+
+In this example, the greet function takes two arguments: a name and a callback function. The greet function logs a greeting to the console, and then calls the callback function. When we call the greet function and pass it a callback function as an argument, the callback function is executed after the greeting is logged to the console.
+
+Another way to use callbacks is to pass them as arguments to array methods, such as map, filter, and reduce. These methods allow you to transform and manipulate arrays in a more concise and efficient way, and they accept a callback function that specifies the operation to be performed on each element of the array.
+
+Here's an example of using a callback with the map method:
+
+```js
+const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(function(number) {
+  return number \* 2;
+});
+
+console.log(doubled);
+
+// Output: [2, 4, 6, 8, 10]
+```
+
+In this example, the map method iterates over the numbers array and applies the callback function to each element. The callback function multiplies each element by 2, and the resulting array of doubled numbers is logged to the console.
+
+Callbacks are a powerful and essential tool in JavaScript, and they are used in many different contexts and situations. Whether you are working with asynchronous tasks, manipulating arrays, or building custom functions, callbacks can help you write more flexible and maintainable code.
