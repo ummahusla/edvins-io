@@ -1,0 +1,38 @@
+---
+title: React's useLayoutEffect explained
+description: React's useLayoutEffect is a powerful tool for triggering side effects that need to be run after a component has been rendered.
+date: 2022-12-26
+tags:
+  - React
+banner: ./intro.png
+---
+
+React's `useLayoutEffect` hook is a valuable tool for triggering side effects that need to be run after a component has been rendered. This can be especially useful for situations where the layout of a component needs to be updated based on its dimensions or the dimensions of its children.
+One of the main benefits of `useLayoutEffect` is that it allows you to synchronously update the layout of a component, which can be essential for maintaining a smooth user experience. This is because `useLayoutEffect` runs as soon as the component has finished rendering, before the browser has a chance to paint the changes to the screen. This means that any layout changes made in a `useLayoutEffect` hook will be applied immediately, and the user won't see any visual delays.
+
+However, you should be aware of some downsides to using `useLayoutEffect`. One is that it can cause performance issues if the code inside the hook takes a long time to run. This is because `useLayoutEffect` runs synchronously and can block the main thread, which can cause delays in rendering and a poor user experience. It's essential to keep this in mind and ensure that any code you write inside a `useLayoutEffect` hook is optimised for performance.
+
+Another thing to consider is that `useLayoutEffect` can have subtle behavioural differences depending on the browser. For example, it may sometimes be called before the browser has finished rendering the component, leading to unexpected results. It's essential to test your code in different browsers to ensure it behaves as expected.
+
+Here's an example of how you might use `useLayoutEffect` to update the layout of a component based on its dimensions:
+
+```js
+import { useLayoutEffect, useRef } from 'react';
+
+function MyComponent() {
+  const element = useRef(null);
+
+  useLayoutEffect(() => {
+    const width = element.current.offsetWidth;
+    const height = element.current.offsetHeight;
+
+    // update the layout of the component based on the width and height
+  }, [element]);
+
+  return <div ref={element}>{/* content goes here */}</div>;
+}
+```
+
+In this example, we're using the `useRef` hook to create a reference to the div element and passing it to the `useLayoutEffect` hook. The hook will run as soon as the component has finished rendering, and we can use the element's `offsetWidth` and `offsetHeight` properties to update the component's layout.
+
+In conclusion, `useLayoutEffect` is a powerful tool for triggering side effects that need to be run after a component has been rendered. However, it's necessary to be aware of its potential downsides and to use it carefully to avoid performance issues.
