@@ -17,7 +17,7 @@ console.log(x); // undefined
 var x = 5;
 ```
 
-At first glance, it might seem that this code would throw a reference error, since x is not defined before it is used. However, because of hoisting, the declaration of x is actually treated as if it appears at the top of the code, like this:
+At first glance, it might seem that this code would throw a reference error, since `x` is not defined before it is used. However, because of hoisting, the declaration of `x` is actually treated as if it appears at the top of the code, like this:
 
 ```js
 var x;
@@ -29,7 +29,7 @@ This means that the value of `x` is undefined when it is logged to the console, 
 
 Hoisting only affects the declaration of variables, not the assignment of values to them. In the example above, the assignment of the value `5` to `x` is not hoisted and still occurs at the point in the code where it is written.
 
-It's important to note that hoisting only applies to declarations, not initializations. For example, the following code will still throw a reference error, because the initialization of y is not hoisted:
+It's important to note that hoisting only applies to declarations, not initializations. For example, the following code will still throw a reference error, because the initialization of `y` is not hoisted:
 
 ```js
 console.log(y); // ReferenceError: y is not defined
