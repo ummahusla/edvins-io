@@ -1,0 +1,77 @@
+---
+title: Closures in JavaScript
+description: JavaScript closure is a powerful feature that allows a function to access variables from an outer scope even after the outer function has returned.
+slug: /closures-in-javascript
+date: 2023-01-01
+tags:
+  - JavaScript
+banner: ./intro.png
+---
+
+JavaScript closure is a powerful feature that allows a function to access variables from an outer scope even after the outer function has returned. It is created when a function is defined within the scope of another function, and the inner function has access to the variables in the outer function's scope.
+
+One way to create closure is by defining a function inside another function and returning the inner function. For example:
+
+```js
+function outer() {
+  let outerVariable = 'I am the outer variable';
+
+  function inner() {
+    console.log(outerVariable);
+  }
+
+  return inner;
+}
+
+let closure = outer();
+closure(); // logs "I am the outer variable"
+```
+
+In this example, the inner function has access to the `outerVariable` even after the outer function has returned. This is because the inner function is returned as a closure, which retains a reference to the `outerVariable`.
+
+Closure can help create private variables and methods. For example:
+
+```js
+function counter() {
+  let count = 0;
+
+  return {
+    increment: function () {
+      count++;
+    },
+    getCount: function () {
+      return count;
+    },
+  };
+}
+
+let counterA = counter();
+counterA.increment();
+console.log(counterA.getCount()); // logs 1
+
+let counterB = counter();
+counterB.increment();
+console.log(counterB.getCount()); // logs 1
+```
+
+In this example, the count variable is private to the counter function and can only be modified by the `increment` and `getCount` functions. This allows us to create multiple instances of a counter, each with its private count variable.
+
+Closure can also be useful for creating function factories. For example:
+
+```js
+function createMultiplier(multiplier) {
+  return function (num) {
+    return num * multiplier;
+  };
+}
+
+let triple = createMultiplier(3);
+console.log(triple(5)); // logs 15
+
+let quadruple = createMultiplier(4);
+console.log(quadruple(5)); // logs 20
+```
+
+In this example, the `createMultiplier` function creates and returns a new function that multiplies its input by a specified multiplier. This allows us to easily create functions that perform a specific multiplication without defining a new function for each multiplier.
+
+In summary, closure is a powerful feature of JavaScript that allows us to create private variables and methods and create function factories. It is essential to understand how closure works to use it in your code effectively.
