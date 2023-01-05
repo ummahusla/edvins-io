@@ -95,43 +95,9 @@ hr {
   }
 }
 
-/* Subscribe Form */
-.revue-embed-form {
-  display: flex;
-  align-items: flex-end;
-}
-
-@media only screen and (max-width: 425px) {
-  .revue-embed-form {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .revue-embed-form > div {
-    margin-bottom: 10px;
-  }
-}
-
-.revue-form-group {
-  display: flex;
-  width: 200px;
-  flex-direction: column;
-  margin-right: 20px;
-}
-
-.revue-form-group .revue-form-field {
-  width: 200px;
-  height: 40px;
-  padding: 0 8px;
-  border: 1px solid var(--theme-ui-colors-divide, #cbd5e0);
-  border-radius: 5px;
-}
-
-.revue-form-actions .revue-form-submit {
-  -webkit-appearance: none;
-  cursor: pointer;
-  height: 40px;
+/* Newsletter subcribe form */
+.newsletter-form .newsletter-form-submit {
+  text-decoration: none;
   border: 1px solid transparent;
   border-radius: 5px;
   color: var(--theme-ui-colors-heading, #fff);
@@ -140,6 +106,10 @@ hr {
   transition: background-color 0.2s ease-out;
 }
 
-.revue-form-actions .revue-form-submit:hover {
+.newsletter-form .newsletter-form-submit:hover {
   background-color: #55359f;
+}
+
+@media only screen and (max-width: 425px) {
+
 }
