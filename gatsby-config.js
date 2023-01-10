@@ -10,7 +10,7 @@ module.exports = {
     siteUrl: `https://edvins.io/`,
     siteDescription: `My digital garden`,
     siteLanguage: `en`,
-    siteImage: `/banner.png`,
+    siteImage: `/new-banner.png`,
     author: `@edvinsantonovs`,
   },
   plugins: [
