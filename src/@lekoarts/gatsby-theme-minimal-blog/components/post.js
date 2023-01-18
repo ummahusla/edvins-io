@@ -7,6 +7,7 @@ import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-ta
 
 import ShareButtons from '../../../components/share-buttons';
 import Comments from '../../../components/comments';
+import CarbonAds from '../../../components/carbonAds';
 import { formatToUniversalDate } from '../../../utils/formatToUniversalDate';
 
 const px = [`32px`, `16px`, `8px`, `4px`];
@@ -25,6 +26,8 @@ const Post = ({ data: { post } }) => {
         pathname={post.slug}
         canonicalUrl={post.canonicalUrl}
       />
+
+      <CarbonAds />
 
       <Heading as="h1" variant="styles.h1">
         {post.title}
