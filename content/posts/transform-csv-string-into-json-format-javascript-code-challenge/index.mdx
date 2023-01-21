@@ -10,6 +10,41 @@ banner: ./intro.png
 
 Using JavaScript to transform CSV string into JSON format is a reasonably popular front-end interview code challenge. The code below is the approach I used during my last interview. It's relatively basic, yet it's good enough to pass the challenge.
 
+---
+
+### Problem
+
+Write a function that transforms string in CSV format to JSON. CSV data might look like this:
+
+### Initial input
+
+```text
+id,name,age
+1,john smith,29
+2,jane smith,30
+...
+9999,sam smith,12
+```
+
+### Expected output
+
+Not particulary valid JSON, yet it should look as closer as possible to it.
+
+```js
+[
+  { id: 1, name: 'john smith', age: 29 }
+  { id: 2, name: 'jane smith', age: 30 }
+]
+```
+
+### Initial implementation
+
+This code defines a function called `csvToJson` which takes a single argument, `csv`. Inside the function, it uses destructuring assignment to split the `csv` string into two parts: `headers` and `rows`. The headers are then split again into an array of individual values using the `Array.split()` method.
+
+The function then uses the `Array.map()` method to iterate over the rows array and for each item it splits the item into an array of individual values using the `Array.split()` method. It then uses the `Array.reduce()` method to iterate over the headers array and for each iteration it creates an object with `key-value` pairs. The `key` is the header and the `value` is the corresponding `item` from the `items` array.
+
+Finally, the function returns the final array of objects. The code then calls the function and assigns the returned value to `jsonData` and logs it to the console.
+
 ```js
 function csvToJson(csv) {
   const [headers, ...rows] = csv.split('\n');
@@ -31,3 +66,43 @@ const jsonData = csvToJson('id,name,age\n1,john smith,29\n2,jane smith,30');
 
 console.log(jsonData);
 ```
+
+### Potential improvements
+
+1. Input validation: Add a check to ensure that the input passed to the function is in the correct format (a string in CSV format) and return an error message if it's not.
+2. Handling empty rows: The current implementation will include empty rows in the final JSON output. You can add a check to skip over empty rows before processing them.
+3. Trim values: The current implementation doesn't trim the values in the CSV file which can lead to leading/trailing spaces in the final JSON. You can use the `Strim.trim()` method to remove these spaces.
+4. Handling quotes and commas inside values: The current implementation assumes that values do not contain commas, if there is a comma inside a value, it will break it into multiple values. You can use a library like [Papa Parse](https://github.com/mholt/PapaParse) to handle this.
+5. Handling special characters: The current implementation doesn't handle special characters, which can lead to errors when trying to parse the JSON. You can use the `JSON.stringify()` method to handle special characters.
+
+```js
+function csvToJson(csv) {
+  const lines = csv.split('\n').filter((line) => line);
+  const headers = lines
+    .shift()
+    .split(',')
+    .map((header) => header.trim());
+
+  return lines.map((line) => {
+    const items = line.split(',').map((item) => item.trim());
+
+    return headers.reduce((acc, key, index) => {
+      return {
+        ...acc,
+        [key]: items[index],
+      };
+    }, {});
+  });
+}
+```
+
+---
+
+### Apendix
+
+- [String.trim()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim)
+- [String.split()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)
+- [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+- [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+- [JSON.stringify()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+- [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
