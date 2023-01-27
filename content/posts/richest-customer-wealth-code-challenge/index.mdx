@@ -27,9 +27,11 @@ Output: 17
 
 ### Solution
 
-We start by creating a new temporary array (`temp`) and populating it with the first array's element (`nums[0]`). We need to do this, as below we start for loop, where during each iteration, we will be using the last temporary array value (`temp[i - 1]`) and sum it with the current's loop value (`nums[i]`). We will push the result of this addition to the `temp` array.
+This code defines a function called `maximumWealth` that takes an array of `accounts` as input. It initializes a variable called `rich` with a value of `0`. It then defines an inner function called `sumUp`, which takes an array as input and returns the sum of its elements using the reduce method.
 
-Finally, we return the `temp` array.
+The outer function then iterates through each element (an array) of the `accounts` array, and for each one, it calls the inner function `sumUp` to get the sum of the elements in that array. It then compares that sum to the current value of the `rich` variable. If the sum is greater than `rich`, it assigns the sum to `rich`.
+
+Finally, the function returns the value of `rich`, representing the maximum sum of all the arrays in the `accounts` array.
 
 ```js
 var maximumWealth = function (accounts) {
