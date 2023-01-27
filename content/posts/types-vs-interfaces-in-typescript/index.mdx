@@ -1,0 +1,35 @@
+---
+title: Types vs Interfaces in TypeScript
+description: Learn key differences between types and interfaces in TypeScript
+date: 2023-01-27
+tags:
+  - TypeScript
+banner: ./intro.png
+---
+
+Types and interfaces are two of the essential features of TypeScript that allow you to define the structure and shape of the data that your code will be working with. They are used to ensure that your code works with the correct data types and provide better code documentation. But, despite their similarities, you should be aware of some key differences between types and interfaces.
+
+Interfaces are used to define the structure of an object. They specify the properties and methods an object must have to be considered of that type. Interfaces can also be used to specify the types of function arguments. They are intended to describe the shape of an object and are often used to define contracts for objects that will be passed around in your codebase.
+
+On the other hand, Types in TypeScript are more flexible and versatile, and they can be used for more than just defining the shape of an object. They can be used to determine the type of a variable, class, function, or even array. They are intended to be used as a way to give a name to a specific type and can be used wherever a type is required, such as type annotations or in the implements clause of a class.
+
+Here is an example that illustrates the difference between the two:
+
+```js
+interface Point {
+  x: number;
+  y: number;
+}
+
+type Tuple = [number, number];
+
+let point: Point = { x: 0, y: 0 };
+let tuple: Tuple = [0, 0];
+
+console.log(point); // Output: { x: 0, y: 0 }
+console.log(tuple); // Output: [0, 0]
+```
+
+Here, `Point` is an interface that describes an object with two properties, `x` and `y`, both of type `number`. `Tuple` is a type that represents a tuple of two numbers. While both `point` and `tuple` have the same value, they have different types, `Point` and `Tuple`, respectively.
+
+Another difference between types and interfaces is that interfaces can be extended, meaning that you can create new interfaces that inherit the properties and methods of existing interfaces.
