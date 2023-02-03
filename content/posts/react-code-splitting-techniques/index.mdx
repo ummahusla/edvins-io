@@ -8,9 +8,9 @@ tags:
 banner: ./intro.png
 ---
 
-React is a popular JavaScript library for building user interfaces, but with growing application size, the JavaScript bundle size can become large, leading to slow load times and poor performance. To mitigate this problem, React provides several code splitting techniques that allow you to split your code into smaller chunks, reducing the size of the initial JavaScript bundle and improving the performance of your application.
+React is a popular JavaScript library for building user interfaces, but with growing application sizes, the JavaScript bundle size can become large, leading to slow load times and poor performance. To mitigate this problem, React provides several code-splitting techniques that allow you to split your code into smaller chunks, reducing the initial JavaScript bundle's size and improving your application's performance.
 
-In this blog post, we'll cover the following code splitting techniques for React:
+In this blog post, we'll cover the following code-splitting techniques for React:
 
 - Dynamic Imports
 - React Lazy
@@ -21,12 +21,6 @@ In this blog post, we'll cover the following code splitting techniques for React
   - Inlining critical CSS
   - Dynamic chunks
 
----
-
-### Dynamic Imports
-
-Dynamic imports allow you to split your code into smaller chunks and load them on demand, rather than loading everything at once. With dynamic imports, you can ensure that only the code required for a particular feature is loaded, leading to smaller initial JavaScript bundles and improved performance.
-
 ```js
 import React, { useState, useEffect } from 'react';
 
@@ -34,7 +28,7 @@ const MyComponent = () => {
   const [module, setModule] = useState(null);
 
   useEffect(() => {
-    import('./MyModule').then((mod) => setModule(mod.default));
+    import('./MyWidget').then((mod) => setModule(mod.default));
   }, []);
 
   return module ? <module /> : <div>Loading...</div>;
@@ -43,9 +37,9 @@ const MyComponent = () => {
 
 ---
 
-### React Lazy (and Suspense)
+### React Lazy with Suspense
 
-React Lazy is a higher-order component that allows you to load components lazily, i.e., on demand, when they are actually needed. With React Lazy, you can ensure that your application only loads the components it needs, reducing the size of the initial JavaScript bundle and improving performance.
+[React Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy) is a higher-order component that allows you to load components lazily, i.e., on-demand when they are needed. With React Lazy, you can ensure that your application only loads the elements it needs, reducing the size of the initial JavaScript bundle and improving performance.
 
 ```js
 import React, { lazy, Suspense } from 'react';
@@ -63,9 +57,9 @@ const App = () => (
 
 ### Loadable Components
 
-Loadable Components is a higher-order component that allows you to split your
+[Loadable Components](https://loadable-components.com/) is a higher-order component that allows you to split your
 code into smaller chunks and load them on demand, just like React Lazy. With Loadable Components, you
-can also specify a loading component that will be displayed while the code chunk is being loaded.
+can specify a loading component displayed while the code chunk is being loaded.
 
 ```js
 import React from 'react';
@@ -82,7 +76,7 @@ const App = () => <MyComponent />;
 
 ### Advanced Techniques
 
-In addition to dynamic imports, React Lazy, and Loadable Components, there are several advanced code splitting techniques that you can use to further optimise the performance of your React applications.
+In addition to dynamic imports, React Lazy, and Loadable Components, there are several advanced code-splitting techniques that you can use to optimise the performance of your React applications further.
 
 #### Route-based code splitting
 
@@ -90,14 +84,16 @@ Route-based code splitting involves splitting your code into chunks based on the
 
 #### Preloading
 
-Preloading is a technique where you can load code chunks in the background while the user is interacting with the application. This ensures that the code chunks are loaded before they are actually needed, reducing the time taken to load them and improving the overall performance of your application.
+Preloading is a technique where you can load code chunks in the background while the user interacts with the application. This ensures that the code chunks are loaded before they are needed, reducing the time taken to load them and improving the overall performance of your application.
 
 #### Inlining critical CSS
 
-Inlining critical CSS involves including the styles required for the initial view of a page in the HTML file itself, rather than loading them from a separate CSS file. This reduces the time taken to load the styles and improves the performance of your application.
+Inlining critical CSS involves including the styles required for the initial view of a page in the HTML file itself rather than loading them from a separate CSS file. This reduces the time taken to load the styles and improves the performance of your application.
 
 #### Dynamic chunks
 
-Dynamic chunks allow you to split your code into smaller chunks and load them on demand, just like dynamic imports and React Lazy. The difference is that with dynamic chunks, you can specify the chunk name and the file name, giving you more control over the code splitting process.
+Dynamic chunks allow you to split your code into smaller chunks and load them on demand, just like dynamic imports and React Lazy. The difference is that with dynamic chunks, you can specify the chunk name and the file name, giving you more control over the code-splitting process.
 
-That's it, the post covers all the latest React code splitting techniques and provides code examples to help you implement them in your React applications. With these techniques, you can ensure that your React applications are fast and performant, delivering a great user experience to your users.
+---
+
+That's it; the post covers all the latest React code-splitting techniques and provides code examples to help you implement them in your React applications. With these techniques, you can ensure that your React applications are fast and performant, delivering a great user experience to your users.
