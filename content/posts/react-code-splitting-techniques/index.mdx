@@ -8,6 +8,8 @@ tags:
 banner: ./intro.png
 ---
 
+> 🌿 This post is still growing and might be updated. If you have any feedback, please let me know in comments.
+
 React is a popular JavaScript library for building user interfaces, but with growing application sizes, the JavaScript bundle size can become large, leading to slow load times and poor performance. To mitigate this problem, React provides several code-splitting techniques that allow you to split your code into smaller chunks, reducing the initial JavaScript bundle's size and improving your application's performance.
 
 In this blog post, we'll cover the following code-splitting techniques for React:
@@ -78,17 +80,73 @@ const App = () => <MyComponent />;
 
 In addition to dynamic imports, React Lazy, and Loadable Components, there are several advanced code-splitting techniques that you can use to optimise the performance of your React applications further.
 
+---
+
 #### Route-based code splitting
 
 Route-based code splitting involves splitting your code into chunks based on the routes in your application. With route-based code splitting, you can ensure that only the code required for a particular route is loaded, leading to smaller initial JavaScript bundles and improved performance.
+
+---
 
 #### Preloading
 
 Preloading is a technique where you can load code chunks in the background while the user interacts with the application. This ensures that the code chunks are loaded before they are needed, reducing the time taken to load them and improving the overall performance of your application.
 
+---
+
 #### Inlining critical CSS
 
 Inlining critical CSS involves including the styles required for the initial view of a page in the HTML file itself rather than loading them from a separate CSS file. This reduces the time taken to load the styles and improves the performance of your application.
+
+Inlining critical CSS can have some advantages, but it also has some drawbacks. Some of the advantages include:
+
+1. Faster page load times: By including the critical styles in the HTML file, the browser can render the page faster as it doesn't have to make additional requests to fetch the critical CSS.
+2. Improved [First Contentful Paint (FCP)](https://developer.mozilla.org/en-US/docs/Glossary/First_contentful_paint) and [First Input Delay (FID)](https://developer.mozilla.org/en-US/docs/Glossary/First_input_delay) metrics: The FCP and FID metrics are important metrics that measure the time it takes for the page to become usable for users. Inlining critical CSS can help improve these metrics, making the page more user-friendly.
+
+However, there are also some drawbacks to consider, such as:
+
+1. Increased HTML file size: Inlining the critical CSS increases the size of the HTML file, which can negatively impact page load times for users on slow networks.
+2. Maintenance issues: Maintaining the critical CSS inline in the HTML file can become difficult if there are many changes to the styles or if there are many pages with inlined CSS.
+
+Overall, inlining critical CSS can be a useful optimization technique in some cases, but it's important to weigh the advantages and disadvantages before implementing it in your application.
+
+Here's an example of how you can inline critical CSS in a React application using the styled-components library:
+
+```js
+import React from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  /* Your critical CSS rules */
+  .header {
+    background-color: blue;
+  }
+`;
+
+const Header = styled.header`
+  /* Your non-critical CSS rules */
+  color: white;
+  font-size: 20px;
+`;
+
+function App() {
+  return (
+    <>
+      <GlobalStyle />
+
+      <Header className="header">Welcome to my React App!</Header>
+    </>
+  );
+}
+
+export default App;
+```
+
+In this example, the critical CSS rules are defined in the `GlobalStyle` component using the `createGlobalStyle` method from the `styled-components` library. These styles will be inlined in the HTML file and be available to the browser right away, without the need for an additional CSS file.
+
+The `Header` component uses the `styled` method to define the non-critical CSS rules, which can be loaded later as a separate CSS file. This way, the critical styles are available for the initial view of the page, improving the performance, and the non-critical styles are loaded later, which won't affect the performance as much.
+
+---
 
 #### Dynamic chunks
 
