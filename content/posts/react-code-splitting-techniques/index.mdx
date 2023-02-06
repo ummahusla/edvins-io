@@ -15,7 +15,7 @@ React is a popular JavaScript library for building user interfaces, but with gro
 In this blog post, we'll cover the following code-splitting techniques for React:
 
 - Dynamic Imports
-- React Lazy
+- React Lazy with Suspense
 - Loadable Components
 - Advanced Techniques:
   - Route-based code splitting
@@ -26,11 +26,11 @@ In this blog post, we'll cover the following code-splitting techniques for React
 ```js
 import React, { useState, useEffect } from 'react';
 
-const MyComponent = () => {
+const HomePage = () => {
   const [module, setModule] = useState(null);
 
   useEffect(() => {
-    import('./MyWidget').then((mod) => setModule(mod.default));
+    import('./HomePageWidget').then((mod) => setModule(mod.default));
   }, []);
 
   return module ? <module /> : <div>Loading...</div>;
@@ -46,11 +46,11 @@ const MyComponent = () => {
 ```js
 import React, { lazy, Suspense } from 'react';
 
-const MyComponent = lazy(() => import('./MyComponent'));
+const HomePage = lazy(() => import('./HomePage'));
 
 const App = () => (
   <Suspense fallback={<div>Loading...</div>}>
-    <MyComponent />
+    <HomePage />
   </Suspense>
 );
 ```
@@ -67,11 +67,11 @@ can specify a loading component displayed while the code chunk is being loaded.
 import React from 'react';
 import loadable from '@loadable/component';
 
-const MyComponent = loadable(() => import('./MyComponent'), {
+const HomePage = loadable(() => import('./HomePage'), {
   fallback: <div>Loading...</div>,
 });
 
-const App = () => <MyComponent />;
+const App = () => <HomePage />;
 ```
 
 ---
@@ -84,7 +84,27 @@ In addition to dynamic imports, React Lazy, and Loadable Components, there are s
 
 #### Route-based code splitting
 
-Route-based code splitting involves splitting your code into chunks based on the routes in your application. With route-based code splitting, you can ensure that only the code required for a particular route is loaded, leading to smaller initial JavaScript bundles and improved performance.
+Route-based code splitting is an optimisation technique that improves the performance of web applications by only loading the necessary code for a specific route. This can significantly reduce the amount of JavaScript that must be downloaded and parsed by the browser, leading to faster load times and improved overall user experience.
+
+Another advantage of route-based code splitting is that it allows for better scalability as the application grows. With larger applications, the size of the JavaScript bundle can become unwieldy, leading to long load times and poor performance. By splitting the code into smaller chunks based on routes, developers can ensure that only the necessary code is loaded, improving performance even as the application grows.
+
+```js
+import React, { lazy, Suspense } from 'react';
+
+const HomePage = lazy(() => import('./HomePage'));
+const AboutPage = lazy(() => import('./AboutPage'));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Route exact path="/" component={HomePage} />
+      <Route path="/about" component={AboutPage} />
+    </Suspense>
+  );
+}
+```
+
+In this example, the `HomePage` and `AboutPage` components are loaded asynchronously using the `lazy` function. The `Suspense` component provides a fallback UI while the components are loaded. This allows the browser only to download and parse the code necessary for a specific route, improving the application's performance.
 
 ---
 
