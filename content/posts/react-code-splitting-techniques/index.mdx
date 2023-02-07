@@ -23,6 +23,12 @@ In this blog post, we'll cover the following code-splitting techniques for React
   - Inlining critical CSS
   - Dynamic chunks
 
+---
+
+### Dynamic Imports
+
+Dynamic imports allow you to split your code into smaller chunks and load them on demand, rather than loading everything at once. With dynamic imports, you can ensure that only the code required for a particular feature is loaded, leading to smaller initial JavaScript bundles and improved performance.
+
 ```js
 import React, { useState, useEffect } from 'react';
 
