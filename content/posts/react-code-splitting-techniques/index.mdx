@@ -14,10 +14,11 @@ React is a popular JavaScript library for building user interfaces, but with gro
 
 In this blog post, we'll cover the following code-splitting techniques for React:
 
-- Dynamic Imports
-- React Lazy with Suspense
-- Loadable Components
-- Advanced Techniques:
+- Basic techniques:
+  - Dynamic imports
+  - React Lazy with Suspense
+  - Loadable Components
+- Advanced techniques:
   - Route-based code splitting
   - Preloading
   - Inlining critical CSS
@@ -25,7 +26,13 @@ In this blog post, we'll cover the following code-splitting techniques for React
 
 ---
 
-### Dynamic Imports
+### Basic techniques
+
+In React, there is three basic techniques that you can use to split your code into smaller chunks and load them on demand.
+
+---
+
+#### Dynamic imports
 
 Dynamic imports allow you to split your code into smaller chunks and load them on demand, rather than loading everything at once. With dynamic imports, you can ensure that only the code required for a particular feature is loaded, leading to smaller initial JavaScript bundles and improved performance.
 
@@ -45,7 +52,7 @@ const HomePage = () => {
 
 ---
 
-### React Lazy with Suspense
+#### React Lazy with Suspense
 
 [React Lazy](https://reactjs.org/docs/code-splitting.html#reactlazy) is a higher-order component that allows you to load components lazily, i.e., on-demand when they are needed. With React Lazy, you can ensure that your application only loads the elements it needs, reducing the size of the initial JavaScript bundle and improving performance.
 
@@ -63,7 +70,7 @@ const App = () => (
 
 ---
 
-### Loadable Components
+#### Loadable Components
 
 [Loadable Components](https://loadable-components.com/) is a higher-order component that allows you to split your
 code into smaller chunks and load them on demand, just like React Lazy. With Loadable Components, you
@@ -82,9 +89,9 @@ const App = () => <HomePage />;
 
 ---
 
-### Advanced Techniques
+### Advanced techniques
 
-In addition to dynamic imports, React Lazy, and Loadable Components, there are several advanced code-splitting techniques that you can use to optimise the performance of your React applications further.
+Now when we know some basics, let's use them to create more advanced techniques.
 
 ---
 
@@ -117,6 +124,30 @@ In this example, the `HomePage` and `AboutPage` components are loaded asynchrono
 #### Preloading
 
 Preloading is a technique where you can load code chunks in the background while the user interacts with the application. This ensures that the code chunks are loaded before they are needed, reducing the time taken to load them and improving the overall performance of your application.
+
+Here's an example of how you can use the `React.lazy` function to implement preloading in React:
+
+```js
+import React, { lazy, Suspense } from 'react';
+
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+function App() {
+  return (
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyComponent />
+      </Suspense>
+    </>
+  );
+}
+
+export default App;
+```
+
+In the example above, the `LazyComponent` is loaded lazily using the `React.lazy` function. The `Suspense` component is used to provide a fallback UI while the `LazyComponent` is being loaded.
+
+In this example, the `LazyComponent` will be loaded in the background while the user interacts with the rest of your application. When the user navigates to the `LazyComponent`, it will be loaded instantly, providing a smooth and seamless experience.
 
 ---
 
@@ -176,7 +207,36 @@ The `Header` component uses the `styled` method to define the non-critical CSS r
 
 #### Dynamic chunks
 
-Dynamic chunks allow you to split your code into smaller chunks and load them on demand, just like dynamic imports and React Lazy. The difference is that with dynamic chunks, you can specify the chunk name and the file name, giving you more control over the code-splitting process.
+Dynamic chunks allow you to split your code into smaller, more manageable pieces that can be loaded on demand. This approach can significantly improve the performance of your application by reducing the amount of code that needs to be loaded and executed at once.
+
+Dynamic chunks are similar to dynamic imports and React Lazy, but with an important difference. With dynamic chunks, you can specify the chunk name and the file name, giving you more control over the code-splitting process. This allows you to load only the code that is necessary for the current state of your application, improving the performance and reducing the amount of time it takes for your application to load.
+
+By using dynamic chunks, you can also improve the organization of your codebase. By breaking down your code into smaller pieces, you can better manage the loading and execution of specific parts of your application. This can make it easier to maintain and debug your code, as well as make it more scalable for future development.
+
+```js
+// largeFile.js
+export const ComponentA = React.lazy(() => import('./ComponentA'));
+export const ComponentB = React.lazy(() => import('./ComponentB'));
+```
+
+```js
+// index.js
+import React, { lazy, Suspense } from 'react';
+import { ComponentA, ComponentB } from './largeFile';
+
+function App() {
+  return (
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ComponentA />
+        <ComponentB />
+      </Suspense>
+    </>
+  );
+}
+```
+
+With the above code, React will only load `ComponentA` and `ComponentB` when they are needed, rather than loading all of the components at once. This can significantly improve the performance of your application, as it reduces the amount of code that needs to be loaded and executed at once.
 
 ---
 
