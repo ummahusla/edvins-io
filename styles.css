@@ -139,7 +139,7 @@ hr {
 
 #carbonads a {
   text-decoration: none;
-  color: inherit;
+  color: var(--theme-ui-colors-text,#2d3748);
 }
 
 #carbonads a:hover {

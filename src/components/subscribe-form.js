@@ -24,6 +24,7 @@ const SubscribeForm = () => (
     <a
       href="https://edvins.substack.com/"
       target="_blank"
+      rel="noreferrer"
       className="newsletter-form-submit"
       sx={{
         color: `heading`,
