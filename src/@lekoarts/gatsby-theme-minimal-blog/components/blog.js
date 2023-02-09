@@ -2,12 +2,12 @@
 import { useState } from 'react';
 import { jsx, Styled } from 'theme-ui';
 import { Flex, Input } from '@theme-ui/components';
-import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
 
 import usePostTags from '../../../hooks/use-post-tags';
 import ListingByYear from './listing-by-year';
 import TagsList from './tags-list';
+import Layout from './layout';
 
 const Blog = ({ posts }) => {
   // get a list of all post tags

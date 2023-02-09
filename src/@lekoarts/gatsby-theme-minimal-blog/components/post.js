@@ -2,12 +2,12 @@
 import { jsx, Heading } from 'theme-ui';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import SEO from '@lekoarts/gatsby-theme-minimal-blog/src/components/seo';
-import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import ItemTags from '@lekoarts/gatsby-theme-minimal-blog/src/components/item-tags';
 
 import ShareButtons from '../../../components/share-buttons';
 import Comments from '../../../components/comments';
-import CarbonAds from '../../../components/carbonAds';
+import CarbonAds from '../../../components/carbon-ads';
+import Layout from './layout';
 import { formatToUniversalDate } from '../../../utils/formatToUniversalDate';
 
 const px = [`32px`, `16px`, `8px`, `4px`];

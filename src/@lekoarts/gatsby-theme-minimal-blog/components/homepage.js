@@ -1,15 +1,15 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Link } from 'gatsby';
-import Layout from '@lekoarts/gatsby-theme-minimal-blog/src/components/layout';
 import Title from '@lekoarts/gatsby-theme-minimal-blog/src/components/title';
 import Listing from '@lekoarts/gatsby-theme-minimal-blog/src/components/listing';
 import useMinimalBlogConfig from '@lekoarts/gatsby-theme-minimal-blog/src/hooks/use-minimal-blog-config';
 import replaceSlashes from '@lekoarts/gatsby-theme-minimal-blog/src/utils/replaceSlashes';
 
 import Hero from '../texts/hero';
-import ProjectListing from '../../../components/projectListing';
+import ProjectListing from '../../../components/project-listing';
 import useAllPosts from '../../../hooks/use-all-posts';
+import Layout from './layout';
 
 const Homepage = () => {
   const { basePath, blogPath } = useMinimalBlogConfig();

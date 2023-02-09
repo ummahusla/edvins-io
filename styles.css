@@ -139,7 +139,7 @@ hr {
 
 #carbonads a {
   text-decoration: none;
-  color: inherit;
+  color: var(--theme-ui-colors-text,#2d3748);
 }
 
 #carbonads a:hover {
@@ -229,5 +229,30 @@ hr {
     text-align: center;
     border-radius: 0;
     border-top-left-radius: 3px;
+  }
+}
+
+/* Animation */
+svg[jiggle='1'] {
+  animation: 350ms ease 0s 1 normal none running jiggleAnimation;
+}
+
+@keyframes jiggleAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(-13deg);
+  }
+  75% {
+    transform: rotate(12deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
   }
 }
