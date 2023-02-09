@@ -27,7 +27,7 @@ const SoundToggle = ({ soundMode, toggleSoundMode }) => {
       }}
       onClick={toggleSoundMode}
     >
-      {soundMode ? <Volume2 size={ICON_SIZE} /> : <Volume size={ICON_SIZE} />}
+      {soundMode ? <Volume2 className="jiggle" size={ICON_SIZE} /> : <Volume size={ICON_SIZE} />}
     </div>
   );
 };

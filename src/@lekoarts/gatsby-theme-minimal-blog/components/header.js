@@ -14,6 +14,7 @@ import ColorModeToggle from './colormode-toggle';
 import useLocalStorage from '../../../hooks/use-local-storage';
 import darkModeSound from '../../../sounds/lightMode.wav';
 import lightModeSound from '../../../sounds/darkMode.wav';
+import clickSound from '../../../sounds/click.wav';
 
 const Header = () => {
   const { navigation: nav } = useMinimalBlogConfig();
@@ -21,9 +22,10 @@ const Header = () => {
   // Sound mode
   const [soundMode, setSoundMode] = useLocalStorage('sound-mode', true);
   const [playDarkModeOn] = useSound(darkModeSound, { volume: 0.5 });
+  const [playClickSound] = useSound(clickSound, { volume: 2 });
   const [playDarkModeOff] = useSound(lightModeSound, { volume: 0.25 });
   const toggleSoundMode = () => {
-    // soundMode ? playOff() : playOn();
+    if (!soundMode) playClickSound();
     setSoundMode(!soundMode);
   };
 
@@ -31,15 +33,12 @@ const Header = () => {
   const [colorMode, setColorMode] = useColorMode();
   const isDark = colorMode === `dark`;
   const toggleColorMode = (e) => {
-    console.log(`darkMode ${isDark}, soundMode ${soundMode}`);
     e.preventDefault();
     if (soundMode) {
       isDark ? playDarkModeOff() : playDarkModeOn();
     }
     setColorMode(isDark ? `light` : `dark`);
   };
-
-  // console.log('soundMode', soundMode);
 
   return (
     <header sx={{ mb: [5, 6] }}>
@@ -51,7 +50,6 @@ const Header = () => {
             display: `flex`,
             alignItems: `center`,
             justifyContent: `space-between`,
-            height: `40px`,
           }}
         >
           <SoundToggle soundMode={soundMode} toggleSoundMode={toggleSoundMode} />
