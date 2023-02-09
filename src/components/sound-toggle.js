@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { useEffect, useState } from 'react';
 import { jsx } from 'theme-ui';
 import { Volume2, Volume } from 'react-feather';
 
