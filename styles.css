@@ -233,7 +233,7 @@ hr {
 }
 
 /* Animation */
-.jiggle {
+svg[jiggle='1'] {
   animation: 350ms ease 0s 1 normal none running jiggleAnimation;
 }
 

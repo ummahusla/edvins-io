@@ -1,8 +1,9 @@
 /** @jsx jsx */
+import { useEffect, useState } from 'react';
 import { jsx } from 'theme-ui';
 import { Volume2, Volume } from 'react-feather';
 
-const SoundToggle = ({ soundMode, toggleSoundMode }) => {
+const SoundToggle = ({ soundMode, toggleSoundMode, jiggle }) => {
   const ICON_SIZE = 30;
 
   return (
@@ -27,7 +28,7 @@ const SoundToggle = ({ soundMode, toggleSoundMode }) => {
       }}
       onClick={toggleSoundMode}
     >
-      {soundMode ? <Volume2 className="jiggle" size={ICON_SIZE} /> : <Volume size={ICON_SIZE} />}
+      {soundMode ? <Volume2 jiggle={jiggle} size={ICON_SIZE} /> : <Volume size={ICON_SIZE} />}
     </div>
   );
 };

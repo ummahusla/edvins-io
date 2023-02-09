@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import React from 'react';
-import { useCallback } from 'react';
+import React, { useState } from 'react';
 import { jsx, useColorMode } from 'theme-ui';
 import { Flex } from '@theme-ui/components';
 import useSound from 'use-sound';
@@ -19,13 +18,26 @@ import clickSound from '../../../sounds/click.wav';
 const Header = () => {
   const { navigation: nav } = useMinimalBlogConfig();
 
+  // Sound icon animation
+  const [jiggle, setJiggle] = useState(0);
+
   // Sound mode
   const [soundMode, setSoundMode] = useLocalStorage('sound-mode', true);
   const [playDarkModeOn] = useSound(darkModeSound, { volume: 0.5 });
   const [playClickSound] = useSound(clickSound, { volume: 2 });
   const [playDarkModeOff] = useSound(lightModeSound, { volume: 0.25 });
   const toggleSoundMode = () => {
-    if (!soundMode) playClickSound();
+    if (!soundMode) {
+      // Play sound
+      playClickSound();
+
+      // Animate icon
+      setJiggle(1);
+
+      setTimeout(() => {
+        setJiggle(0);
+      }, 1000);
+    }
     setSoundMode(!soundMode);
   };
 
@@ -52,7 +64,7 @@ const Header = () => {
             justifyContent: `space-between`,
           }}
         >
-          <SoundToggle soundMode={soundMode} toggleSoundMode={toggleSoundMode} />
+          <SoundToggle soundMode={soundMode} toggleSoundMode={toggleSoundMode} jiggle={jiggle} />
 
           <ColorModeToggle isDark={isDark} toggle={toggleColorMode} />
         </div>
