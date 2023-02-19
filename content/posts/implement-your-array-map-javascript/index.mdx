@@ -1,0 +1,92 @@
+---
+title: How to implement your version of Array.map() in JavaScript
+description: Learn how to create your own implementation of the popular JavaScript's built-in Array.map() method
+date: 2023-02-19
+tags:
+  - JavaScript
+  - Data Structures
+slug: /implement-your-array-map-javascript
+banner: ./intro.png
+---
+
+Implementing your version of popular JavaScript functions is a fairly trivial interview question, so to prepare for it, I decided to implement all of them on my own as a part of the interview process. `Array.map()` is a starting point in the series. The next ones in the queue are `Array.filter()` and `Array.reduce()`.
+
+---
+
+### What is `Array.map()`?
+
+To begin with, let’s first figure out what `Array.map()` is. `Array.map()` is a built-in JavaScript function for array manipulations and transformations based on the existing array. `Array.map()` iterates each element of the existing array and applies a callback function for each element. `Array.map()` doesn't mutate the original array. Instead, it returns a new one.
+
+```js
+const arr = [1, 2, 3];
+
+const doubled = arr.map((elem) => elem * 2);
+
+console.log(doubled);
+// Output: [2, 4, 6]
+```
+
+---
+
+### Implementing your version of `Array.map()`
+
+Now, let’s implement `myMap()` function, which will act as your `Array.map()` replacement.
+
+The `myMap()` function takes an `arr` (array) and a `cb` (callback) function as arguments. It returns a new array that results from applying the callback function to each input array element.
+
+```js
+const myMap = (arr, cb) => {
+  let temp = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    temp.push(cb(arr[i]));
+  }
+
+  return temp;
+};
+```
+
+Let’s quickly go through the code to figure out what it does.
+
+We start by creating a new empty array `temp`
+
+```js
+let temp = [];
+```
+
+Then we loop through each element of the input array `arr`
+
+```js
+for (let i = 0; i < arr.length; i++) {
+  // loop code
+}
+```
+
+Inside the loop, it applies the callback function `cb` to the current element of the input array `arr[i]`. Finally, the result is pushed into a temporary array `temp`.
+
+```js
+temp.push(cb(arr[i]));
+```
+
+After we finish with the loop, we return the `temp` array.
+
+```js
+return temp;
+```
+
+That's it! Now you can use `myMap()` as an alternative replacement to the existing `Array.map()` function.
+
+```js
+const arr = [1, 2, 3];
+
+const doubled = myMap(arr, (elem) => elem * 2);
+
+console.log(doubled);
+// Output: [2, 4, 6]
+```
+
+---
+
+### Appendix
+
+- [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
