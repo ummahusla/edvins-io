@@ -101,7 +101,7 @@ In this example, we have a simple `Counter` component that uses `useState` to ma
 
 To refactor this to `useReducer`, we need to define a reducer function and an initial state. Here's what the refactored code looks like:
 
-```jsx
+```jsx {3,5-14,17,20,24}
 import React, { useReducer } from 'react';
 
 const initialState = { count: 0 };
@@ -140,7 +140,7 @@ function Counter() {
 
 In this refactored code, we've defined an initial state object `{ count: 0 }`, and a reducer function that handles two actions `increment` and `decrement`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
 
-> Note that we've replaced the `setCount` call with a `dispatch` call that passes an object with a `type` property of `'increment'`. This object represents the action we want to perform on our state. The `reducer` function then handles this action and returns the new state object.
+Note that we've replaced the `setCount` call with a `dispatch` call that passes an object with a `type` property of `'increment'`. This object represents the action we want to perform on our state. The `reducer` function then handles this action and returns the new state object.
 
 ---
 
@@ -151,17 +151,27 @@ Whilst `Counter` is a simple example which provides enough to understand in gene
 Here's a simple shopping cart component that uses `useState` to manage the state:
 
 ```jsx
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 function ShoppingCart() {
+  const itemId = useRef(0);
+
   const [cart, setCart] = useState({
     items: [],
     total: 0,
   });
 
   function handleAddItem(item) {
+    itemId.current += 1;
+
     setCart({
-      items: [...cart.items, item],
+      items: [
+        ...cart.items,
+        {
+          id: itemId.current,
+          ...item,
+        },
+      ],
       total: cart.total + item.price,
     });
   }
@@ -192,9 +202,9 @@ function ShoppingCart() {
         ))}
       </ul>
       <p>Total: ${cart.total}</p>
-      <button onClick={() => handleAddItem({ id: 1, name: 'Apple', price: 1 })}>Add Apple</button>
-      <button onClick={() => handleAddItem({ id: 2, name: 'Orange', price: 2 })}>Add Orange</button>
-      <button onClick={() => handleClearCart()}>Add Orange</button>
+      <button onClick={() => handleAddItem({ name: 'Apple', price: 1 })}>Add Apple</button>
+      <button onClick={() => handleAddItem({ name: 'Orange', price: 2 })}>Add Orange</button>
+      <button onClick={() => handleClearCart()}>Clear cart</button>
     </div>
   );
 }
@@ -202,9 +212,11 @@ function ShoppingCart() {
 
 In this example, we have a `ShoppingCart` component that uses `useState` to manage the `cart` state. The `cart` state is an object with two properties: `items` and `total`. The `items` property is an array of items in the cart, and the `total` property is the total price of all the items in the cart. When the user clicks the `+` or `-` buttons, we update the state with `setCart`.
 
-To refactor this to `useReducer`, we need to define a reducer function and an initial state. Here's what the refactored code looks like:
+In order to prevent issue with duplicate `id` values, we use a `useRef` hook to keep track of the current `id` value and increment it each time we add a new item to the cart.
 
-```jsx
+To refactor this to `useReducer`, same here as in the previous example we need to define a reducer function and an initial state. Here's what the refactored code looks like:
+
+```jsx {3-6,8-25,30,35-40,45,49}
 import React, { useReducer } from 'react';
 
 const initialState = {
@@ -232,10 +244,20 @@ function reducer(state, action) {
 }
 
 function ShoppingCart() {
+  const itemId = useRef(0);
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function handleAddItem(item) {
-    dispatch({ type: 'ADD_ITEM', payload: item });
+    itemId.current += 1;
+
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        id: itemId.current,
+        ...item,
+      },
+    });
   }
 
   function handleRemoveItem(item) {
@@ -258,8 +280,8 @@ function ShoppingCart() {
         ))}
       </ul>
       <p>Total: ${state.total}</p>
-      <button onClick={() => handleAddItem({ id: 1, name: 'Apple', price: 1 })}>Add Apple</button>
-      <button onClick={() => handleAddItem({ id: 2, name: 'Orange', price: 2 })}>Add Orange</button>
+      <button onClick={() => handleAddItem({ name: 'Apple', price: 1 })}>Add Apple</button>
+      <button onClick={() => handleAddItem({ name: 'Orange', price: 2 })}>Add Orange</button>
       <button onClick={() => handleClearCart()}>Clear cart</button>
     </div>
   );
