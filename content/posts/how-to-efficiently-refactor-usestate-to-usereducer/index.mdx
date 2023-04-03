@@ -1,0 +1,273 @@
+---
+title: 'How to efficiently refactor useState to useReducer in React'
+description: Learn how to improve the performance and maintainability of your React code by refactoring useState to useReducer. My step-by-step guide includes code examples and best practices to help you make the switch.
+date: 2023-04-03
+tags:
+  - React
+banner: ./intro.png
+---
+
+As your React app grows in complexity, managing state with `useState` hooks can become challenging to maintain. That's where `useReducer` comes in – a React hook that can help organise complex state logic, enable better separation of concerns and make testing easier. In this blog post, we'll walk through the process of refactoring from `useState` to `useReducer` in React, using some concrete code examples (Counter and Shopping Cart) to illustrate the process.
+
+---
+
+### What is useReducer?
+
+`useReducer` is a React hook that lets you manage the state using a reducer function. A reducer function is a pure function that takes the current state and an action and returns the new state. It is a way of encapsulating state updates into a single function. Here's an example:
+
+```jsx
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + 1 };
+    case 'DECREMENT':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
+      <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
+    </div>
+  );
+}
+```
+
+In this example, we've defined an initial state with a `count` of `0` and a reducer function that handles two actions: `increment` and `decrement`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
+
+---
+
+### Advantages of useReducer
+
+Okay, now we know what `useReducer` does, but why do we want to use `useReducer` over `useState`? There are several advantages:
+
+- Better organisation — `useReducer` lets you organise complex state logic into a single reducer function, making it easier to reason about and maintain.
+- Separation of concerns — by encapsulating state updates into a single function, `useReducer` can help separate concerns and reduce coupling between components.
+- Better testing — since reducer functions are pure, testing them in isolation is easy.
+- Performance optimisation — by reducing the number of re-renders. This is because `useReducer` allows you to pass down `state` and `dispatch` functions through context, avoiding prop drilling.
+
+---
+
+### Disadantages of useReducer
+
+Despite the advantages of `useReducer`, there are also some disadvantages too.
+
+- More verbose — Using `useReducer` often requires more code than using `useState`, especially when dealing with simple state updates. This can make your code harder to read and maintain.
+- Steep learning curve — The `useReducer` hook can be more challenging to understand and use effectively than `useState`. It requires a fundamental understanding of the reducer pattern, which may only be familiar to some developers.
+- More boilerplate — when using `useReducer`, you must define an action type for every possible state change, which can be tedious and error-prone.
+- Less flexible — `useReducer` is a more rigid solution than `useState`. It's best suited for managing complex state changes involving multiple data pieces but may need more than simple state updates.
+- Requires more planning — as `useReducer` requires a separate action type for each state update, you need to plan out your state management carefully before implementing it. This can make it more time-consuming to set up than `useState`.
+
+---
+
+### Refactoring process
+
+Now that we understand the basics of `useReducer` let's walk through the basic process of refactoring from `useState` to `useReducer`. Here's a simple example to get us started:
+
+```jsx
+import React, { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleIncrement() {
+    setCount(count + 1);
+  }
+
+  function handleDecrement() {
+    setCount(count - 1);
+  }
+
+  return (
+    <div>
+      Count: {count}
+      <button onClick={handleIncrement}>+</button>
+      <button onClick={handleDecrement}>-</button>
+    </div>
+  );
+}
+```
+
+In this example, we have a simple `Counter` component that uses `useState` to manage the `count` state. When the user clicks the `+` or `-` buttons, we update the state with `setCount`.
+
+To refactor this to `useReducer`, we need to define a reducer function and an initial state. Here's what the refactored code looks like:
+
+```jsx
+import React, { useReducer } from 'react';
+
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + 1 };
+    case 'DECREMENT':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  function handleIncrement() {
+    dispatch({ type: 'INCREMENT' });
+  }
+
+  function handleDecrement() {
+    dispatch({ type: 'DECREMENT' });
+  }
+
+  return (
+    <div>
+      Count: {state.count}
+      <button onClick={handleIncrement}>+</button>
+      <button onClick={handleDecrement}>-</button>
+    </div>
+  );
+}
+```
+
+In this refactored code, we've defined an initial state object `{ count: 0 }`, and a reducer function that handles two actions `increment` and `decrement`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
+
+> Note that we've replaced the `setCount` call with a `dispatch` call that passes an object with a `type` property of `'increment'`. This object represents the action we want to perform on our state. The `reducer` function then handles this action and returns the new state object.
+
+---
+
+### Advanced example
+
+Whilst `Counter` is a simple example which provides enough to understand `useReducer`. Let's look at `ShoppingCart` as a more complex example to see how `useReducer` can help us organise complex state logic.
+
+Here's a simple shopping cart component that uses `useState` to manage the state:
+
+```jsx
+import React, { useState } from 'react';
+
+function ShoppingCart() {
+  const [cart, setCart] = useState({
+    items: [],
+    total: 0,
+  });
+
+  function handleAddItem(item) {
+    setCart({
+      items: [...cart.items, item],
+      total: cart.total + item.price,
+    });
+  }
+
+  function handleRemoveItem(item) {
+    setCart({
+      items: cart.items.filter((i) => i.id !== item.id),
+      total: cart.total - item.price,
+    });
+  }
+
+  function handleClearCart() {
+    setCart({
+      items: [],
+      total: 0,
+    });
+  }
+
+  return (
+    <div>
+      <h1>Shopping Cart</h1>
+      <ul>
+        {cart.items.map((item) => (
+          <li key={item.id}>
+            {item.name} - ${item.price}
+            <button onClick={() => handleRemoveItem(item)}>-</button>
+          </li>
+        ))}
+      </ul>
+      <p>Total: ${cart.total}</p>
+      <button onClick={() => handleAddItem({ id: 1, name: 'Apple', price: 1 })}>Add Apple</button>
+      <button onClick={() => handleAddItem({ id: 2, name: 'Orange', price: 2 })}>Add Orange</button>
+      <button onClick={() => handleClearCart()}>Add Orange</button>
+    </div>
+  );
+}
+```
+
+In this example, we have a `ShoppingCart` component that uses `useState` to manage the `cart` state. The `cart` state is an object with two properties: `items` and `total`. The `items` property is an array of items in the cart, and the `total` property is the total price of all the items in the cart. When the user clicks the `+` or `-` buttons, we update the state with `setCart`.
+
+To refactor this to `useReducer`, we need to define a reducer function and an initial state. Here's what the refactored code looks like:
+
+```jsx
+import React, { useReducer } from 'react';
+
+const initialState = {
+  items: [],
+  total: 0,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      return {
+        items: [...state.items, action.payload],
+        total: state.total + action.payload.price,
+      };
+    case 'REMOVE_ITEM':
+      return {
+        items: state.items.filter((item) => item.id !== action.payload.id),
+        total: state.total - action.payload.price,
+      };
+    case 'CLEAR_CART':
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+function ShoppingCart() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  function handleAddItem(item) {
+    dispatch({ type: 'ADD_ITEM', payload: item });
+  }
+
+  function handleRemoveItem(item) {
+    dispatch({ type: 'REMOVE_ITEM', payload: item });
+  }
+
+  function handleClearCart() {
+    dispatch({ type: 'CLEAR_CART' });
+  }
+
+  return (
+    <div>
+      <h1>Shopping Cart</h1>
+      <ul>
+        {state.items.map((item) => (
+          <li key={item.id}>
+            {item.name} - ${item.price}
+            <button onClick={() => handleRemoveItem(item)}>-</button>
+          </li>
+        ))}
+      </ul>
+      <p>Total: ${state.total}</p>
+      <button onClick={() => handleAddItem({ id: 1, name: 'Apple', price: 1 })}>Add Apple</button>
+      <button onClick={() => handleAddItem({ id: 2, name: 'Orange', price: 2 })}>Add Orange</button>
+      <button onClick={() => handleClearCart()}>Clear cart</button>
+    </div>
+  );
+}
+```
+
+### Conclusion
+
+Refactoring from `useState` to `useReducer` can be a great way to organise complex state logic in your React app. By encapsulating state updates into a single reducer function, you can make your code more maintainable, easier to test, and more scalable. In this blog post, we've walked through the process of refactoring a simple `Counter` component from `useState` to `useReducer`, and provided some concrete code examples to illustrate the process.
+
+I hope you found this helpful because I recently refactored a big chunk of the code for one of the side projects I was working on. I reduced the number of re-renders from 20 to 2, a considerable performance boost for the app. The code was much easier to understand and maintain, and it was much easier to test the reducer functions in isolation. If you have any questions or comments, please leave them below.
