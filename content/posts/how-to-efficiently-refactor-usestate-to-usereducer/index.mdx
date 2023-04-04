@@ -138,9 +138,9 @@ function Counter() {
 }
 ```
 
-In this refactored code, we've defined an initial state object `{ count: 0 }`, and a reducer function that handles two actions `increment` and `decrement`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
+In this refactored code, we've defined an initial state object `{ count: 0 }`, and a reducer function that handles two actions `INCREMENT` and `DECREMENT`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
 
-Note that we've replaced the `setCount` call with a `dispatch` call that passes an object with a `type` property of `'increment'`. This object represents the action we want to perform on our state. The `reducer` function then handles this action and returns the new state object.
+Note that we've replaced the `setCount` call with a `dispatch` call that passes an object with a `type` property of `'INCREMENT'`. This object represents the action we want to perform on our state. The `reducer` function then handles this action and returns the new state object.
 
 ---
 
@@ -292,4 +292,4 @@ function ShoppingCart() {
 
 Refactoring from `useState` to `useReducer` can be a great way to organise complex state logic in your React app. By encapsulating state updates into a single reducer function, you can make your code more maintainable, easier to test, and more scalable. In this blog post, we've walked through the process of refactoring a simple `Counter` component from `useState` to `useReducer`, and provided some concrete code examples to illustrate the process.
 
-I hope you found this helpful because I recently refactored a big chunk of the code for one of the side projects I was working on. I reduced the number of re-renders from 20 to 2, a considerable performance boost for the app. The code was much easier to understand and maintain, and it was much easier to test the reducer functions in isolation. If you have any questions or comments, please leave them below.
+I hope you found this helpful because I recently refactored a big chunk of the code for one of the side projects I was working on. I reduced the number of re-renders from 10 to 2, a considerable performance boost for the app. The code was much easier to understand and maintain, and it was much easier to test the reducer functions in isolation. If you have any questions or comments, please leave them below.
