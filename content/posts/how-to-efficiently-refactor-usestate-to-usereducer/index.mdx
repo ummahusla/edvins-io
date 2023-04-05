@@ -15,32 +15,13 @@ As your React app grows in complexity, managing state with `useState` hooks can 
 
 `useReducer` is a React hook that lets you manage the state using a reducer function. A reducer function is a pure function that takes the current state and an action and returns the new state. It is a way of encapsulating state updates into a single function. Here's an example:
 
-```jsx
-const initialState = { count: 0 };
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { count: state.count + 1 };
-    case 'DECREMENT':
-      return { count: state.count - 1 };
-    default:
-      throw new Error();
-  }
-}
-
-function Counter() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    <div>
-      Count: {state.count}
-      <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
-      <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
-    </div>
-  );
-}
-```
+<iframe
+  src="https://codesandbox.io/embed/counter-usereducer-8fbviw?fontsize=14&hidenavigation=1&module=%2Fsrc%2FCounter.js"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="Counter (useReducer)"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 In this example, we've defined an initial state with a `count` of `0` and a reducer function that handles two actions: `increment` and `decrement`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
 
@@ -73,70 +54,25 @@ Despite the advantages of `useReducer`, there are also some disadvantages too.
 
 Now that we understand the basics of `useReducer` let's walk through the basic process of refactoring from `useState` to `useReducer`. Here's a simple example to get us started:
 
-```jsx
-import React, { useState } from 'react';
-
-function Counter() {
-  const [count, setCount] = useState(0);
-
-  function handleIncrement() {
-    setCount(count + 1);
-  }
-
-  function handleDecrement() {
-    setCount(count - 1);
-  }
-
-  return (
-    <div>
-      Count: {count}
-      <button onClick={handleIncrement}>+</button>
-      <button onClick={handleDecrement}>-</button>
-    </div>
-  );
-}
-```
+<iframe
+  src="https://codesandbox.io/embed/winter-breeze-tbm6h9?fontsize=14&hidenavigation=1&module=%2Fsrc%2FCounter.js"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="Counter (useState)"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 In this example, we have a simple `Counter` component that uses `useState` to manage the `count` state. When the user clicks the `+` or `-` buttons, we update the state with `setCount`.
 
 To refactor this to `useReducer`, we need to define a reducer function and an initial state. Here's what the refactored code looks like:
 
-```jsx {3,5-14,17,20,24}
-import React, { useReducer } from 'react';
-
-const initialState = { count: 0 };
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { count: state.count + 1 };
-    case 'DECREMENT':
-      return { count: state.count - 1 };
-    default:
-      throw new Error();
-  }
-}
-
-function Counter() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  function handleIncrement() {
-    dispatch({ type: 'INCREMENT' });
-  }
-
-  function handleDecrement() {
-    dispatch({ type: 'DECREMENT' });
-  }
-
-  return (
-    <div>
-      Count: {state.count}
-      <button onClick={handleIncrement}>+</button>
-      <button onClick={handleDecrement}>-</button>
-    </div>
-  );
-}
-```
+<iframe
+  src="https://codesandbox.io/embed/counter-usereducer-8fbviw?fontsize=14&hidenavigation=1&module=%2Fsrc%2FCounter.js"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="Counter (useReducer)"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 In this refactored code, we've defined an initial state object `{ count: 0 }`, and a reducer function that handles two actions `INCREMENT` and `DECREMENT`. We then use `useReducer` to initialise our state and dispatch function and use them to update the state when the user clicks on the `+` or `-` buttons.
 
@@ -150,65 +86,13 @@ Whilst `Counter` is a simple example which provides enough to understand in gene
 
 Here's a simple shopping cart component that uses `useState` to manage the state:
 
-```jsx
-import React, { useRef, useState } from 'react';
-
-function ShoppingCart() {
-  const itemId = useRef(0);
-
-  const [cart, setCart] = useState({
-    items: [],
-    total: 0,
-  });
-
-  function handleAddItem(item) {
-    itemId.current += 1;
-
-    setCart({
-      items: [
-        ...cart.items,
-        {
-          id: itemId.current,
-          ...item,
-        },
-      ],
-      total: cart.total + item.price,
-    });
-  }
-
-  function handleRemoveItem(item) {
-    setCart({
-      items: cart.items.filter((i) => i.id !== item.id),
-      total: cart.total - item.price,
-    });
-  }
-
-  function handleClearCart() {
-    setCart({
-      items: [],
-      total: 0,
-    });
-  }
-
-  return (
-    <div>
-      <h1>Shopping Cart</h1>
-      <ul>
-        {cart.items.map((item) => (
-          <li key={item.id}>
-            {item.name} - ${item.price}
-            <button onClick={() => handleRemoveItem(item)}>-</button>
-          </li>
-        ))}
-      </ul>
-      <p>Total: ${cart.total}</p>
-      <button onClick={() => handleAddItem({ name: 'Apple', price: 1 })}>Add Apple</button>
-      <button onClick={() => handleAddItem({ name: 'Orange', price: 2 })}>Add Orange</button>
-      <button onClick={() => handleClearCart()}>Clear cart</button>
-    </div>
-  );
-}
-```
+<iframe
+  src="https://codesandbox.io/embed/shopping-cart-usestate-30ijcq?fontsize=14&hidenavigation=1&module=%2Fsrc%2FShoppingCart.js&theme=dark"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="Shopping Cart (useState)"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 In this example, we have a `ShoppingCart` component that uses `useState` to manage the `cart` state. The `cart` state is an object with two properties: `items` and `total`. The `items` property is an array of items in the cart, and the `total` property is the total price of all the items in the cart. When the user clicks the `+` or `-` buttons, we update the state with `setCart`.
 
@@ -216,77 +100,13 @@ In order to prevent issue with duplicate `id` values, we use a `useRef` hook to 
 
 To refactor this to `useReducer`, same here as in the previous example we need to define a reducer function and an initial state. Here's what the refactored code looks like:
 
-```jsx {3-6,8-25,30,35-40,45,49}
-import React, { useReducer } from 'react';
-
-const initialState = {
-  items: [],
-  total: 0,
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'ADD_ITEM':
-      return {
-        items: [...state.items, action.payload],
-        total: state.total + action.payload.price,
-      };
-    case 'REMOVE_ITEM':
-      return {
-        items: state.items.filter((item) => item.id !== action.payload.id),
-        total: state.total - action.payload.price,
-      };
-    case 'CLEAR_CART':
-      return initialState;
-    default:
-      return state;
-  }
-}
-
-function ShoppingCart() {
-  const itemId = useRef(0);
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  function handleAddItem(item) {
-    itemId.current += 1;
-
-    dispatch({
-      type: 'ADD_ITEM',
-      payload: {
-        id: itemId.current,
-        ...item,
-      },
-    });
-  }
-
-  function handleRemoveItem(item) {
-    dispatch({ type: 'REMOVE_ITEM', payload: item });
-  }
-
-  function handleClearCart() {
-    dispatch({ type: 'CLEAR_CART' });
-  }
-
-  return (
-    <div>
-      <h1>Shopping Cart</h1>
-      <ul>
-        {state.items.map((item) => (
-          <li key={item.id}>
-            {item.name} - ${item.price}
-            <button onClick={() => handleRemoveItem(item)}>-</button>
-          </li>
-        ))}
-      </ul>
-      <p>Total: ${state.total}</p>
-      <button onClick={() => handleAddItem({ name: 'Apple', price: 1 })}>Add Apple</button>
-      <button onClick={() => handleAddItem({ name: 'Orange', price: 2 })}>Add Orange</button>
-      <button onClick={() => handleClearCart()}>Clear cart</button>
-    </div>
-  );
-}
-```
+<iframe
+  src="https://codesandbox.io/embed/shopping-cart-usereducer-pge9m9?fontsize=14&hidenavigation=1&module=%2Fsrc%2FShoppingCart.js&theme=dark"
+  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  title="Shopping Cart (useReducer)"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ### Conclusion
 
