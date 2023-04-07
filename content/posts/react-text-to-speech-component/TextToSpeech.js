@@ -8,6 +8,8 @@ const TextToSpeech = ({ text }) => {
   const [rate, setRate] = useState(1);
   const [volume, setVolume] = useState(1);
 
+  const isBrowser = typeof window !== 'undefined';
+
   useEffect(() => {
     const synth = window.speechSynthesis;
     const u = new SpeechSynthesisUtterance(text);
@@ -83,11 +85,12 @@ const TextToSpeech = ({ text }) => {
             onChange={handleVoiceChange}
           >
             <option value="">Select a voice</option>
-            {window.speechSynthesis.getVoices().map((voice) => (
-              <option key={voice.name} value={voice.name}>
-                {voice.name}
-              </option>
-            ))}
+            {isBrowser &&
+              window.speechSynthesis.getVoices().map((voice) => (
+                <option key={voice.name} value={voice.name}>
+                  {voice.name}
+                </option>
+              ))}
           </select>
         </label>
 
