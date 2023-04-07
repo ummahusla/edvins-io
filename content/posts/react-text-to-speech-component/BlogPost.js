@@ -28,6 +28,7 @@ const BlogPost = () => {
         rows="8"
         class="block text-slate-100 bg-slate-900 p-2.5 w-full text-lg font-normal rounded border"
         value={text}
+        onChange={(e) => setText(e.target.value)}
       ></textarea>
     </div>
   );
