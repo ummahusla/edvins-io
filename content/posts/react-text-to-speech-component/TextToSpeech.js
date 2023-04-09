@@ -75,14 +75,40 @@ const TextToSpeech = ({ text }) => {
   };
 
   return (
-    <div className="text-center px-8 mb-4">
-      <div className="flex justify-between">
-        <label className="block m-2 font-bold">
+    <div
+      style={{
+        textAlign: 'center',
+        paddingLeft: '2rem',
+        paddingRight: '2rem',
+        marginBottom: '1rem',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <label
+          style={{
+            display: 'block',
+            fontWeight: 700,
+            margin: '0.5rem',
+          }}
+        >
           Voice
           <select
-            className="block w-full p-2 text-slate-900 mt-1 rounded border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
             value={voice?.name}
             onChange={handleVoiceChange}
+            style={{
+              color: 'rgb(15 23 42)',
+              display: 'block',
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              marginTop: '0.25rem',
+              borderColor: 'rgb(209 213 219)',
+            }}
           >
             <option value="">Select a voice</option>
             {isBrowser &&
@@ -94,62 +120,131 @@ const TextToSpeech = ({ text }) => {
           </select>
         </label>
 
-        <label className="block m-2 font-bold">
+        <label
+          style={{
+            display: 'block',
+            fontWeight: 700,
+            margin: '0.5rem',
+          }}
+        >
           Pitch
           <input
-            className="block w-full p-2 mt-1 rounded border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
             type="range"
             min="0.5"
             max="2"
             step="0.10"
             value={pitch}
             onChange={handlePitchChange}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              marginTop: '0.25rem',
+              borderColor: 'rgb(209 213 219)',
+            }}
           />
         </label>
 
-        <label className="block m-2 font-bold">
+        <label
+          style={{
+            display: 'block',
+            fontWeight: 700,
+            margin: '0.5rem',
+          }}
+        >
           Speed
           <input
-            className="block w-full p-2 mt-1 rounded border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
             type="range"
             min="0.5"
             max="2"
             step="0.10"
             value={rate}
             onChange={handleRateChange}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              marginTop: '0.25rem',
+              borderColor: 'rgb(209 213 219)',
+            }}
           />
         </label>
 
-        <label className="block m-2 font-bold">
+        <label
+          style={{
+            display: 'block',
+            fontWeight: 700,
+            margin: '0.5rem',
+          }}
+        >
           Volume
           <input
-            className="block w-full p-2 mt-1 rounded border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300"
             type="range"
             min="0"
             max="1"
             step="0.10"
             value={volume}
             onChange={handleVolumeChange}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '0.25rem',
+              marginTop: '0.25rem',
+              borderColor: 'rgb(209 213 219)',
+            }}
           />
         </label>
       </div>
 
-      <div className="flex justify-center mt-2">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '0.5rem',
+        }}
+      >
         <button
-          className="px-4 py-2 mr-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
           onClick={handlePlay}
+          style={{
+            padding: '0.5rem 1rem',
+            marginRight: '0.5rem',
+            backgroundColor: 'rgb(59 130 246)',
+            borderRadius: '0.25rem',
+            color: 'rgb(241, 245, 249)',
+            border: '1px solid rgb(59 130 246)',
+            cursor: 'pointer',
+          }}
         >
           {isPaused ? 'Resume' : 'Play'}
         </button>
         <button
-          className="px-4 py-2 mr-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
           onClick={handlePause}
+          style={{
+            padding: '0.5rem 1rem',
+            marginRight: '0.5rem',
+            backgroundColor: 'rgb(59 130 246)',
+            borderRadius: '0.25rem',
+            color: 'rgb(241, 245, 249)',
+            border: '1px solid rgb(59 130 246)',
+            cursor: 'pointer',
+          }}
         >
           Pause
         </button>
         <button
-          className="px-4 py-2 mr-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
           onClick={handleStop}
+          style={{
+            padding: '0.5rem 1rem',
+            marginRight: '0.5rem',
+            backgroundColor: 'rgb(59 130 246)',
+            borderRadius: '0.25rem',
+            color: 'rgb(241, 245, 249)',
+            border: '1px solid rgb(59 130 246)',
+            cursor: 'pointer',
+          }}
         >
           Stop
         </button>
