@@ -17,10 +17,18 @@ const Homepage = () => {
 
   const projects = [
     {
-      name: 'Cultivate',
+      name: 'Albion Online Grind',
       status: 'Development',
+      description:
+        "Albion Online Grind is an ultimate source for tools to boost player's efficiency in the Albion Online game.",
+      tags: ['React', 'Next.js', 'Chakra UI', 'Supabase'],
+      link: 'https://albiononlinegrind.com/',
+    },
+    {
+      name: 'Cultivate',
+      status: 'Abandoned',
       description: 'Habit tracking application to cultivate new habits.',
-      tags: ['React', 'Redux', 'Firebase', 'Serverless'],
+      tags: ['React', 'TypeScript', 'Redux', 'Firebase'],
       link: 'https://cultivate.so/',
     },
     {
