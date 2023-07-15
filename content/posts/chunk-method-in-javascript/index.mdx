@@ -1,0 +1,62 @@
+---
+title: Chunk method in JavaScript
+description: At a high level, a callback is a function that is passed as an argument to another function, and is executed by that function at a later point in time.
+slug: /chunk-method-in-javascript
+date: 2023-07-15
+tags:
+  - JavaScript
+  - Algorithms
+banner: ./intro.png
+---
+
+### Problem
+
+Implement a function `chunk(array, [size=1])` that splits the input array into groups of length `size` and returns them within a **new** array. If array can't be split evenly, the final chunk will be the remaining elements. The function should not modify the original input array.
+
+### Arguments
+
+- `array (Array)`: The array to process.
+- `[size=1] (number)`: The length of each chunk.
+
+### Returns
+
+- _(Array)_: Returns the new array of chunks.
+
+### Example
+
+```js
+chunk(['a', 'b', 'c', 'd']); // => [['a'], ['b'], ['c'], ['d']]
+chunk([1, 2, 3, 4], 2); // => [[1, 2], [3, 4]]
+chunk([1, 2, 3, 4], 3); // => [[1, 2, 3], [4]]
+```
+
+The function should return an empty array if the `array` argument is empty.
+
+### Solution
+
+```js
+export default function chunk(array, size = 1) {
+  if (!array.length) return [];
+  if (array.length === 1 || array.length < size) return [array];
+
+  let chuncked = [];
+  let current = [];
+
+  array.forEach((elem, index) => {
+    if (current.length < size) {
+      current.push(elem);
+    }
+
+    if (current.length === size) {
+      chuncked.push(current);
+      current = [];
+    }
+
+    if (array.length - 1 === index && current.length) {
+      chuncked.push(current);
+    }
+  });
+
+  return chuncked;
+}
+```
