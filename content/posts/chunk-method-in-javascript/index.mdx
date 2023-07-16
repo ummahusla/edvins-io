@@ -1,5 +1,5 @@
 ---
-title: Chunk method in JavaScript
+title: Chunk method in JavaScript code challenge
 description: At a high level, a callback is a function that is passed as an argument to another function, and is executed by that function at a later point in time.
 slug: /chunk-method-in-javascript
 date: 2023-07-15
@@ -32,14 +32,32 @@ chunk([1, 2, 3, 4], 3); // => [[1, 2, 3], [4]]
 
 The function should return an empty array if the `array` argument is empty.
 
-### Solution
+Initially, while implementing it, I haven't found a good pattern to follow. I ended up with a solution that was not very elegant, and I was not happy with it. So I decided to look for other solutions online, and I found a very elegant solution on [StackOverflow](https://stackoverflow.com/questions/8495687/split-array-into-chunks), what a surprise, right? So I decided to implement it myself to understand it better and it can be found in the code below.
+
+### Solution (my approach)
+
+It first checks if the input array is empty (has a length of 0). If it is, the function immediately returns an empty array `[]`.
+
+Next, it checks if the length of the input array is 1 or smaller than the specified chunk size. If either of these conditions is true, it means the array cannot be chunked further, so the function returns an array containing the input array itself as the only element. For example, if the array is `[1, 2, 3]`, and the chunk size is 5, the function would return `[[1, 2, 3]]`.
+
+The function initializes two empty arrays: `chunked` and `current`.
+
+It then iterates through each element of the input array using `array.forEach((elem, index) => {...})`.
+
+For each element in the input array, the code checks if the `current` array has reached the desired chunk size (`size`). If not, the element is added to the `current` array using `current.push(elem)`.
+
+Once the `current` array has reached the specified chunk size, it means a chunk is complete, so the `current` array is added to the `chunked` array using `chunked.push(current)`. Then, the `current` array is reset to an empty array to start forming the next chunk.
+
+After the loop finishes iterating through the input array, there might be a partially filled `current` array left if the input array length is not divisible by the chunk size. In that case, this remaining chunk is added to the `chunked` array.
+
+Finally, the function returns the `chunked` array, which contains the input array split into smaller sub-arrays of the specified size.
 
 ```js
 export default function chunk(array, size = 1) {
   if (!array.length) return [];
   if (array.length === 1 || array.length < size) return [array];
 
-  let chuncked = [];
+  let chunked = [];
   let current = [];
 
   array.forEach((elem, index) => {
@@ -48,15 +66,44 @@ export default function chunk(array, size = 1) {
     }
 
     if (current.length === size) {
-      chuncked.push(current);
+      chunked.push(current);
       current = [];
     }
 
     if (array.length - 1 === index && current.length) {
-      chuncked.push(current);
+      chunked.push(current);
     }
   });
 
-  return chuncked;
+  return chunked;
 }
 ```
+
+### Solution 2 (using slice)
+
+This solution, utilises a `for` loop to achieve the same result. It employs the `slice()` method to extract chunks from the input array and directly pushes them into the `chunked` array. This approach avoids the need for maintaining a temporary array and the associated conditional checks. The second implementation is more concise and efficient for chunking the array.
+
+```js
+export default function chunk(array, size = 1) {
+  if (!array.length) return [];
+
+  const chunked = [];
+
+  for (let i = 0; i < array.length; i += size) {
+    const currentChunk = array.slice(i, i + size);
+    chunked.push(currentChunk);
+  }
+
+  return chunked;
+}
+```
+
+---
+
+### Appendix
+
+- [Array.prototype.forEach()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+- [Array.prototype.push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+- [Array.length](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+- [Array.prototype.slice()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+- [For loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for)
