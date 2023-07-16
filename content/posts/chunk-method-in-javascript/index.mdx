@@ -1,6 +1,6 @@
 ---
 title: Chunk method in JavaScript code challenge
-description: At a high level, a callback is a function that is passed as an argument to another function, and is executed by that function at a later point in time.
+description: We are going to implement a function that splits the input array into grops of length size and returns them within a new array.
 slug: /chunk-method-in-javascript
 date: 2023-07-15
 tags:
@@ -12,6 +12,8 @@ banner: ./intro.png
 ### Problem
 
 Implement a function `chunk(array, [size=1])` that splits the input array into groups of length `size` and returns them within a **new** array. If array can't be split evenly, the final chunk will be the remaining elements. The function should not modify the original input array.
+
+> Initially, I encountered this code challenge while preparing for front-end interviews on [GreatFrontEnd](https://www.greatfrontend.com/?fpr=edvins).
 
 ### Arguments
 
@@ -34,7 +36,7 @@ The function should return an empty array if the `array` argument is empty.
 
 Initially, while implementing it, I haven't found a good pattern to follow. I ended up with a solution that was not very elegant, and I was not happy with it. So I decided to look for other solutions online, and I found a very elegant solution on [StackOverflow](https://stackoverflow.com/questions/8495687/split-array-into-chunks), what a surprise, right? So I decided to implement it myself to understand it better and it can be found in the code below.
 
-### Solution (my approach)
+### Solution (my initial approach)
 
 It first checks if the input array is empty (has a length of 0). If it is, the function immediately returns an empty array `[]`.
 
@@ -79,7 +81,7 @@ export default function chunk(array, size = 1) {
 }
 ```
 
-### Solution 2 (using slice)
+### Solution (using slice)
 
 This solution, utilises a `for` loop to achieve the same result. It employs the `slice()` method to extract chunks from the input array and directly pushes them into the `chunked` array. This approach avoids the need for maintaining a temporary array and the associated conditional checks. The second implementation is more concise and efficient for chunking the array.
 
