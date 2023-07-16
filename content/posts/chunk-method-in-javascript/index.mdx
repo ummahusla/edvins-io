@@ -85,13 +85,17 @@ This solution, utilises a `for` loop to achieve the same result. It employs the 
 
 ```js
 export default function chunk(array, size = 1) {
-  if (!array.length) return [];
+  const length = array == null ? 0 : array.length;
+
+  if (!length || size < 1) {
+    return [];
+  }
 
   const chunked = [];
 
   for (let i = 0; i < array.length; i += size) {
-    const currentChunk = array.slice(i, i + size);
-    chunked.push(currentChunk);
+    const chunk = array.slice(i, i + size);
+    chunked.push(chunk);
   }
 
   return chunked;
