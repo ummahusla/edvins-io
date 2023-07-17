@@ -1,0 +1,52 @@
+---
+title: HTML table generator in React code challenge
+description: We are going to implement a HTML table generator in React.
+date: 2023-07-17
+tags:
+  - JavaScript
+  - React
+banner: ./intro.png
+---
+
+```js
+...
+
+export default function App() {
+  const [rows, setRows] = useState(0);
+  const [columns, setColumns] = useState(0);
+  const [table, setTable] = useState(null);
+
+  const generateTable = () => {
+    if(rows !== 0 && columns !== 0) {
+      setTable(null);
+
+      let result = '';
+
+      for(let i = 1, cell = 1; i <= rows; i++) {
+        result += `<tr>`;
+
+        for(let y = 1; y <= columns; y++, cell++) {
+          result = result + `<td>${cell}</td>`;
+        }
+
+        result += `</tr>`;
+      }
+
+      setTable(result);
+    }
+  }
+
+  return (
+    <div className="container">
+      <label>Rows</label> <input type="number" value={rows} onChange={(e) => setRows(Number(e.target.value))} />
+      <label>Columns</label> <input type="number" value={columns} onChange={(e) => setColumns(Number(e.target.value))} />
+      <button className="submit" onClick={generateTable}>Submit</button>
+
+
+      {table && <table dangerouslySetInnerHTML={{__html: table}} className="output" />}
+    </div>
+  );
+}
+
+...
+```
