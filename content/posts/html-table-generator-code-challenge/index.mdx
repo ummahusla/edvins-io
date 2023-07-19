@@ -9,44 +9,58 @@ banner: ./intro.png
 ---
 
 ```js
-...
-
-export default function App() {
-  const [rows, setRows] = useState(0);
-  const [columns, setColumns] = useState(0);
-  const [table, setTable] = useState(null);
+export default function TableGenerator() {
+  const [requiredRows, setRequiredRows] = useState(0);
+  const [requiredColumns, setRequiredColumns] = useState(0);
+  const [tableHTML, setTableHTML] = useState(null);
 
   const generateTable = () => {
-    if(rows !== 0 && columns !== 0) {
-      setTable(null);
+    if (requiredRows !== 0 && requiredColumns !== 0) {
+      setTableHTML(null);
 
-      let result = '';
+      let rows = [];
 
-      for(let i = 1, cell = 1; i <= rows; i++) {
-        result += `<tr>`;
+      for (let row = 1; row <= requiredRows; row++) {
+        let cells = [];
 
-        for(let y = 1; y <= columns; y++, cell++) {
-          result = result + `<td>${cell}</td>`;
+        for (let column = 1; column <= requiredColumns; column++) {
+          cells.push(<td key={column}></td>);
         }
 
-        result += `</tr>`;
+        rows.push(<tr key={row}>{cells}</tr>);
       }
 
-      setTable(result);
+      setTableHTML(<tbody>{rows}</tbody>);
     }
-  }
+  };
 
   return (
-    <div className="container">
-      <label>Rows</label> <input type="number" value={rows} onChange={(e) => setRows(Number(e.target.value))} />
-      <label>Columns</label> <input type="number" value={columns} onChange={(e) => setColumns(Number(e.target.value))} />
-      <button className="submit" onClick={generateTable}>Submit</button>
+    <div>
+      <h2>Table Generator</h2>
+      <label>Number of rows</label>
+      <input
+        type="number"
+        value={requiredRows}
+        min={1}
+        onChange={(e) => setRequiredRows(Number(e.target.value))}
+      />
+      <label>Number of columns</label>
+      <input
+        type="number"
+        value={requiredColumns}
+        min={1}
+        onChange={(e) => setRequiredColumns(Number(e.target.value))}
+      />
+      <button onClick={generateTable}>Submit</button>
+      {tableHTML && (
+        <>
+          <h2>Table preview</h2>
+          <table>{tableHTML}</table>
+        </>
+      )}
 
-
-      {table && <table dangerouslySetInnerHTML={{__html: table}} className="output" />}
+      {tableHTML && <pre>{table}</pre>}
     </div>
   );
 }
-
-...
 ```
