@@ -1,0 +1,50 @@
+---
+title: useMemo overdose
+description: When overuse of useMemo hook becomes a problem
+slug: /usememo-overdose
+date: 2023-07-22
+tags:
+  - React
+banner: ./intro.png
+---
+
+Recently, I've got asked when to use `useMemo` hook and this question made me think and reflect about it. I slowly started realising is that I fall into habit of using `useMemo` hook for pretty much everything. I think I'm a not alone here and this is a common problem for React developers. We tend to overuse `useMemo` hook and this is not good. In this post, we are going to learn when to use `useMemo` hook and when not to use it.
+
+---
+
+### Purpose of `useMemo` hook
+
+Before delving into the overuse of `useMemo`, let's briefly understand its purpose. The `useMemo` hook is used to memoise the results of a function and returns a cached value that only changes when its dependencies change. This ensures that expensive computations are not repeated on every render, thus optimising the performance of React components.
+
+---
+
+### When to use `useMemo` hook
+
+`useMemo` should be employed when dealing with computations that are time-consuming or resource-intensive, and the results of these computations don't change between renders. For instance, calculating the factorial of a number or formatting large datasets for display are suitable scenarios for using `useMemo`.
+
+---
+
+### Pitfalls of `useMemo` hook
+
+After reflecting about my overuse of `useMemo` hook, I realised that there are a few pitfalls that we should be aware of when using `useMemo` hook.
+
+- **Premature optimisation**. One common mistake is prematurely optimising components with `useMemo` before identifying actual performance bottlenecks. It's essential to profile your application and identify which parts are genuinely causing performance issues before adding memoisation.
+- **Unintended side effects**. Overusing `useMemo` can lead to unexpected side effects if dependencies are not correctly managed. If dependencies are not accurately provided, you might face situations where the cached value does not update when it should, leading to outdated or incorrect results.
+- **Unnecessary complexity**. Excessive memoisation can clutter the codebase and make it harder to understand, especially for developers who are not familiar with the concept of memoisation. It can obscure the actual logic of the component, making it difficult to maintain and debug.
+
+### What is considered an expensive computations?
+
+Okay, expensive computations where mentioned multiple times but how I can understand what is considered an expensive computation? Well, it's hard to say and it depends on the context. For instance, if you are working with a large dataset and you need to format it for display, then this is considered an expensive computation. However, if you are working with a small dataset, then this is not considered an expensive computation. In other words, if the computation takes a long time to complete, then it's considered an expensive computation.
+
+- **Nested loop**. Computations that involve multiple nested loops, especially when operating on large datasets, can be expensive.
+- **Recursive operations**. Recursive algorithms, if not optimised carefully, can lead to exponential time complexity.
+- **Heavy data transformations**. Data manipulations like filtering, mapping, or sorting large arrays can be resource-intensive. This is especially true if the operations are chained together.
+- **Complex mathematical calculations**. Mathematical computations that involve complex operations or iterative processes may take considerable time.
+
+### tl;dr
+
+- **Profile first, optimise second**. Before optimising a component, use React's built-in tools to profile performance and identify bottlenecks accurately.
+
+- **Memoise only expensive computations**. Apply `useMemo` only to computations that are genuinely resource-intensive and occur frequently.
+
+- **Keep dependencies accurate**. Double-check that all relevant dependencies are provided correctly to `useMemo` to ensure it updates when needed.
