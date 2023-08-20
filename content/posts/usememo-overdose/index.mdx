@@ -8,15 +8,15 @@ tags:
 banner: ./intro.png
 ---
 
-Recently, I've got asked when to use `useMemo` hook and this question made me think and reflect about it. I slowly started realising is that I fall into habit of using `useMemo` hook for pretty much everything and I coudln't explain why I'm doing it. And especially what made me feel worried is that after a chat with other front-end engineer, I've realised I'm not the only one who is doing it. It means that developrs tend to overuse `useMemo` hook and can't even properly explain why they doing it. In this post, we are going to learn when to use `useMemo` hook and when not to use it.
+Recently, I've been asked when to use the `useMemo` hook, and this question made me think and reflect on it. I slowly realised that I fell into the habit of using the `useMemo` hook for pretty much everything, and I couldn't explain why I was doing it. And especially what made me feel worried is that after a chat with another front-end engineer, I've realised I'm not the only one doing it. It means that developers tend to overuse the `useMemo` hook and can't even adequately explain why they are doing it. In this post, we will learn when to use the `useMemo` hook and when not.
 
 ---
 
 ### tl;dr
 
-- **Profile first, optimise second**. Before optimising a component, use React's built-in tools to profile performance and identify bottlenecks accurately.
+- **Profile first, optimise second**. Before optimising a component, use React's built-in tools to accurately profile performance and identify bottlenecks.
 
-- **Memoise only expensive computations**. Apply `useMemo` only to computations that are genuinely resource-intensive and occur frequently.
+- **Memoise only expensive computations**. Apply `useMemo` only to genuinely resource-intensive computations that occur frequently.
 
 - **Keep dependencies accurate**. Double-check that all relevant dependencies are provided correctly to `useMemo` to ensure it updates when needed.
 
@@ -28,9 +28,9 @@ Before delving into the overuse of `useMemo`, let's briefly understand its purpo
 
 ---
 
-### When to use useMemo hook
+### When to use the useMemo hook
 
-`useMemo` should be employed when dealing with computations that are time-consuming or resource-intensive, and the results of these computations don't change between renders. For instance, calculating the factorial of a number or formatting large datasets for display are suitable scenarios for using `useMemo`.
+`useMemo` should be employed when dealing with computations that are time-consuming or resource-intensive, and the results don't change between renders. For instance, calculating the factorial of a number or formatting large datasets for display are suitable scenarios for using `useMemo`.
 
 ---
 
@@ -39,17 +39,17 @@ Before delving into the overuse of `useMemo`, let's briefly understand its purpo
 After reflecting about my overuse of `useMemo` hook, I realised that there are a few pitfalls that we should be aware of when using `useMemo` hook.
 
 - **Premature optimisation**. One common mistake is prematurely optimising components with `useMemo` before identifying actual performance bottlenecks. It's essential to profile your application and identify which parts are genuinely causing performance issues before adding memoisation.
-- **Unintended side effects**. Overusing `useMemo` can lead to unexpected side effects if dependencies are not correctly managed. If dependencies are not accurately provided, you might face situations where the cached value does not update when it should, leading to outdated or incorrect results.
-- **Unnecessary complexity**. Excessive memoisation can clutter the codebase and make it harder to understand, especially for developers who are not familiar with the concept of memoisation. It can obscure the actual logic of the component, making it difficult to maintain and debug.
+- **Unintended side effects**. Overusing `useMemo` can lead to unexpected side effects if dependencies are not correctly managed. If dependencies are accurately provided, you might avoid situations where the cached value does not update when it should, leading to outdated or incorrect results.
+- **Unnecessary complexity**. Excessive memoisation can clutter the codebase and make it easier to understand, especially for developers who need to become more familiar with memoisation. It can obscure the actual logic of the component, making it difficult to maintain and debug.
 
 ---
 
 ### What is considered an expensive computations?
 
-Okay, expensive computations where mentioned multiple times but how I can understand what is considered an expensive computation? Well, it's hard to say and it depends on the context. For instance, if you are working with a large dataset and you need to format it for display, then this is considered an expensive computation. However, if you are working with a small dataset, then this is not considered an expensive computation. In other words, if the computation takes a long time to complete, then it's considered an expensive computation.
+Okay, expensive computations were mentioned multiple times, but how can I understand what is considered expensive? Well, it's hard to say, depending on the context. For instance, if you are working with a large dataset and need to format it for display, this is considered an expensive computation. However, if you are working with a small dataset, then this is not considered an expensive computation. In other words, if the computation takes a long time to complete, it's considered expensive.
 
 - **Nested loop**. Computations that involve multiple nested loops, especially when operating on large datasets, can be expensive.
-- **Recursive operations**. Recursive algorithms, if not optimised carefully, can lead to exponential time complexity.
+- **Recursive operations**. If not optimised carefully, recursive algorithms can lead to exponential time complexity.
 - **Heavy data transformations**. Data manipulations like filtering, mapping, or sorting large arrays can be resource-intensive. This is especially true if the operations are chained together.
 - **Complex mathematical calculations**. Mathematical computations that involve complex operations or iterative processes may take considerable time.
 
@@ -57,7 +57,7 @@ Okay, expensive computations where mentioned multiple times but how I can unders
 
 ### Preview
 
-Let's take a look at the following example. We have `NonMemoComponent` and `MemoComponent` where in both of them we use `performance.now()` to measure the execution time of `expensiveCalculation` function. The only difference between these two components is that `MemoComponent` uses `useMemo` hook to memoise the result of `expensiveCalculation` function. Let's see what happens when we click on the button and increment the count in both of the cases.
+Let's take a look at the following example. We have `NonMemoComponent` and `MemoComponent`; in both, we use `performance.now()` to measure the execution time of the `expensiveCalculation` function. The only difference between these two components is that `MemoComponent` uses the `useMemo` hook to memoise the result of the `expensiveCalculation` function. Let's see what happens when we click the button and increment the count in both cases.
 
 ```jsx:title=NonMemoComponent.jsx
 import React, { useState } from 'react';
@@ -133,7 +133,7 @@ const MemoComponent = () => {
 export default MemoComponent;
 ```
 
-> I've used CodeSandbox for this snippet, but in order to run this example, you need disabled `Infinite Loop Protection` in `sandbox.config.json`.
+> I've used CodeSandbox for this snippet, but to run this example, you must disable `Infinite Loop Protection` in `sandbox.config.json`.
 
 <iframe
   src="https://codesandbox.io/embed/memo-vs-nonmemo-demo-9nm9sx?expanddevtools=1&fontsize=14&hidenavigation=1&module=%2Fsrc%2FApp.js&theme=dark"
@@ -143,15 +143,15 @@ export default MemoComponent;
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
 ></iframe>
 
-If you open the console, you can clearly see that `Memo execution time: 0`. How come? The reason you're seeing this in the console for the first render of the memoised component is due to the way the code is structured.
+If you open the console, you can see that `Memo execution time: 0`. How come? You're seeing this in the console for the first render of the memoised component because of how the code is structured.
 
-In the memoised component, the `expensiveCalculation` is wrapped in a `useMemo` hook with an empty dependency array. This means that the calculation is performed only once when the component is initially rendered, and the result is memoised (cached) for subsequent renders. Since the calculation is done during the initial render itself, the memoised result is immediately available and doesn't require an additional execution time when you log it.
+In the memoised component, the `expensiveCalculation` is wrapped in a `useMemo` hook with an empty dependency array. This means the calculation is performed only once when the component is initially rendered, and the result is memoised (cached) for subsequent renders. Since the calculation is done during the initial render, the memoised result is immediately available and doesn't require an additional execution time when you log in.
 
 Here's a breakdown of what's happening:
 
 1. The memoised component is rendered for the first time.
 2. The `useMemo` hook calculates the result of `expensiveCalculation` during the initial render.
-3. The calculated result is immediately available for use without any additional computation.
+3. The calculated result is immediately available without additional computation.
 4. When you log the result, it appears as if the execution time is 0 because the computation already happened during the initial render.
 
-This is a characteristic of how `useMemo` works. It's designed to optimise expensive computations by calculating them only when necessary, and then reusing the cached result for subsequent renders as long as the dependencies remain the same. In this case, the empty dependency array ensures that the calculation is done only once during the initial render.
+This is a characteristic of how `useMemo` works. It's designed to optimise expensive computations by calculating them only when necessary and then reusing the cached result for subsequent renders as long as the dependencies remain the same. In this case, the empty dependency array ensures that the calculation is done only once during the initial render.
