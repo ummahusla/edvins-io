@@ -1,8 +1,8 @@
 ---
 title: Debounce method in JavaScript code challenge
-description: We are going to implement a Lodash's debounce method TODO
+description: We are going to implement a Lodash's debounce method from scratch.
 slug: /debounce-in-javascript
-date: 2023-08-19
+date: 2023-08-30
 tags:
   - JavaScript
 banner: ./intro.png
@@ -61,7 +61,9 @@ debouncedIncrement(); // i = 0
 
 ### Solution
 
-I came across this code challenge some time ago, I couldn't provide a fully working solution from the first attemp. It was especially hard while writing it in Microsoft Docs. Apparently I rely too hard on console.log and test cases was way harder then during my second attempt to crack it on [GreatFrontend](https://www.greatfrontend.com/questions/javascript/debounce).
+I came across this code challenge some time ago, I couldn't provide a fully working solution from the first attemp. It was especially hard during the interview while writing it in Microsoft Docs without access to the console to run the code. Apparently I rely too hard on console.log during the implementation process. My second attempt to crack it was on [GreatFrontend](https://www.greatfrontend.com/questions/javascript/debounce) where I took this challenge again and finally was able to provide a working solution.
+
+Let's have a quick peek at the code:
 
 ```js
 /**
@@ -74,16 +76,26 @@ export default function debounce(func, wait = 0) {
 
   return function (...args) {
     const context = this;
+
     clearTimeout(timeoutID);
 
     timeoutID = setTimeout(() => {
       timeoutID = null;
+
       func.apply(context, args);
     }, wait);
   };
 }
 ```
 
+To begin with, inside the `debounce` function, a closure is returned. This returned function can be called with any number of arguments `(...args)`. When this returned function is called, it resets a timer (tracked by `timeoutID`) using `clearTimeout`, effectively canceling any previous scheduled executions of the `func`. Then, a new timer is set using `setTimeout`, delaying the execution of `func` by the specified `wait` duration.
+
+After the `wait` duration has passed without any subsequent calls to the returned function, the scheduled `setTimeout` callback is triggered. This callback sets `timeoutID` back to `null` and invokes the original `func` with the provided arguments (`args`). This mechanism ensures that the `func` is executed only after the rapid succession of calls has stopped, preventing unnecessary or frequent invocations and helping to manage resource-intensive operations more efficiently.
+
 ---
 
 ### Appendix
+
+- [Closures](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
+- [this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
+- [setTimeout](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
