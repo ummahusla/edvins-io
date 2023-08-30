@@ -39,7 +39,9 @@ const myMap = (arr, cb) => {
   let temp = [];
 
   for (let i = 0; i < arr.length; i++) {
-    temp.push(cb(arr[i]));
+    if (arr.hasOwnProperty(i)) {
+      temp.push(cb(arr[i]));
+    }
   }
 
   return temp;
@@ -59,6 +61,14 @@ Then we loop through each element of the input array `arr`
 ```js
 for (let i = 0; i < arr.length; i++) {
   // loop code
+}
+```
+
+We do `hasOwnProperty`` check ensures that the callback is only executed on elements that actually exist in the array, and it won't be invoked for undefined elements or holes in the array.
+
+```js
+if (arr.hasOwnProperty(i)) {
+  ...
 }
 ```
 
