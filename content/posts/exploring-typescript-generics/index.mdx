@@ -1,0 +1,120 @@
+---
+title: Exploring TypeScript generics (w/ React example)
+description: Delve into the world of TypeScript generics with a practical guide featuring a React example. Learn how to enhance code reusability and type safety effectively.
+date: 2023-08-31
+slug: /exploring-typescript-generics
+tags:
+  - TypeScript
+banner: ./intro.png
+---
+
+TypeScript generics is a topic I needed help grasping for a long time. I decided to learn about it and write a blog post to understand it better. Besides understanding generics, we will see their usage with a real-world example involving a React custom `useFetch` hook.
+
+---
+
+### tl;dr
+
+- TypeScript generics are a powerful tool that can significantly enhance your code's flexibility and type safety.
+- By leveraging generics, and you can create reusable components and functions that work seamlessly with different data types.
+- The React custom `useFetch` hook example showcased how generics can help you handle diverse API responses while maintaining type correctness.
+- As your projects evolve, incorporating generics into your toolkit will prove invaluable.
+
+---
+
+### Understanding Generics
+
+Generics in TypeScript provide a way to write functions, classes, and interfaces that work with various data types while maintaining type information. This allows you to create more flexible and reusable components that support type safety. Generics are indicated by angle brackets `<T>` following a function or type declaration.
+
+Let's start with a basic example using a generic function:
+
+```ts
+// Generic function to print elements of an array
+function printArrayElements<T>(arr: T[]): void {
+  arr.forEach((item) => console.log(item));
+}
+
+const stringArray: string[] = ['apple', 'banana', 'cherry'];
+const numberArray: number[] = [1, 2, 3];
+
+printArrayElements(stringArray);
+printArrayElements(numberArray);
+```
+
+Here, the `printArrayElements` function can handle both arrays of strings and numbers, ensuring type safety.
+
+---
+
+### React custom useFetch hook with generics
+
+Let's dive into a practical scenario where generics shine: creating a dynamic type for a React `useFetch` hook. This hook fetches data from an API and provides the fetched data, error information, and loading state to the component. Generics will help us handle different response types from various endpoints.
+
+```tsx
+import { useState, useEffect } from 'react';
+
+// Define a generic type for the response data
+interface ApiResponse<T> {
+  data: T | null;
+  error: Error | null;
+  loading: boolean;
+}
+
+// Define a custom hook that fetches data
+function useFetch<T>(url: string): ApiResponse<T> {
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(url);
+        const responseData = await response.json();
+        setData(responseData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [url]);
+
+  return { data, error, loading };
+}
+
+// Usage in a component
+function App() {
+  const apiUrl = 'https://api.example.com/data'; // Replace with your API URL
+
+  const { data, error, loading } = useFetch<{ message: string }>(apiUrl);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
+    <div>
+      <h1>API Data</h1>
+      <p>{data?.message}</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+---
+
+### Best use cases for generics
+
+Generics offer a versatile solution for various scenarios:
+
+- **Collections**. Build data structures that hold multiple types while retaining type safety.
+- **Functions and APIs**. Create versatile functions that handle various input and output types.
+- **Custom data structures**. Design classes/interfaces to take different data types without compromising type checking.
+- **Frameworks and libraries**. Craft flexible APIs in frameworks and libraries to cater to diverse user needs.
