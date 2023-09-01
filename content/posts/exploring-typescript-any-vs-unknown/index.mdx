@@ -23,8 +23,17 @@ While `any` provides much flexibility, it sacrifices type safety because you can
 ```ts
 let x: any = 10;
 x = 'Hello'; // No type error
+
 x.foo(); // No type error, but it might fail at runtime
 ```
+
+So what happens in the above code?
+
+`let x: any = 10;`: We declare a variable `x` with the type `any` and initially assign it the value `10`. In this case, TypeScript doesn't enforce type checking, so we can assign any type of value to `x`.
+
+`x = 'Hello';`: We then reassign `x` to a string ('Hello'). TypeScript doesn't raise any type errors here because `x` is of type `any`, and type checking is effectively disabled for it.
+
+`x.foo();`: This line doesn't produce a TypeScript type error because `x` is still of type `any`, which means TypeScript allows us to call any method on it. However, at runtime, this line will likely result in an error because there is no `foo` method on a string ('Hello'). TypeScript can't catch such errors because we've chosen to use the `any` type.
 
 ---
 
@@ -42,5 +51,7 @@ if (typeof y === 'string') {
   console.log(y.toUpperCase()); // OK, type narrowed to string
 }
 ```
+
+---
 
 In summary, I prefer using `unknown` over `any` when dealing with values of unknown types, as it provides better type safety by requiring explicit type checks and conversions. Only use `any` when working with legacy code or situations where strict typing is not feasible or practical. Using `unknown` encourages more type-safe code and better compatibility with TypeScript's type system.
