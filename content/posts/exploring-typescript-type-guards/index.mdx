@@ -1,0 +1,89 @@
+---
+title: 'Exploring TypeScript: type guards'
+description: 'Discover type guards in TypeScript. Learn how to use it for safer and more maintainable code.'
+date: 2023-09-02
+slug: /exploring-typescript-type-guards
+tags:
+  - TypeScript
+banner: ./intro.png
+---
+
+TypeScript type guards are a way to narrow down the variable type within a conditional block. They are handy when working with union types or when TypeScript's type inference system needs some additional information to determine the exact type of a variable. Type guards allow you to perform runtime checks that help TypeScript understand the types more accurately.
+
+---
+
+There are several ways to create type guards in TypeScript:
+
+1. `typeof type guards`: You can use the `typeof` operator to check the type of a variable, like checking if a variable is a string, number, boolean, etc.
+
+```ts
+function isString(value: any): value is string {
+  return typeof value === 'string';
+}
+
+const example: string | number = 'Hello';
+if (isString(example)) {
+  // TypeScript now knows 'example' is a string here.
+  console.log(example.length);
+}
+```
+
+2. `instanceof type guards`: The `instanceof` the operator checks if an object is an instance of a particular class or constructor function.
+
+```ts
+class Animal {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log('Woof!');
+  }
+}
+
+function isDog(animal: Animal): animal is Dog {
+  return animal instanceof Dog;
+}
+
+const myAnimal: Animal = new Dog('Rover');
+if (isDog(myAnimal)) {
+  // TypeScript now knows 'myAnimal' is a Dog.
+  myAnimal.bark();
+}
+```
+
+3. `Custom type guards`: You can create your custom type guards by defining a function with a specific return type that indicates whether the provided value matches a certain type or condition.
+
+```ts
+function isEvenNumber(value: number): value is number {
+  return value % 2 === 0;
+}
+
+const num: number | string = 42;
+if (isEvenNumber(num)) {
+  // TypeScript now knows 'num' is a number.
+  console.log(num + 2);
+}
+```
+
+4. `Type predicates`: TypeScript allows you to use type predicates in function signatures to specify a condition that narrows the type of the argument. This is similar to custom type guards but is specified as part of a function's signature.
+
+```ts
+function isString(input: any): input is string {
+  return typeof input === 'string';
+}
+
+function processInput(input: any): void {
+  if (isString(input)) {
+    // TypeScript knows 'input' is a string in this block.
+    console.log(input.length);
+  }
+}
+```
+
+---
+
+These type guards help TypeScript understand the types more accurately and provide better type checking and autocompletion support in your code. They are beneficial when working with complex data structures and union types, ensuring your code is type-safe and maintainable.
