@@ -66,7 +66,6 @@ const NonMemoComponent = () => {
   const [count, setCount] = useState(0);
 
   const expensiveCalculation = () => {
-    // Simulate an expensive calculation
     let result = 0;
     for (let i = 0; i < 10000000; i++) {
       result += i;
@@ -81,7 +80,8 @@ const NonMemoComponent = () => {
   const startTime = performance.now();
   const result = expensiveCalculation();
   const endTime = performance.now();
-  console.log('Non-memo execution time:', endTime - startTime);
+
+  console.log('Non-memoised calculation execution time:', endTime - startTime);
 
   return (
     <div>
@@ -98,34 +98,34 @@ export default NonMemoComponent;
 <br />
 
 ```jsx:title=MemoComponent.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 
 const MemoComponent = () => {
   const [count, setCount] = useState(0);
 
   const expensiveCalculation = useMemo(() => {
+    const startTime = performance.now();
     // Simulate an expensive calculation
     let result = 0;
     for (let i = 0; i < 10000000; i++) {
       result += i;
     }
+    const endTime = performance.now();
+
+    console.log("Memoised calculation execution time:", endTime - startTime);
+
     return result;
-  }, []);
+  }, []); // Include 'count' as a dependency if you want to recompute when it changes.
 
   const handleClick = () => {
     setCount(count + 1);
   };
 
-  const startTime = performance.now();
-  const result = expensiveCalculation;
-  const endTime = performance.now();
-  console.log('Memo execution time:', endTime - startTime);
-
   return (
     <div>
       <button onClick={handleClick}>Increment Count</button>
       <p>Count: {count}</p>
-      <p>Result: {result}</p>
+      <p>Result: {expensiveCalculation}</p>
     </div>
   );
 };
