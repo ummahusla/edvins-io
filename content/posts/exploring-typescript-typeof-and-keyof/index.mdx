@@ -1,0 +1,68 @@
+---
+title: 'Exploring TypeScript: typeof and keyof'
+description: 'Discover two powerful yet often misunderstood operators in TypeScript are typeof and keyof.'
+date: 2023-09-30
+slug: /exploring-typescript-typeof-and-keyof
+tags:
+  - TypeScript
+banner: ./intro.png
+---
+
+If you're a software engineer most likely you come across the TypeScript language and its powerful type system. Today, we will explore two TypeScript features that can make your code more robust and expressive: `typeof` and `keyof`.
+
+### typeof
+
+At its core, `typeof` in TypeScript allows you to capture the type of a variable or object. This can be incredibly handy when you want to create new variables that inherit the type of an existing one. For example:
+
+```ts
+const originalVariable = {
+  name: 'Edvins',
+  age: 30,
+};
+
+const newVariable: typeof originalVariable = {
+  name: 'Antonovs',
+  age: 31,
+};
+```
+
+In this example, newVariable now has the same type as `originalVariable`. This ensures that if you ever update the structure of `originalVariable`, TypeScript will catch any mismatches in `newVariable` during development, reducing the chance of runtime errors.
+
+---
+
+### keyof
+
+`keyof`, on the other hand, is all about working with object keys. It allows you to create types that represent all possible keys of an object. Here's how it looks:
+
+```ts
+const person = {
+  name: 'Edvins',
+  age: 30,
+};
+
+type PersonKeys = keyof typeof person; // "name" | "age"
+```
+
+In this case, `PersonKeys` is a type that can only be one of the keys in the person object. This comes in handy when you want to write functions or utilities that work with object keys in a type-safe way.
+
+### Putting it all together
+
+Now, let's combine the power of `typeof` and `keyof` to create a versatile function:
+
+```ts
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+const person = {
+  name: 'Edvins',
+  age: 30,
+};
+
+const name: string = getProperty(person, 'name'); // Works perfectly
+const invalidKey: boolean = getProperty(person, 'invalidKey'); // TypeScript error!
+```
+
+In a nutshell, `typeof` helps mirror types effortlessly, while `keyof` empowers us to work with object keys in a type-safe manner.
+
+By combining these tools, as seen in `getProperty<T, K extends keyof T>`, you can craft functions that fetch properties in a way that maintains type safety. These features bolster your TypeScript toolkit, ensuring your code remains robust and predictable.
