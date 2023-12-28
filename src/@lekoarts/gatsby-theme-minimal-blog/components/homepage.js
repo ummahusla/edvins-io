@@ -17,6 +17,13 @@ const Homepage = () => {
 
   const projects = [
     {
+      name: 'Dungeon Grind',
+      status: 'Development',
+      description: 'Browser-based RPG game.',
+      tags: ['React', 'Next.js', 'Supabase'],
+      link: 'https://dungeon-grind.vercel.app/',
+    },
+    {
       name: 'Albion Online Grind',
       status: 'Launched',
       description:
