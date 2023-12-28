@@ -18,7 +18,7 @@ const Homepage = () => {
   const projects = [
     {
       name: 'Albion Online Grind',
-      status: 'Development',
+      status: 'Launched',
       description:
         "Albion Online Grind is an ultimate source for tools to boost player's efficiency in the Albion Online game.",
       tags: ['React', 'Next.js', 'Chakra UI', 'Supabase'],
