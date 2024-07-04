@@ -1,0 +1,151 @@
+---
+title: Building dynamic routes in Next.js with Supabase
+description: Learn how to implement dynamic routes in a Next.js app using Supabase for data fetching. This tutorial covers creating a dynamic route for individual blog posts and a directory listing all blog posts.
+date: 2024-07-04
+tags:
+  - Next.js
+  - Supabase
+banner: ./intro.png
+---
+
+In this tutorial, we'll explore how to implement dynamic routes in a Next.js app using Supabase for data fetching. Specifically, we'll create a dynamic route for individual blog posts and a directory listing all blog posts. Code snippets will work with Next.js Pages Router (not App Router), but you can adapt them to work with App Router if needed.
+
+___
+
+### Setting up the dynamic route
+
+Create a dynamic route to fetch specific blog post data based on the blog ID.
+
+1. Inside the `pages/blog` directory, create a file named `[id].jsx` (dynamic route).
+
+```jsx:title=pages/blog/[id].jsx
+import { useRouter } from 'next/router';
+import { supabase } from '../../lib/supabase';
+
+export default function BlogPage({ blog }) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>{blog.title}</h1>
+      <p>{blog.content}</p>
+    </div>
+  );
+}
+
+export async function getStaticPaths() {
+  const { data, error } = await supabase.from('blogs').select('id');
+
+  if (error) {
+    console.error('Error fetching blog IDs:', error.message);
+    return {
+      paths: [],
+      fallback: true,
+    };
+  }
+
+  const paths = data.map((blog) => ({
+    params: { id: blog.id.toString() },
+  }));
+
+  return {
+    paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const { id } = params;
+  const { data: blog, error } = await supabase
+    .from('blogs')
+    .select()
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching blog data:', error.message);
+
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      blog,
+    },
+    revalidate: 60, // Revalidate the page at most once every 60 seconds
+  };
+}
+```
+
+> Here, `revalidate`: `60` ensures that the blog post page will be regenerated in the background if a request is made `60` seconds after the last regeneration. This allows the blog post content to stay relatively up-to-date without needing to rebuild the entire application frequently.
+
+2. Ensure you have a Supabase client set up. Create a `supabase.js` file in the `lib` directory and update it with your Supabase URL and anon key.
+
+```jsx:title=lib/supabase.js
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'YOUR_SUPABASE_URL';
+const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+```
+
+
+___
+
+### Creating a blogs directory
+
+Create a page to list all blogs, linking to their respective dynamic routes.
+
+1. Create an `index.jsx` file inside the `pages/blogs` directory.
+
+```jsx:title=pages/blogs/index.jsx
+import Link from 'next/link';
+import { supabase } from '../../lib/supabase';
+
+export default function BlogsPage({ blogs }) {
+  return (
+    <div>
+      <h1>All Blogs</h1>
+      <ul>
+        {blogs.map((blog) => (
+          <li key={blog.id}>
+            <Link href={`/blog/${blog.id}`}>
+              <a>{blog.title}</a>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export async function getStaticProps() {
+  const { data: blogs, error } = await supabase.from('blogs').select('*');
+
+  if (error) {
+    console.error('Error fetching blogs:', error.message);
+
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      blogs,
+    },
+    revalidate: 60, // Revalidate the page at most once every 60 seconds
+  };
+}
+```
+
+With these steps, you now have a Next.js app with dynamic routing powered by Supabase. You can navigate to `/blogs` to see a directory of all blogs, and each `blog` link will take you to a dynamically generated page with the blog's details.
+
+This setup allows for efficient and scalable data fetching and rendering in your Next.js applications. I personally use it for one of my side projects, and it works like a charm.
