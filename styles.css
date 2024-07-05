@@ -256,3 +256,12 @@ svg[jiggle='1'] {
     transform: rotate(0deg);
   }
 }
+
+.flex-wrap-mobile {
+  display: flex;
+  flex-wrap: nowrap; /* Default: no wrap */
+
+  @media (max-width: 768px) { /* Adjust the max-width value as needed for your mobile breakpoint */
+    flex-wrap: wrap;
+  }
+}
