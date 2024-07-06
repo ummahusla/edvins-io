@@ -4,14 +4,16 @@
     "status": "Development",
     "description": "Browser-based RPG game.",
     "tags": ["React", "Next.js", "Supabase"],
-    "link": "https://dungeon-grind.vercel.app/"
+    "link": "https://dungeon-grind.vercel.app/",
+    "year": 2023
   },
   {
     "name": "Albion Online Grind",
     "status": "Launched",
     "description": "Albion Online Grind is an ultimate source for tools to boost player's efficiency in the Albion Online game.",
     "tags": ["React", "Next.js", "Chakra UI", "Supabase"],
-    "link": "https://albiononlinegrind.com/"
+    "link": "https://albiononlinegrind.com/",
+    "year": 2023
   },
   {
     "name": "Cultivate",
@@ -25,55 +27,63 @@
     "status": "Launched",
     "description": "Personal blog about software development and entrepreneurship.",
     "tags": ["React", "Gatsby", "GraphQL"],
-    "link": "https://edvins.io/"
+    "link": "https://edvins.io/",
+    "year": 2021
+  },
+  {
+    "name": "Stealth Labs",
+    "status": "Launched",
+    "description": "My umbrella company which I use to work with my clients.",
+    "tags": ["React", "TypeScript", "Supabase"],
+    "link": "https://stealthlabs.dev/",
+    "year": 2020
+  },
+  {
+    "name": "Hustle Market",
+    "status": "Abandoned",
+    "description": "Newsletter marketplace for buying and selling profitable online businesses.",
+    "tags": ["React", "Redux", "Next", "Firebase"],
+    "link": "https://hustle.market/",
+    "year": 2020
   },
   {
     "name": "react-simple-card",
     "status": "Launched",
     "description": "Simple, flexible and easy to use Card component written in React.",
     "tags": ["Open-Source", "React"],
-    "link": "https://www.npmjs.com/package/react-simple-card"
-  },
-  {
-    "name": "Hustle Market",
-    "status": "Abandoned",
-    "description": "Marketplace for buying and selling profitable online businesses.",
-    "tags": ["React", "Redux", "Next", "Firebase"],
-    "link": "https://hustle.market/"
+    "link": "https://www.npmjs.com/package/react-simple-card",
+    "year": 2019
   },
   {
     "name": "Kale",
     "status": "Abandoned",
     "description": "Expense tracking bot for Telegram.",
     "tags": ["Node", "Firebase"],
-    "link": "https://kale.money/"
-  },
-  {
-    "name": "Stealth Labs",
-    "status": "Launched",
-    "description": "My umbrella company which I use to work with my clients.",
-    "tags": ["React", "Gatsby", "GraphQL"],
-    "link": "https://stealthlabs.io/"
-  },
-  {
-    "name": "gulp-starter",
-    "status": "Launched",
-    "description": "Gulp starter template for a new project.",
-    "tags": ["Open-Source", "Gulp", "SASS", "browsersync"],
-    "link": "https://github.com/ummahusla/gulp-starter"
+    "link": "https://kale.money/",
+    "year": 2019
   },
   {
     "name": "PotatoCSS",
     "status": "Launched",
     "description": "Simple CSS framework for hackers. Simple as potato.",
-    "tags": ["Open-Source", "CSS"],
-    "link": "https://potatocss.github.io/"
+    "tags": ["CSS"],
+    "link": "https://potatocss.github.io/",
+    "year": 2017
   },
   {
     "name": "Hacker Hype",
     "status": "Abandoned",
     "description": "Online hackathon platform, unleash your potential.",
     "tags": ["react", "node", "express", "mongo"],
-    "link": "https://hackerhype.com/"
+    "link": "https://hackerhype.com/",
+    "year": 2017
+  },
+  {
+    "name": "gulp-starter",
+    "status": "Launched",
+    "description": "Gulp starter template for a new project.",
+    "tags": ["Gulp", "SASS", "browsersync"],
+    "link": "https://github.com/ummahusla/gulp-starter",
+    "year": 2016
   }
 ]
