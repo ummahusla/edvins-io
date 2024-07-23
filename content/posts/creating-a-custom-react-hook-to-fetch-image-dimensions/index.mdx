@@ -1,0 +1,97 @@
+---
+title: Creating a custom React Hook to fetch image dimensions
+description: Learn how to create a custom React hook, useImageDimensions, to fetch and display image dimensions dynamically.
+date: 2024-07-22
+tags:
+  - React
+banner: ./intro.png
+---
+
+In this post, I'll show you how to create a custom React hook to fetch the dimensions of an image from a URL. This can be particularly useful when you need to know the image size before rendering it, for layout calculations, or to handle responsive images effectively. I've built this hook for a my side project, but you can adapt it to suit your needs.
+
+### The hook itself
+
+First, let's create our custom hook `useImageDimensions`. This hook will take an image URL as input, load the image, and return its dimensions, loading state, and any potential error.
+
+```jsx:title=useImageDimensions.js
+import { useState, useEffect } from 'react';
+
+const useImageDimensions = (src) => {
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      setIsLoading(false);
+      setDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = (error) => {
+      setIsLoading(false);
+      setError(error);
+    };
+  }, [src]);
+
+  return { dimensions, isLoading, error };
+};
+
+export default useImageDimensions;
+```
+
+So what happens here? Let's break it down:
+1. We initialise three state variables: `dimensions`, `isLoading`, and `error`.
+2. We use the `useEffect` hook to handle side effects. Every time the `src` changes, the effect runs:
+    * Set `isLoading` to true and clear any previous error.
+    * Create a new `Image` instance, set its src to the provided URL, and define `onload` and `onerror` handlers.
+    * When the image loads successfully, update the `dimensions` state.
+    * If an error occurs, update the `error` state.
+
+---
+
+### How to use the hook
+
+Next, let's create a React component that uses our custom hook.
+
+```jsx:title=ImageComponent.jsx
+import React from 'react';
+import useImageDimensions from './useImageDimensions';
+
+const ImageComponent = ({ src }) => {
+  const { dimensions, isLoading, error } = useImageDimensions(src);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <div>
+      Image Width: {dimensions.width}, Image Height: {dimensions.height}
+    </div>
+  );
+};
+
+export default ImageComponent;
+```
+
+Here's what's happening in this component:
+1. We call `useImageDimensions` with the `src` prop to get the image dimensions, loading state, and error.
+2. Conditional Rendering:
+    * While loading, display a loading message.
+    * If an error occurs, display the error message.
+    * Once loaded successfully, display the image dimensions.
+
+___
+
+
+Using a custom hook like `useImageDimensions` can simplify your code and make it reusable across different components. It encapsulates the logic for loading an image and getting its dimensions, allowing you to focus on the component's rendering logic.
+
+Feel free to adapt and expand this hook to fit your specific needs. You could add more features like caching, error handling, or custom options for image loading. I hope you found this post helpful.
