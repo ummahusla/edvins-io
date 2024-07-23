@@ -91,11 +91,3 @@ export default function debounce(func, wait = 0) {
 To begin with, inside the `debounce` function, a closure is returned. This returned function can be called with any number of arguments `(...args)`. When this returned function is called, it resets a timer (tracked by `timeoutID`) using `clearTimeout`, effectively canceling any previous scheduled executions of the `func`. Then, a new timer is set using `setTimeout`, delaying the execution of `func` by the specified `wait` duration.
 
 After the `wait` duration has passed without any subsequent calls to the returned function, the scheduled `setTimeout` callback is triggered. This callback sets `timeoutID` back to `null` and invokes the original `func` with the provided arguments (`args`). This mechanism ensures that the `func` is executed only after the rapid succession of calls has stopped, preventing unnecessary or frequent invocations and helping to manage resource-intensive operations more efficiently.
-
----
-
-### Appendix
-
-- [Closures](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)
-- [this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
-- [setTimeout](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
