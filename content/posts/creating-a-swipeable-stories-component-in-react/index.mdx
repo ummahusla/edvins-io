@@ -1,0 +1,108 @@
+---
+title: Creating a swipeable stories component in React
+description: Learn how to build a swipeable Stories component in React. Implement touch event handling for seamless story navigation. Perfect for social media-like features.
+date: 2024-07-23
+tags:
+  - React
+banner: ./intro.png
+---
+
+I'm excited to walk you through the development of a simple yet effective stories component using React. This component mimics the functionality of story-based content familiar from social media platforms, offering an engaging way to present a sequence of stories. Swiping is implemented using touch events, making the experience smooth and intuitive, especially on mobile devices. For desktop users, the component also supports mouse-based navigation.
+
+---
+
+### Overview
+The Stories component leverages React hooks and touch event listeners to create a smooth navigation experience. We'll be using `useState`, `useEffect`, and `useRef` to manage state and side effects, and to reference DOM elements.
+
+
+```tsx:title=Stories.tsx
+import React, { useState, useEffect, useRef } from 'react';
+
+const Stories = () => {
+  const [currentStoryIndex, setCurrentStoryIndex] = useState<number>(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+
+  const goToPrevStory = () => {
+    // Logic to navigate to the previous story
+    setCurrentStoryIndex(prevIndex => Math.max(prevIndex - 1, 0));
+  };
+
+  const goToNextStory = () => {
+    // Logic to navigate to the next story
+    setCurrentStoryIndex(prevIndex => prevIndex + 1);
+  };
+
+  useEffect(() => {
+    const container = document.getElementById('stories-container');
+
+    if (container) {
+      let touchStartX: number | null = null;
+
+      const handleTouchStart: EventListener = (e) => {
+        const touchEvent = e as TouchEvent;
+        touchStartX = touchEvent.touches[0].clientX;
+      };
+
+      const handleTouchEnd: EventListener = (e) => {
+        if (touchStartX === null) {
+          return;
+        }
+
+        const touchEndX = (e as TouchEvent).changedTouches[0].clientX;
+        const deltaX = touchEndX - touchStartX;
+
+        if (deltaX > 50) {
+          goToPrevStory();
+        } else if (deltaX < -50) {
+          goToNextStory();
+        }
+
+        touchStartX = null;
+      };
+
+      container.addEventListener('touchstart', handleTouchStart);
+      container.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        container?.removeEventListener('touchstart', handleTouchStart);
+        container?.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [goToPrevStory, goToNextStory]);
+
+  return (
+    <div id="stories-container">
+      {/* Content of stories container */}
+    </div>
+  );
+};
+
+export default Stories;
+```
+
+### Explanation
+
+**State Management**
+* `currentStoryIndex`: Keeps track of the current story being displayed.
+* `intervalRef`: Utilised for managing intervals if you plan to auto-progress stories.
+
+**Navigation Functions**
+* `goToPrevStory`: Decrements the `currentStoryIndex`, ensuring it doesn't go below zero.
+* `goToNextStory`: Increments the `currentStoryIndex`.
+
+**Touch Event Handling**
+* `useEffect`: Adds touch event listeners to enable swipe navigation. On unmount, it cleans up these listeners.
+* `handleTouchStart`: Captures the initial touch position.
+* `handleTouchEnd`: Determines the swipe direction by comparing the end position with the start position, then navigates accordingly.
+    * If `deltaX` (difference between `touchEndX` and `touchStartX`) is greater than `50`, it indicates a swipe to the right, triggering `goToPrevStory`.
+    * If `deltaX` is less than `-50`, it indicates a swipe to the left, triggering `goToNextStory`.
+
+---
+
+### Next steps
+
+Okay, now you have the basic structure of the Stories component with swipe navigation implemented. Now it's up to you to add the actual story content and styling to make it visually appealing. You can also extend the component with additional features like auto-progression, indicators, or custom animations. The possibilities are endless!
+
+What I did for my project was to add an auto-play/auto-progression through the stories, by impleneneting a `setInterval` that calls `goToNextStory` every few seconds. This way, the stories automatically advance without user interaction. Story content can be dynamically rendered based on the `currentStoryIndex`, allowing you to display different content for each story. Indicators can be added to show the current story index, giving users a visual cue of their progress.
+
+
