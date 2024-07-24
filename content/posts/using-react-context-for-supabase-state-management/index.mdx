@@ -1,0 +1,149 @@
+---
+title: Using React Context for Supabase state management
+description: Learn how to combine React Context with Supabase to manage state in your app.
+date: 2024-07-24
+tags:
+  - React
+  - Supabase
+banner: ./intro.png
+---
+
+To manage state in React you have many different options, but combining Supabase with React Context is a powerful way to keep your app's state in sync with your backend. In this post, I'll show you the code snipped which I have used in my project to manage the state of the user subscription status, but you can adapt it to manage any state in your app.
+
+___
+
+### Setting up your context
+
+We'll create a `ProfileContext` that can hold any piece of state you want to manage. In this example, we'll track if a user is subscribed, but you can change it to anything else.
+
+Here's the full code:
+
+```tsx:title=profileContext.tsx
+import {
+  createContext,
+  useState,
+  useMemo,
+  ReactNode,
+  useContext,
+  useCallback,
+  useEffect,
+} from 'react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import toast from 'react-hot-toast';
+
+interface ProfileContextProps {
+  isSubscribed: boolean;
+}
+
+interface ProfileProviderProps {
+  children: ReactNode;
+}
+
+const ProfileContext = createContext<ProfileContextProps>({
+  isSubscribed: false,
+});
+
+const ProfileProvider = ({ children }: ProfileProviderProps) => {
+  const supabase = useSupabaseClient();
+  const user = useUser();
+
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      let { data, error } = await supabase
+        .from('profiles')
+        .select('isSubscribed')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setIsSubscribed(data.isSubscribed);
+      }
+    } catch (error) {
+      toast('An error occurred. Please try again later.');
+      console.log(error);
+    }
+  }, [supabase, user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [fetchProfile, user]);
+
+  return (
+    <ProfileContext.Provider
+      value={useMemo(
+        () => ({
+          isSubscribed,
+        }),
+        [isSubscribed]
+      )}
+    >
+      {children}
+    </ProfileContext.Provider>
+  );
+};
+
+const useProfileContext = () => {
+  return useContext(ProfileContext);
+};
+
+export { useProfileContext, ProfileContext, ProfileProvider };
+```
+
+So what happens here? Let's break it down:
+
+1. We create a `ProfileContext` with a default value for `isSubscribed`.
+2. Profile provider component:
+  * We use `useState` to manage `isSubscribed`.
+  * `fetchProfile` uses Supabase to get the subscription status from the profiles table.
+  * `useEffect` calls `fetchProfile` whenever the user changes.
+  * `useMemo` ensures the context value updates only when `isSubscribed` changes.
+  * `useProfileContext` makes it easy to access the context in your components.
+
+> Note #1: This code assumes you have a `profiles` table in your Supabase database with a column `isSubscribed`. You can adjust it to fit your schema.
+
+> Note #2: `react-hot-toast` is used for displaying error messages. You can replace it with any other toast library or error handling mechanism.
+
+---
+
+### How to use it
+Wrap your components with `ProfileProvider` and use the `useProfileContext` hook to get the context values.
+
+```tsx:title=App.tsx
+import { ProfileProvider, useProfileContext } from './profileContext';
+
+const App = () => {
+  return (
+    <ProfileProvider>
+      <MainComponent />
+    </ProfileProvider>
+  );
+};
+
+const MainComponent = () => {
+  const { isSubscribed } = useProfileContext();
+
+  return (
+    <div>
+      {isSubscribed ? <PremiumContent /> : <StandardContent />}
+    </div>
+  );
+};
+```
+
+---
+
+Combining React Context with Supabase is a great way to manage state in your app. This example shows how to keep your app's state in sync with your backend easily. Whether it's subscription status or any other piece of state, this approach helps you maintain clean and efficient code.
+
+Got questions or comments? Feel free to leave them below.
+
+
+
+
+
+
