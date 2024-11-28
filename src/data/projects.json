@@ -16,13 +16,6 @@
     "year": 2023
   },
   {
-    "name": "Cultivate",
-    "status": "Abandoned",
-    "description": "Habit tracking application to cultivate new habits.",
-    "tags": ["React", "TypeScript", "Redux", "Firebase"],
-    "link": "https://cultivate.so/"
-  },
-  {
     "name": "Edvins's Digital Garden",
     "status": "Launched",
     "description": "Personal blog about software development and entrepreneurship.",
@@ -36,6 +29,14 @@
     "description": "My umbrella company which I use to work with my clients.",
     "tags": ["React", "TypeScript", "Supabase"],
     "link": "https://stealthlabs.dev/",
+    "year": 2020
+  },
+  {
+    "name": "Cultivate",
+    "status": "Abandoned",
+    "description": "Habit tracking application to cultivate new habits.",
+    "tags": ["React", "TypeScript", "Redux", "Firebase"],
+    "link": "/why-i-regret-not-launching-my-side-project",
     "year": 2020
   },
   {
