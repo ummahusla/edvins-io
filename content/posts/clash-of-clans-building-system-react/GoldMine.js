@@ -27,7 +27,6 @@ function calculateGold(building) {
 }
 
 function loadData() {
-  const raw = localStorage.getItem(STORAGE_KEY);
   const defaultData = {
     building: {
       level: 1,
@@ -36,6 +35,13 @@ function loadData() {
     },
     gold: 0,
   };
+
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    return defaultData;
+  }
+
+  const raw = localStorage.getItem(STORAGE_KEY);
 
   if (!raw) return defaultData;
 
@@ -68,7 +74,9 @@ export default function GoldMine() {
   const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ building, gold }));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ building, gold }));
+    }
   }, [building, gold]);
 
   useEffect(() => {
