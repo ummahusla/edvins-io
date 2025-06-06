@@ -81,10 +81,23 @@ export default function GoldMine() {
 
   useEffect(() => {
     function tick() {
+      const now = getNow();
+
+      if (building.upgradedUntil && building.upgradedUntil <= now) {
+        setBuilding((b) => ({
+          level: b.level + 1,
+          lastCollectedAt: now,
+          upgradedUntil: null,
+        }));
+        setTimeLeft('');
+        setGenerated(0);
+        return;
+      }
+
       setGenerated(calculateGold(building));
 
       if (building.upgradedUntil) {
-        const remaining = building.upgradedUntil - getNow();
+        const remaining = building.upgradedUntil - now;
         setTimeLeft(formatDuration(remaining));
       } else {
         setTimeLeft('');
@@ -93,7 +106,6 @@ export default function GoldMine() {
 
     tick();
     const interval = setInterval(tick, 1000);
-
     return () => clearInterval(interval);
   }, [building]);
 
@@ -121,15 +133,6 @@ export default function GoldMine() {
       upgradedUntil: finishAt,
     }));
     setTimeLeft(formatDuration(duration));
-
-    setTimeout(() => {
-      setBuilding((b) => ({
-        level: nextLevel,
-        lastCollectedAt: getNow(),
-        upgradedUntil: null,
-      }));
-      setTimeLeft('');
-    }, duration);
   }
 
   const isUpgrading = !!(building.upgradedUntil && building.upgradedUntil > getNow());
@@ -141,14 +144,15 @@ export default function GoldMine() {
 
   return (
     <div>
-      <h2>Gold Mine (Level {level})</h2>
-      <p>Generates: {GOLD_PER_MINUTE[level]} gold/min</p>
-      <p>Max capacity: {MAX_CAPACITY[level]}</p>
+      <h2>Gold Mine (Level {building.level})</h2>
+      <p>Generates: {GOLD_PER_MINUTE[building.level]} gold/min</p>
 
       {isUpgrading ? (
-        <p>Upgrading... {timeLeft && `(${timeLeft} left)`}</p>
+        <p>Upgrading{timeLeft ? `... (${timeLeft} left)` : '...'}</p>
       ) : (
-        <p>Uncollected gold: {generated}</p>
+        <p>
+          Gold stored: {generated} / {MAX_CAPACITY[building.level]}
+        </p>
       )}
 
       <p>Gold: {gold}</p>
