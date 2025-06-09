@@ -47,6 +47,14 @@ Let’s implement a simplified **Gold Mine** building in React to preview this m
 
 Show clear UI indicators for production rate, capacity, uncollected gold, upgrade costs, and upgrade timers.
 
+---
+
+### Breaking down the code
+1. State structure - We use a building object to track `level`, `lastCollectedAt`, and `upgradedUntil`. Gold is tracked separately.
+2. Gold generation logic - We compute gold lazily with `calculateGold()`, based on time since last collection and capped by the mine’s level.
+3. Upgrade system - When you upgrade, we deduct gold, set an upgrade finish timestamp, and block further upgrades until it completes. We check `Date.now()` every second via a `setInterval` inside `useEffect`.
+4. Storage and persistence - The state is saved to `localStorage` on every change. On page load, we hydrate from saved values and resume any ongoing upgrade or gold generation.
+
 Here’s the full React component code:
 
 ```tsx:title=GoldMine.tsx
@@ -230,6 +238,19 @@ export default function GoldMine() {
 
 ---
 
+### Preventing cheating or manipulation
+Since we’re running purely on the client, some basic anti-cheat thinking goes a long way. This isn’t about stopping pros with dev tools - but we can deter casual manipulation.
+
+Here’s how you can harden it a bit:
+* Sanitise level bounds - Clamp level to `1..MAX_LEVEL` when loading state. Prevents manual `localStorage` edits from breaking logic or granting extra gold.
+* Cap max gold collection - Always use `Math.min(generated, MAX_CAPACITY[level])` so edited timestamps don’t yield infinite gold.
+* Upgrade time sanity check - When resuming, validate `upgradedUntil` to be in the future and not unreasonably large (e.g. > 1 day from now).
+* Use server time (optional) - If connected to a backend, sync upgrade timestamps with server time instead of `Date.now()`, which is client-editable.
+
+This setup is good enough for casual demos and front-end-only games. For real multiplayer games, you’d move these checks to a backend.
+
+---
+
 ### Playable demo
 
 <GoldMine />
@@ -237,6 +258,13 @@ export default function GoldMine() {
 ---
 
 ### Wrapping up
-This simple demo captures the essence of Clash of Clans’ building mechanic. It shows how smart design around timestamps, capped storage, and upgrade timers can create scalable resource generation systems without complex backend logic.
 
-This approach is perfect for web games or apps where backend resources are limited, and it’s a great technique to learn when building incremental or idle-style games.
+This demo captures the essence of Clash of Clans' economy loop using nothing but React and `localStorage`. The key trick is deferring calculations until needed, using timestamps to simulate "what would have happened" since the last visit.
+
+It’s a great technique for building scalable idle mechanics, time-based upgrades, and progress that continues offline - all with minimal state and no timers running in the background.
+
+You can use the same model for:
+* Idle games (resource mines, clickers)
+* Tamagotchi-style simulations
+* Habit apps with unlock timers
+* Cooldowns in productivity tools
