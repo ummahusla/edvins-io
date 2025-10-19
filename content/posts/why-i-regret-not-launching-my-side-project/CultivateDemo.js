@@ -1,6 +1,6 @@
 import React from 'react';
 
-import cultivateDemoSrc from './cultivate-quick-demo.mp4';
+import cultivateDemoSrc from './demo/cultivate-quick-demo.mp4';
 
 const CultivateDemo = () => {
   return (
