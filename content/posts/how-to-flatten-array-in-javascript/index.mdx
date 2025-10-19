@@ -1,40 +1,53 @@
 ---
-title: How to flatten an array in JavaScript
-description: How to flatten an array in JavaScript without using Array.prototype.flat()
+title: Implement an array-based Stack data structure in JavaScript
+description: Implementing an array-based stack is easy and can be done using the built-in array methods
 date: 2022-12-13
 tags:
   - JavaScript
+  - Data Structures
 
 ---
 
-During the interviews, you can come across code challenges where you need to implement your own version without using the native `Array.prototype.flat()` method. Roughly there are nearly ten ways how you can write it in JavaScript. It's a commonly asked question which checks your knowledge of JavaScript array methods and the concept of recursion.
+Stack is a popular data structure in computer science which is commonly used in various applications, such as evaluating mathematical expressions and managing memory allocation. A stack is a data structure that follows the last-in-first-out (LIFO) principle, meaning that the last item added to the stack will be the first item to be removed. An array-based Stack data structure organises data in a specific order, where items can only be added or removed from the top of the stack.
 
-> Initially, I encountered this code challenge while preparing for front-end interviews on [GreatFrontEnd](https://www.greatfrontend.com/?fpr=edvins).
+In JavaScript, implementing an array-based stack is straightforward and can be done using the built-in array methods.
 
-The approach I use to solve this challenge is very straightforward. I start by creating an array (`temp`) which we will return at the end of the function.
+> Initially, I encountered this popular code challenge while preparing for front-end interviews on [GreatFrontEnd](https://www.greatfrontend.com/?fpr=edvins).
 
-Then we loop through the element in the input array. If the element is an array, recursively flatten it and add its elements to the flattened array.
+To create a stack, we create a `Stack` class with a constructor method that initialises an empty array, which will store the items in the stack. The class has the following class methods:
 
-```
-temp.concat(flatten(ele))
-```
+- `push`: adds an item to the top of the stack. It takes in a value as an argument and then uses the array's push method to add the value to the end of the array.
+- `pop`: removes the top item from the stack. It uses the array's pop method to remove the last item from the array and then returns the removed value.
+- `peek`: returns the top item from the stack without removing it. It uses the array's length property to access the last item in the array and then returns it.
+- `isEmpty`: checks if the stack is empty. It returns a boolean value based on whether the array is empty.
+- `length`: returns the number of items in the stack.
 
-If the element is not an array, add it to the flattened array as is. Then we return the flattened array.
+Here's an example of how to implement an array-based stack in JavaScript:
 
 ```js
-function flatten(value) {
-  let temp = [];
-
-  for (let i = 0; i < value.length; i++) {
-    let ele = value[i];
-
-    if (Array.isArray(ele)) {
-      temp = temp.concat(flatten(ele));
-    } else {
-      temp.push(ele);
-    }
+class Stack {
+  constructor() {
+    this.items = [];
   }
 
-  return temp;
+  push(item) {
+    return this.items.push(item);
+  }
+
+  pop() {
+    return this.items.pop();
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+
+  length() {
+    return this.items.length;
+  }
 }
 ```
