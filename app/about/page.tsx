@@ -5,7 +5,7 @@ import { generatePageMetadata } from 'app/utils/metadata';
 
 export const metadata = generatePageMetadata({
   title: 'About',
-  description: 'Edvins Antonovs — a front-end engineer and indie maker based in Riga, Latvia.',
+  description: 'Edvins Antonovs - about me',
   path: '/about',
 });
 

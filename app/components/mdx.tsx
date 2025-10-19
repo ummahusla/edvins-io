@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { highlight } from 'sugar-high';
 import React from 'react';
+import remarkGfm from 'remark-gfm';
 import GoldMine from './blog/GoldMine';
 import CultivateDemo from './blog/CultivateDemo';
 import Preview from './blog/Preview';
@@ -106,5 +107,15 @@ let components = {
 };
 
 export function CustomMDX(props) {
-  return <MDXRemote {...props} components={{ ...components, ...(props.components || {}) }} />;
+  return (
+    <MDXRemote
+      {...props}
+      components={{ ...components, ...(props.components || {}) }}
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+        },
+      }}
+    />
+  );
 }
