@@ -4,7 +4,7 @@ description: Learn how to build a swipeable Stories component in React. Implemen
 date: 2024-07-23
 tags:
   - React
-banner: ./intro.png
+
 ---
 
 I'm excited to walk you through the development of a simple yet effective stories component using React. This component mimics the functionality of story-based content familiar from social media platforms, offering an engaging way to present a sequence of stories. Swiping is implemented using touch events, making the experience smooth and intuitive, especially on mobile devices. For desktop users, the component also supports mouse-based navigation.
@@ -13,7 +13,6 @@ I'm excited to walk you through the development of a simple yet effective storie
 
 ### Overview
 The Stories component leverages React hooks and touch event listeners to create a smooth navigation experience. We'll be using `useState`, `useEffect`, and `useRef` to manage state and side effects, and to reference DOM elements.
-
 
 ```tsx:title=Stories.tsx
 import React, { useState, useEffect, useRef } from 'react';
@@ -104,5 +103,4 @@ export default Stories;
 Okay, now you have the basic structure of the Stories component with swipe navigation implemented. Now it's up to you to add the actual story content and styling to make it visually appealing. You can also extend the component with additional features like auto-progression, indicators, or custom animations. The possibilities are endless!
 
 What I did for my project was to add an auto-play/auto-progression through the stories, by impleneneting a `setInterval` that calls `goToNextStory` every few seconds. This way, the stories automatically advance without user interaction. Story content can be dynamically rendered based on the `currentStoryIndex`, allowing you to display different content for each story. Indicators can be added to show the current story index, giving users a visual cue of their progress.
-
 

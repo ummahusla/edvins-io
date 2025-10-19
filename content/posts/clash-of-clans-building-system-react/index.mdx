@@ -6,30 +6,30 @@ slug: clash-of-clans-building-system-react
 tags:
   - React
   - Game Development
-banner: ./intro.png
----
 
-import GoldMine from './GoldMine';
+---
 
 I’ve always enjoyed recreating game mechanics and logic in a UI. There’s something satisfying about breaking down how games work - how gold is calculated, how upgrades are timed - and then rebuilding those systems from scratch. This time, I looked at the **Clash of Clans**'s building system. It’s a simple loop: passive resource generation, timed upgrades, storage caps. I rebuilt it in React using just `localStorage` and clean logic. No backend, just the fun bits.
 
 ---
 
 ### How the Clash of Clans building system works
+
 At its core, the building system in Clash of Clans revolves around two main things: **resource generation over time** and **building upgrades that improve that generation**.
 
-* Resource generation happens continuously at a fixed rate per building level, but with a maximum storage capacity to prevent infinite accumulation.
-* Max capacity is a critical mechanic - once the storage cap is reached, the building stops accumulating until the player collects resources.
-* Upgrades take time to complete and cost resources. During an upgrade, resource production continues at the current level, but you can’t start another upgrade until the current one finishes.
-* The game tracks only minimal state: the building’s level, the timestamp of the last resource collection, and the upgrade completion timestamp (if upgrading).
+- Resource generation happens continuously at a fixed rate per building level, but with a maximum storage capacity to prevent infinite accumulation.
+- Max capacity is a critical mechanic - once the storage cap is reached, the building stops accumulating until the player collects resources.
+- Upgrades take time to complete and cost resources. During an upgrade, resource production continues at the current level, but you can’t start another upgrade until the current one finishes.
+- The game tracks only minimal state: the building’s level, the timestamp of the last resource collection, and the upgrade completion timestamp (if upgrading).
 
 When a player collects resources, the game calculates how much has accumulated since the last collection - capped at the max capacity. When upgrading, it sets a timer and disables further upgrades until it completes.
 
-![](./coc-build-system.png)
+![](/posts/clash-of-clans-building-system-react/coc-build-system.png)
 
 ---
 
 ### Why this system is so smart
+
 This system is elegant because it’s extremely efficient and cheap to implement at scale. The server doesn’t have to update or store resource counts every second for every player - it just records timestamps and levels. The resource amounts are computed on demand using simple arithmetic, saving massive amounts of processing and storage.
 
 It also creates an engaging loop for players: you return to collect resources, spend them on upgrades, and wait for your building to improve, all while the game state is easy to manage and sync.
@@ -37,19 +37,21 @@ It also creates an engaging loop for players: you return to collect resources, s
 ---
 
 ### Building a React demo
+
 Let’s implement a simplified **Gold Mine** building in React to preview this mechanic. It will:
 
-* Generate gold continuously based on building level.
-* Enforce a max capacity limit on uncollected gold.
-* Allow upgrades that cost gold and take time.
-* Display a live countdown timer during upgrades.
-* Persist progress in `localStorage` so it survives page refreshes.
+- Generate gold continuously based on building level.
+- Enforce a max capacity limit on uncollected gold.
+- Allow upgrades that cost gold and take time.
+- Display a live countdown timer during upgrades.
+- Persist progress in `localStorage` so it survives page refreshes.
 
 Show clear UI indicators for production rate, capacity, uncollected gold, upgrade costs, and upgrade timers.
 
 ---
 
 ### Breaking down the code
+
 1. State structure - We use a building object to track `level`, `lastCollectedAt`, and `upgradedUntil`. Gold is tracked separately.
 2. Gold generation logic - We compute gold lazily with `calculateGold()`, based on time since last collection and capped by the mine’s level.
 3. Upgrade system - When you upgrade, we deduct gold, set an upgrade finish timestamp, and block further upgrades until it completes. We check `Date.now()` every second via a `setInterval` inside `useEffect`.
@@ -239,13 +241,15 @@ export default function GoldMine() {
 ---
 
 ### Preventing cheating or manipulation
+
 Since we’re running purely on the client, some basic anti-cheat thinking goes a long way. This isn’t about stopping pros with dev tools - but we can deter casual manipulation.
 
 Here’s how you can harden it a bit:
-* Sanitise level bounds - Clamp level to `1..MAX_LEVEL` when loading state. Prevents manual `localStorage` edits from breaking logic or granting extra gold.
-* Cap max gold collection - Always use `Math.min(generated, MAX_CAPACITY[level])` so edited timestamps don’t yield infinite gold.
-* Upgrade time sanity check - When resuming, validate `upgradedUntil` to be in the future and not unreasonably large (e.g. > 1 day from now).
-* Use server time (optional) - If connected to a backend, sync upgrade timestamps with server time instead of `Date.now()`, which is client-editable.
+
+- Sanitise level bounds - Clamp level to `1..MAX_LEVEL` when loading state. Prevents manual `localStorage` edits from breaking logic or granting extra gold.
+- Cap max gold collection - Always use `Math.min(generated, MAX_CAPACITY[level])` so edited timestamps don’t yield infinite gold.
+- Upgrade time sanity check - When resuming, validate `upgradedUntil` to be in the future and not unreasonably large (e.g. > 1 day from now).
+- Use server time (optional) - If connected to a backend, sync upgrade timestamps with server time instead of `Date.now()`, which is client-editable.
 
 This setup is good enough for casual demos and front-end-only games. For real multiplayer games, you’d move these checks to a backend.
 
@@ -264,7 +268,8 @@ This demo captures the essence of Clash of Clans' economy loop using nothing but
 It’s a great technique for building scalable idle mechanics, time-based upgrades, and progress that continues offline - all with minimal state and no timers running in the background.
 
 You can use the same model for:
-* Idle games (resource mines, clickers)
-* Tamagotchi-style simulations
-* Habit apps with unlock timers
-* Cooldowns in productivity tools
+
+- Idle games (resource mines, clickers)
+- Tamagotchi-style simulations
+- Habit apps with unlock timers
+- Cooldowns in productivity tools
