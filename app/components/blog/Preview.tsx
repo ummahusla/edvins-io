@@ -100,6 +100,7 @@ const Preview = () => {
             style={{
               marginTop: '10px',
               border: '1px solid black',
+              backgroundColor: 'white',
             }}
           >
             {tableHTML}

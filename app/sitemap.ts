@@ -1,4 +1,4 @@
-import { getBlogPosts } from 'app/blog/utils';
+import { getBlogPosts } from 'app/(pages)/blog/utils';
 
 export const baseUrl = 'https://edvins.io';
 

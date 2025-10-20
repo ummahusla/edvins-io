@@ -4,7 +4,6 @@ description: When overuse of useMemo hook becomes a problem
 date: 2023-08-20
 tags:
   - React
-
 ---
 
 Recently, I've been asked when to use the `useMemo` hook, and this question made me think and reflect on it. I slowly realised that I fell into the habit of using the `useMemo` hook for pretty much everything, and I couldn't explain why I was doing it. And especially what made me feel worried is that after a chat with another front-end engineer, I've realised I'm not the only one doing it. It means that developers tend to overuse the `useMemo` hook and can't even adequately explain why they are doing it. In this post, we will learn when to use the `useMemo` hook and when not.
@@ -136,7 +135,7 @@ export default MemoComponent;
 
 <iframe
   src="https://codesandbox.io/embed/memo-vs-nonmemo-demo-9nm9sx?expanddevtools=1&fontsize=14&hidenavigation=1&module=%2Fsrc%2FApp.js&theme=dark"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+  style={{ width: '100%', height: '500px', border: 0, borderRadius: '4px', overflow: 'hidden' }}
   title="memo-vs-nonmemo demo"
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"

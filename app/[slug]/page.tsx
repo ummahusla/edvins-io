@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { CustomMDX } from 'app/components/mdx';
-import { formatDate, getBlogPosts } from 'app/blog/utils';
+import { formatDate, getBlogPosts } from 'app/(pages)/blog/utils';
 import { baseUrl } from 'app/sitemap';
 import { generatePageMetadata } from 'app/utils/metadata';
 
@@ -64,7 +64,7 @@ export default function Blog({ params }) {
       <h1 className="title font-semibold text-2xl tracking-tighter">{post.metadata.title}</h1>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          {formatDate(post.metadata.publishedAt)}
+          {formatDate(post.metadata.publishedAt)} — {post.metadata.tags?.join(', ')}
         </p>
       </div>
       <article className="prose">

@@ -14,7 +14,7 @@ export default function Page() {
         >
           Secondmind
         </a>
-        , currently based in Riga, Latvia. I build{' '}
+        , currently based in 🇱🇻 Riga, Latvia. I build{' '}
         <a href="/projects" className="underline">
           side projects
         </a>
@@ -42,7 +42,7 @@ export default function Page() {
         , and spending time with my family.
       </p>
       <div className="my-8">
-        <BlogPosts />
+        <BlogPosts displayCount={5} />
       </div>
     </section>
   );

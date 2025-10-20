@@ -70,18 +70,38 @@ function formatDuration(ms) {
 }
 
 export default function GoldMine() {
-  const [building, setBuilding] = useState(() => loadData().building);
-  const [gold, setGold] = useState(() => loadData().gold);
+  const [mounted, setMounted] = useState(false);
+  const [building, setBuilding] = useState<{
+    level: number;
+    lastCollectedAt: number;
+    upgradedUntil: number | null;
+  }>({
+    level: 1,
+    lastCollectedAt: getNow(),
+    upgradedUntil: null,
+  });
+  const [gold, setGold] = useState(0);
   const [generated, setGenerated] = useState(0);
   const [timeLeft, setTimeLeft] = useState('');
 
+  // Load data from localStorage only on client
   useEffect(() => {
+    const data = loadData();
+    setBuilding(data.building);
+    setGold(data.gold);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ building, gold }));
     }
-  }, [building, gold]);
+  }, [building, gold, mounted]);
 
   useEffect(() => {
+    if (!mounted) return;
+
     function tick() {
       const now = getNow();
 
@@ -109,7 +129,7 @@ export default function GoldMine() {
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [building]);
+  }, [building, mounted]);
 
   function collect() {
     const gain = calculateGold(building);
@@ -132,7 +152,7 @@ export default function GoldMine() {
     setGold((g) => g - cost);
     setBuilding((b) => ({
       ...b,
-      upgradedUntil: finishAt,
+      upgradedUntil: finishAt as number,
     }));
     setTimeLeft(formatDuration(duration));
   }
@@ -143,6 +163,14 @@ export default function GoldMine() {
   const canUpgrade = !isUpgrading && building.level < MAX_LEVEL && gold >= upgradeCost;
 
   const level = Math.min(building.level, MAX_LEVEL);
+
+  if (!mounted) {
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div>

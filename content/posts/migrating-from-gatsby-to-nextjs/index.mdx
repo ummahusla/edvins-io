@@ -1,0 +1,320 @@
+---
+title: Migrating from Gatsby to Next.js
+description: My experience migrating 77 blog posts, 4 static pages, and 5 interactive components from Gatsby to Next.js while preserving SEO and URLs
+date: 2025-10-20
+tags:
+  - Next.js
+  - Gatsby
+  - React
+---
+
+After 5 years of running my blog on Gatsby, I decided to migrate to Next.js. This wasn't really a choice but my Gatsby blog stopped working.
+
+---
+
+## Why migrate?
+
+**The real reason: dependency hell.** I hadn't been updating packages regularly, and when I tried to run `gatsby develop`, everything broke. Outdated plugins, conflicting dependencies, GraphQL version mismatches. I spent hours trying to fix it and realised I didn't want to maintain this complexity anymore.
+
+I needed something simpler. Something I could understand without reading through layers of plugin documentation.
+
+I went with Vercel's [Portfolio Starter Kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) template. It's minimal, uses Next.js, supports Markdown out of the box, and gives me full control over SEO and URL structure. Perfect for keeping my existing setup.
+
+The big concern? **SEO**. I had 77 blog posts indexed. Breaking all those URLs wasn't an option.
+
+---
+
+## The migration plan
+
+I didn't want to do everything at once. My approach was:
+
+1. **Keep the main branch as Gatsby** (the live site)
+2. **Create a v1 branch** as a stable Gatsby archive
+3. **Build Next.js on a v2 branch** and iterate there
+
+This gave me a safety net. If something went wrong, the live site stayed up.
+
+```bash
+git checkout -b v1
+git push origin v1
+
+git checkout main
+git checkout -b v2
+```
+
+I started with Vercel's Portfolio Starter Kit template. It's clean, minimal, and gives you just enough to get started without overwhelming you with features you don't need.
+
+The beauty of this template? I can add what I need as I go. Want comments? Add them. Want analytics? Drop them in. It's a DIY blog, which is exactly what I wanted.
+
+---
+
+## Content structure
+
+My Gatsby setup had all blog posts in `/content/posts/[post-name]/index.mdx`. I decided to keep this structure in Next.js. Why change something that works?
+
+```
+content/posts/
+  my-post/
+    index.mdx
+    image.png
+```
+
+The Next.js example used `/app/blog/posts/` with `.mdx` files directly. I rewrote the parsing logic to read from my existing structure instead. This saved me from moving 77 files around.
+
+---
+
+## Frontmatter cleanup
+
+Gatsby posts had a `slug` field in frontmatter. In Next.js, I use the folder name as the slug, so this field was redundant. I found 26 posts with explicit slugs and removed them.
+
+A few folder names didn't match their slugs, so I renamed them:
+
+- `debounce-method-in-javascript` → `debounce-in-javascript`
+- `react-text-to-speech-component` → `react-text-to-speech`
+- And 2 more
+
+The new minimal frontmatter:
+
+```yaml
+---
+title: Post Title
+date: 2024-01-01
+description: Post description
+tags:
+  - React
+  - Next.js
+---
+```
+
+Clean and simple.
+
+---
+
+## The SEO decision
+
+The Next.js blog example uses `/blog/[slug]` URLs. My Gatsby site used `/[slug]` (posts at root level). Changing this would break every indexed URL.
+
+I moved `app/blog/[slug]/page.tsx` → `app/[slug]/page.tsx` and updated:
+
+- `app/components/posts.tsx` (internal links)
+- `app/sitemap.ts` (sitemap generation)
+- `app/rss/route.ts` (RSS feed)
+
+This preserved all my URLs. Google never noticed the migration.
+
+---
+
+## Static assets
+
+Images in Gatsby lived alongside the MDX files. In Next.js, they need to be in `/public`.
+
+I wrote a script to:
+
+1. Move images from `content/posts/[post]/image.png` → `public/posts/[post]/image.png`
+2. Update MDX references: `![](./image.png)` → `![](/posts/[post]/image.png)`
+
+This was tedious but necessary. The script saved hours of manual work.
+
+---
+
+## Dynamic OG images
+
+My Gatsby posts had static banner images for social sharing. Each one was manually created in Figma, exported, and committed to the repo. 77 posts × ~200KB per image = **15MB of banner images** in my repository.
+
+I switched to dynamic generation instead.
+
+Created `/app/og/route.tsx`:
+
+```tsx
+import { ImageResponse } from 'next/og';
+
+export function GET(request: Request) {
+  let url = new URL(request.url);
+  let title = url.searchParams.get('title') || 'Edvins Antonovs';
+
+  return new ImageResponse(
+    (
+      <div tw="flex flex-col w-full h-full items-center justify-center bg-white">
+        <h2 tw="text-4xl font-bold">{title}</h2>
+      </div>
+    ),
+    { width: 1200, height: 630 }
+  );
+}
+```
+
+Now every post gets an OG image at `/og?title=Post+Title`.
+
+**Benefits:**
+
+- No more opening Figma for every new post
+- Repo size dropped by 15MB
+- Faster builds (no image processing)
+- Consistent design across all posts
+- Easy to update the template once, applies everywhere
+
+The images are generated on-demand and cached by Vercel. Perfect.
+
+---
+
+## Interactive components
+
+This was the trickiest part. I had 5 posts with interactive React components embedded in MDX:
+
+- GoldMine (Clash of Clans building demo)
+- CultivateDemo (habit tracker with video)
+- Preview (HTML table generator)
+- TextToSpeech + BlogPost
+
+Gatsby let me import these directly in MDX. Next.js with `next-mdx-remote` needs explicit registration.
+
+I moved components to `app/components/blog/`, added `'use client'`, then registered them:
+
+```tsx
+import GoldMine from './blog/GoldMine';
+import CultivateDemo from './blog/CultivateDemo';
+
+let components = {
+  h1: createHeading(1),
+  // ... other components
+  GoldMine,
+  CultivateDemo,
+};
+
+export function CustomMDX(props) {
+  return <MDXRemote {...props} components={components} />;
+}
+```
+
+Now they work just like before.
+
+---
+
+## Static pages
+
+I had 4 static pages: About, Projects, Books, Self-Education. These lived in `/content/pages/` in Gatsby.
+
+I created a utility to read them:
+
+```typescript
+export function getPage(slug: string) {
+  const pagePath = path.join(process.cwd(), 'content', 'pages', slug, 'index.mdx');
+  // Parse frontmatter and return content
+}
+```
+
+Then created routes:
+
+- `app/about/page.tsx`
+- `app/projects/page.tsx`
+- `app/books/page.tsx`
+- `app/self-education/page.tsx`
+
+Each one calls `getPage()` and renders with `CustomMDX`. Simple and reusable.
+
+---
+
+## Markdown tables
+
+My Books page had a big table with 100+ entries. It rendered fine in Gatsby but broke in Next.js.
+
+The fix: install `remark-gfm` (GitHub Flavored Markdown):
+
+```bash
+npm install remark-gfm@3
+```
+
+Note: Version 3, not 4. Version 4 has compatibility issues with `next-mdx-remote@4.x`.
+
+Updated MDX rendering:
+
+```tsx
+import remarkGfm from 'remark-gfm';
+
+export function CustomMDX(props) {
+  return <MDXRemote {...props} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />;
+}
+```
+
+Tables worked again. But then I realised tables look terrible on mobile with my narrow page width. I converted the Books page to a list grouped by year instead. Much better UX.
+
+---
+
+## Metadata utility
+
+Every page needed consistent metadata (titles, descriptions, OG images, Twitter cards). Instead of repeating this everywhere, I created a helper:
+
+```typescript
+export function generatePageMetadata({
+  title,
+  description,
+  path,
+  type,
+  publishedTime,
+  tags,
+}: PageMetadataProps): Metadata {
+  const ogImage = `${baseUrl}/og?title=${encodeURIComponent(title)}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}${path}`,
+      siteName: 'Edvins Antonovs',
+      images: [{ url: ogImage }],
+      ...(publishedTime && { publishedTime }),
+      ...(tags && { tags }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [ogImage],
+    },
+  };
+}
+```
+
+Now every page uses this. One place to update, everywhere stays consistent.
+
+---
+
+## What I didn't migrate
+
+I kept things simple and dropped:
+
+- PWA manifest (who installs personal blogs as apps?)
+- Multiple favicon sizes (just kept `favicon.ico`, `icon.svg`, `apple-icon.png`)
+- Various Gatsby plugins I never used
+
+Less is more.
+
+---
+
+## Lessons learned
+
+**1. Scripts are your friend.** I wrote small Node scripts for repetitive tasks (moving images, cleaning frontmatter). Saved hours.
+
+**2. Test incrementally.** I didn't migrate everything at once. Blog posts first, then pages, then components. Each step was verified before moving on.
+
+**3. Keep old versions.** Having the Gatsby site in a separate branch meant I could reference it anytime. Git branches are cheap.
+
+**4. SEO is non-negotiable.** Plan your URL structure first. Changing it later is painful.
+
+**5. You don't need everything.** I dropped half the features from my Gatsby setup and the site is better for it.
+
+---
+
+## Final thoughts
+
+The migration took about a day of actual work (spread over a week of tinkering). Was it worth it?
+
+**Yes.**
+
+The Next.js codebase is cleaner. Builds are faster. Deployment is simpler. And I finally understand how my blog works without digging through plugin docs.
+
+More importantly, I'm back to tinkering. With the minimalist template as a base, I can add features as I need them. No bloated plugin ecosystem. No fighting with GraphQL. Just me, Next.js, and Markdown files.
+
+If you're stuck in Gatsby dependency hell, consider this approach. Don't try to fix everything but start fresh with a minimal template. Keep your content structure. Preserve your URLs. Build up from there.
+
+The full code is on [GitHub](https://github.com/ummahusla/edvins-io) if you want to see how it all fits together.
