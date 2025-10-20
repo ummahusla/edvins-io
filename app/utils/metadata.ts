@@ -19,6 +19,7 @@ export function generatePageMetadata({
   tags,
 }: PageMetadataProps): Metadata {
   const url = `${baseUrl}${path}`;
+  const ogImage = `${baseUrl}/og?title=${encodeURIComponent(title)}`;
 
   return {
     title,
@@ -30,6 +31,7 @@ export function generatePageMetadata({
       siteName: 'Edvins Antonovs',
       locale: 'en_GB',
       type,
+      images: [{ url: ogImage }],
       ...(publishedTime && { publishedTime }),
       ...(tags && { tags }),
     },
@@ -38,6 +40,7 @@ export function generatePageMetadata({
       title,
       description,
       creator: '@edvinsantonovs',
+      images: [ogImage],
     },
     robots: {
       index: true,
