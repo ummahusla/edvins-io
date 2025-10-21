@@ -8,31 +8,31 @@ tags:
   - React
 ---
 
-After 5 years of running my blog on Gatsby, I decided to migrate to Next.js. This wasn't really a choice but my Gatsby blog stopped working.
+After 5 years of running my blog on Gatsby, I migrated to Next.js. My Gatsby blog stopped working.
 
 ---
 
 ## Why migrate?
 
-**The real reason: dependency hell.** I hadn't been updating packages regularly, and when I tried to run `gatsby develop`, everything broke. Outdated plugins, conflicting dependencies, GraphQL version mismatches. I spent hours trying to fix it and realised I didn't want to maintain this complexity anymore.
+**Dependency hell.** I hadn't updated packages regularly. When I ran `gatsby develop`, everything broke. Outdated plugins, conflicting dependencies, GraphQL version mismatches. I spent hours trying to fix it and realized I didn't want to maintain this complexity.
 
-I needed something simpler. Something I could understand without reading through layers of plugin documentation.
+I needed something simpler that I could understand without reading plugin docs.
 
-I went with Vercel's [Portfolio Starter Kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) template. It's minimal, uses Next.js, supports Markdown out of the box, and gives me full control over SEO and URL structure. Perfect for keeping my existing setup.
+I used Vercel's [Portfolio Starter Kit](https://vercel.com/templates/portfolio/portfolio-starter-kit) template. It's minimal, uses Next.js, supports Markdown, and gives me full control over SEO and URL structure.
 
-The big concern? **SEO**. I had 77 blog posts indexed. Breaking all those URLs wasn't an option.
+**The concern: SEO.** I had 77 blog posts indexed. Breaking those URLs wasn't an option.
 
 ---
 
 ## The migration plan
 
-I didn't want to do everything at once. My approach was:
+My approach:
 
 1. **Keep the main branch as Gatsby** (the live site)
 2. **Create a v1 branch** as a stable Gatsby archive
 3. **Build Next.js on a v2 branch** and iterate there
 
-This gave me a safety net. If something went wrong, the live site stayed up.
+If something went wrong, the live site stayed up.
 
 ```bash
 git checkout -b v1
@@ -42,15 +42,15 @@ git checkout main
 git checkout -b v2
 ```
 
-I started with Vercel's Portfolio Starter Kit template. It's clean, minimal, and gives you just enough to get started without overwhelming you with features you don't need.
+I started with Vercel's Portfolio Starter Kit template. Clean and minimal.
 
-The beauty of this template? I can add what I need as I go. Want comments? Add them. Want analytics? Drop them in. It's a DIY blog, which is exactly what I wanted.
+I can add features as I need them. Want comments? Add them. Want analytics? Drop them in.
 
 ---
 
 ## Content structure
 
-My Gatsby setup had all blog posts in `/content/posts/[post-name]/index.mdx`. I decided to keep this structure in Next.js. Why change something that works?
+My Gatsby setup had all blog posts in `/content/posts/[post-name]/index.mdx`. I kept this structure in Next.js.
 
 ```
 content/posts/
@@ -86,7 +86,7 @@ tags:
 ---
 ```
 
-Clean and simple.
+Simple.
 
 ---
 
@@ -100,7 +100,7 @@ I moved `app/blog/[slug]/page.tsx` → `app/[slug]/page.tsx` and updated:
 - `app/sitemap.ts` (sitemap generation)
 - `app/rss/route.ts` (RSS feed)
 
-This preserved all my URLs. Google never noticed the migration.
+This preserved all my URLs.
 
 ---
 
@@ -113,15 +113,15 @@ I wrote a script to:
 1. Move images from `content/posts/[post]/image.png` → `public/posts/[post]/image.png`
 2. Update MDX references: `![](./image.png)` → `![](/posts/[post]/image.png)`
 
-This was tedious but necessary. The script saved hours of manual work.
+The script saved hours of manual work.
 
 ---
 
 ## Dynamic OG images
 
-My Gatsby posts had static banner images for social sharing. Each one was manually created in Figma, exported, and committed to the repo. 77 posts × ~200KB per image = **15MB of banner images** in my repository.
+My Gatsby posts had static banner images for social sharing. Each one was manually created in Figma, exported, and committed to the repo. 77 posts × ~200KB per image = **15MB of banner images**.
 
-I switched to dynamic generation instead.
+I switched to dynamic generation.
 
 Created `/app/og/route.tsx`:
 
@@ -176,20 +176,20 @@ mkdir -p public/fonts
 curl -L "https://github.com/vercel/geist-font/raw/main/packages/next/dist/fonts/geist-sans/Geist-Regular.ttf" -o public/fonts/Geist-Regular.ttf
 ```
 
-Using `readFile` to load the local font is more reliable than fetching from external URLs and avoids potential format compatibility issues with ImageResponse.
+Using `readFile` to load the local font is more reliable than fetching from external URLs.
 
 Now every post gets an OG image at `/og?title=Post+Title`.
 
 **Benefits:**
 
-- No more opening Figma for every new post
+- No more opening Figma for every post
 - Repo size dropped by 15MB
 - Faster builds (no image processing)
 - Consistent design across all posts
-- Easy to update the template once, applies everywhere
-- Uses the same font as the website for brand consistency
+- Easy to update the template once
+- Uses the same font as the website
 
-The images are generated on-demand and cached by Vercel. Perfect.
+The images are generated on-demand and cached by Vercel.
 
 ---
 
@@ -246,7 +246,7 @@ Then created routes:
 - `app/books/page.tsx`
 - `app/self-education/page.tsx`
 
-Each one calls `getPage()` and renders with `CustomMDX`. Simple and reusable.
+Each one calls `getPage()` and renders with `CustomMDX`.
 
 ---
 
@@ -272,13 +272,13 @@ export function CustomMDX(props) {
 }
 ```
 
-Tables worked again. But then I realised tables look terrible on mobile with my narrow page width. I converted the Books page to a list grouped by year instead. Much better UX.
+Tables worked again. But they looked terrible on mobile with my narrow page width. I converted the Books page to a list grouped by year instead.
 
 ---
 
 ## Metadata utility
 
-Every page needed consistent metadata (titles, descriptions, OG images, Twitter cards). Instead of repeating this everywhere, I created a helper:
+Every page needs consistent metadata (titles, descriptions, OG images, Twitter cards). I created a helper:
 
 ```typescript
 export function generatePageMetadata({
@@ -317,40 +317,36 @@ Now every page uses this. One place to update, everywhere stays consistent.
 
 ## What I didn't migrate
 
-I kept things simple and dropped:
+I dropped:
 
 - PWA manifest (who installs personal blogs as apps?)
 - Multiple favicon sizes (just kept `favicon.ico`, `icon.svg`, `apple-icon.png`)
 - Various Gatsby plugins I never used
 
-Less is more.
+---
+
+## What I learned
+
+**Write scripts for repetitive tasks.** I made Node scripts to move images and clean frontmatter. Saved hours.
+
+**Migrate in steps.** Blog posts first, then pages, then components. Test each part before moving on.
+
+**Keep the old version.** I archived the Gatsby site in a branch so I could reference it anytime.
+
+**Plan URLs first.** I kept my URL structure (`/[slug]` instead of `/blog/[slug]`) to preserve SEO. Changing URLs later would break everything.
+
+**Drop what you don't need.** I removed half my Gatsby features. The site is better without them.
 
 ---
 
-## Lessons learned
+## Was it worth it?
 
-**1. Scripts are your friend.** I wrote small Node scripts for repetitive tasks (moving images, cleaning frontmatter). Saved hours.
+Yes. The migration took a day spread over a week.
 
-**2. Test incrementally.** I didn't migrate everything at once. Blog posts first, then pages, then components. Each step was verified before moving on.
+The Next.js code is cleaner. Builds are faster. I understand how my blog works now.
 
-**3. Keep old versions.** Having the Gatsby site in a separate branch meant I could reference it anytime. Git branches are cheap.
+I can add features as I need them. No plugin mess. No GraphQL fights. Just Next.js and Markdown files.
 
-**4. SEO is non-negotiable.** Plan your URL structure first. Changing it later is painful.
-
-**5. You don't need everything.** I dropped half the features from my Gatsby setup and the site is better for it.
-
----
-
-## Final thoughts
-
-The migration took about a day of actual work (spread over a week of tinkering). Was it worth it?
-
-**Yes.**
-
-The Next.js codebase is cleaner. Builds are faster. Deployment is simpler. And I finally understand how my blog works without digging through plugin docs.
-
-More importantly, I'm back to tinkering. With the minimalist template as a base, I can add features as I need them. No bloated plugin ecosystem. No fighting with GraphQL. Just me, Next.js, and Markdown files.
-
-If you're stuck in Gatsby dependency hell, consider this approach. Don't try to fix everything but start fresh with a minimal template. Keep your content structure. Preserve your URLs. Build up from there.
+If you're stuck in Gatsby dependency hell, start fresh. Use a minimal template. Keep your content structure and URLs. Build up from there.
 
 The full code is on [GitHub](https://github.com/ummahusla/edvins-io) if you want to see how it all fits together.
