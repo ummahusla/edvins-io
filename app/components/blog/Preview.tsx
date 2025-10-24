@@ -5,16 +5,16 @@ import React, { useState } from 'react';
 const Preview = () => {
   const [requiredRows, setRequiredRows] = useState(0);
   const [requiredColumns, setRequiredColumns] = useState(0);
-  const [tableHTML, setTableHTML] = useState(null);
+  const [tableHTML, setTableHTML] = useState<JSX.Element | null>(null);
 
   const generateTable = () => {
     if (requiredRows !== 0 && requiredColumns !== 0) {
       setTableHTML(null);
 
-      let rows = [];
+      let rows: JSX.Element[] = [];
 
       for (let row = 1; row <= requiredRows; row++) {
-        let cells = [];
+        let cells: JSX.Element[] = [];
 
         for (let column = 1; column <= requiredColumns; column++) {
           cells.push(
