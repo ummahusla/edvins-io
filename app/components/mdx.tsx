@@ -8,6 +8,7 @@ import GoldMine from './blog/GoldMine';
 import CultivateDemo from './blog/CultivateDemo';
 import Preview from './blog/Preview';
 import BlogPost from './blog/BlogPost';
+import IdleWelcomeDemo from './blog/IdleWelcomeDemo';
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => <th key={index}>{header}</th>);
@@ -101,6 +102,7 @@ let components = {
   code: Code,
   Table,
   GoldMine,
+  IdleWelcomeDemo,
   CultivateDemo,
   Preview,
   BlogPost,
