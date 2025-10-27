@@ -11,17 +11,26 @@ import BlogPost from './blog/BlogPost';
 import IdleWelcomeDemo from './blog/IdleWelcomeDemo';
 
 function Table({ data }) {
-  let headers = data.headers.map((header, index) => <th key={index}>{header}</th>);
+  let headers = data.headers.map((header, index) => (
+    <th
+      key={index}
+      className="border border-neutral-200 dark:border-neutral-700 px-4 py-2 text-left font-semibold bg-neutral-50 dark:bg-neutral-800"
+    >
+      {header}
+    </th>
+  ));
   let rows = data.rows.map((row, index) => (
-    <tr key={index}>
+    <tr key={index} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
       {row.map((cell, cellIndex) => (
-        <td key={cellIndex}>{cell}</td>
+        <td key={cellIndex} className="border border-neutral-200 dark:border-neutral-700 px-4 py-2">
+          {cell}
+        </td>
       ))}
     </tr>
   ));
 
   return (
-    <table>
+    <table className="w-full border-collapse my-6 text-sm">
       <thead>
         <tr>{headers}</tr>
       </thead>
@@ -101,6 +110,17 @@ let components = {
   a: CustomLink,
   code: Code,
   Table,
+  table: (props) => <table className="w-full border-collapse my-6 text-sm" {...props} />,
+  th: (props) => (
+    <th
+      className="border border-neutral-200 dark:border-neutral-700 px-4 py-2 text-left font-semibold bg-neutral-50 dark:bg-neutral-800"
+      {...props}
+    />
+  ),
+  td: (props) => (
+    <td className="border border-neutral-200 dark:border-neutral-700 px-4 py-2" {...props} />
+  ),
+  tr: (props) => <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50" {...props} />,
   GoldMine,
   IdleWelcomeDemo,
   CultivateDemo,
