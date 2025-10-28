@@ -1,36 +1,48 @@
 ---
-title: Building a "Welcome Back" screen for idle web games
-description: Learn how to build the classic idle-game "Welcome Back" mechanic in React — calculate offline progress, prevent time cheats, and make your players feel rewarded for returning.
+title: Building a "Welcome Back" screen for idle games
+description: Learn how to build the classic idle-game "Welcome Back" mechanic in React — calculate offline progress, handle tab visibility, and make your players feel rewarded for returning.
 date: 2025-10-27
 tags:
   - React
   - Game Dev
 ---
 
-Idle games live and breathe on time. That moment when you open the game and it greets you with:
+Idle games feel magical because progress happens even when you’re not there.
+That moment when you open the game and it says:
 
-> “Welcome back! You were gone for 3 hours and earned 1,258 wood.”
+> “Welcome back! You were gone for 14 minutes and earned 280 wood.”
 
-That’s the hook. It makes the player feel rewarded even when they weren’t actively playing.
+That’s what keeps players hooked.
 
-In this post, we’ll build a simple “Welcome Back” mechanic in React.
-It will track how long the player was away, calculate offline progress, and give rewards automatically when they return.
-
-No backend required for the demo — just `localStorage` and some logic.
-After that, we’ll look at how to make it secure with Supabase.
+In this post, we’ll build a **Chop Tree** system that continuously generates wood while you play — and keeps working while you’re away.
+It tracks time, rewards you fairly on return, and even resumes automatically after a refresh.
 
 ---
 
-### How the system works
+### How it works
 
-The concept is simple:
+We’ll use three key pieces of data:
 
-1. Save the current timestamp when the player closes the game.
-2. When they come back, calculate how long they were gone.
-3. Reward resources based on that time.
-4. Cap the reward duration to prevent infinite accumulation.
+- When the action started (`actionStartAt`)
+- The last progress timestamp (`progressAnchor`)
+- Whether the action is active
 
-We’ll simulate this with a “Chop Tree” mechanic that gives 1 wood per minute, up to 8 hours of offline progress.
+Every 3 seconds, you gain 1 wood.
+If you leave, close the tab, or switch away, the game calculates how much time passed and adds up the missing ticks (up to 1 hour).
+
+Here’s the updated flow:
+
+```mermaid
+flowchart TD
+    A[Start Chopping] --> B[Record timestamps in localStorage]
+    B --> C[Every 3 seconds: +1 wood]
+    C --> D[Tab hidden or closed]
+    D --> E[Record last active time]
+    E --> F[User returns or refocuses tab]
+    F --> G[Compare timestamps and award wood (1 wood / 3s)]
+    G --> H[Show message: "You were away for 2m and earned 40 wood"]
+    H --> C
+```
 
 ![](/posts/building-a-welcome-back-screen-for-idle-games/welcome-back-page-flow.png)
 
