@@ -166,7 +166,7 @@ export default function GoldMineDemo() {
 
   return (
     <div className="py-1 px-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
-      <h2 className="text-xl font-bold mb-4">🏗️ Gold Mine (Level {building.level})</h2>
+      <h2 className="text-xl font-bold mb-4">Gold Mine (Level {building.level})</h2>
 
       <p className="text-xs opacity-60 mb-4">
         Generates {GOLD_PER_MINUTE[building.level]} gold/min • Max capacity{' '}
