@@ -38,7 +38,6 @@ function loadData() {
     gold: 0,
   };
 
-  // Check if we're in a browser environment
   if (typeof window === 'undefined') {
     return defaultData;
   }
@@ -84,7 +83,6 @@ export default function GoldMineDemo() {
   const [generated, setGenerated] = useState(0);
   const [timeLeft, setTimeLeft] = useState('');
 
-  // Load data from localStorage only on client
   useEffect(() => {
     const data = loadData();
     setBuilding(data.building);
@@ -163,37 +161,60 @@ export default function GoldMineDemo() {
   const canUpgrade = !isUpgrading && building.level < MAX_LEVEL && gold >= upgradeCost;
 
   if (!mounted) {
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
+    return <div className="p-6 bg-slate-900 text-white rounded-xl text-center">Loading...</div>;
   }
 
   return (
-    <div>
-      <h2>Gold Mine (Level {building.level})</h2>
-      <p>Generates: {GOLD_PER_MINUTE[building.level]} gold/min</p>
+    <div className="py-1 px-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
+      <h2 className="text-xl font-bold mb-4">🏗️ Gold Mine (Level {building.level})</h2>
+
+      <p className="text-xs opacity-60 mb-4">
+        Generates {GOLD_PER_MINUTE[building.level]} gold/min • Max capacity{' '}
+        {MAX_CAPACITY[building.level]}
+      </p>
 
       {isUpgrading ? (
-        <p>Upgrading{timeLeft ? `... (${timeLeft} left)` : '...'}</p>
+        <p className="text-yellow-400 mb-3">
+          ⏳ Upgrading {timeLeft ? `(${timeLeft} left)` : '...'}
+        </p>
       ) : (
-        <p>
-          Gold stored: {generated} / {MAX_CAPACITY[building.level]}
+        <p className="mb-3 text-green-400">
+          💰 Gold stored: {generated} / {MAX_CAPACITY[building.level]}
         </p>
       )}
 
-      <p>Gold: {gold}</p>
+      <p className="text-sm opacity-75 mt-0">Total gold:</p>
+      <p className="text-4xl font-semibold mb-6">{gold}</p>
 
-      <div>
-        <button onClick={collect} disabled={generated === 0 || isUpgrading}>
+      <div className="flex gap-3">
+        <button
+          onClick={collect}
+          disabled={generated === 0 || isUpgrading}
+          className={`px-4 py-2 rounded-lg transition ${
+            generated === 0 || isUpgrading
+              ? 'bg-gray-700 cursor-not-allowed opacity-50'
+              : 'bg-green-600 hover:bg-green-500'
+          }`}
+        >
           Collect
         </button>
 
-        <button onClick={upgrade} disabled={!canUpgrade}>
-          {building.level >= MAX_LEVEL ? 'Upgrade (max level)' : `Upgrade (${upgradeCost} gold)`}
+        <button
+          onClick={upgrade}
+          disabled={!canUpgrade}
+          className={`px-4 py-2 rounded-lg transition ${
+            !canUpgrade
+              ? 'bg-gray-700 cursor-not-allowed opacity-50'
+              : 'bg-indigo-600 hover:bg-indigo-500'
+          }`}
+        >
+          {building.level >= MAX_LEVEL ? 'Upgrade (max)' : `Upgrade (${upgradeCost} gold)`}
         </button>
       </div>
+
+      <p className="text-xs text-slate-400 mt-6">
+        💡 Collect gold before upgrading. Upgrades increase production rate and capacity.
+      </p>
     </div>
   );
 }

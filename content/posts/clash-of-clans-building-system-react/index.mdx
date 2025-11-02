@@ -57,14 +57,8 @@ Show clear UI indicators for production rate, capacity, uncollected gold, upgrad
 
 Here’s the full React component code:
 
-```tsx:title=GoldMineDemo.tsx
-import { useEffect, useState } from "react";
-
-type Building = {
-  level: number;
-  lastCollectedAt: number;
-  upgradedUntil: number | null;
-};
+```tsx
+import React, { useState, useEffect } from 'react';
 
 const MAX_LEVEL = 5;
 
@@ -73,29 +67,26 @@ const UPGRADE_DURATIONS = [0, 10, 30, 60, 120, 360]; // seconds
 const UPGRADE_COSTS = [0, 5, 10, 25, 50, 100]; // gold
 const MAX_CAPACITY = [0, 500, 1000, 2500, 5000, 10000];
 
-const STORAGE_KEY = "goldMineData";
+const STORAGE_KEY = 'goldMineData';
 
 function getNow() {
   return Date.now();
 }
 
-function calculateGold(building: Building): number {
+function calculateGold(building) {
   const now = getNow();
   const level = Math.min(building.level, MAX_LEVEL);
   const rate = GOLD_PER_MINUTE[level] / 60000; // gold per ms
 
   const from = building.lastCollectedAt;
-  const to = building.upgradedUntil
-    ? Math.min(now, building.upgradedUntil)
-    : now;
+  const to = building.upgradedUntil ? Math.min(now, building.upgradedUntil) : now;
 
   const duration = Math.max(to - from, 0);
   const rawAmount = Math.floor(rate * duration);
   return Math.min(rawAmount, MAX_CAPACITY[level]);
 }
 
-function loadData(): { building: Building; gold: number } {
-  const raw = localStorage.getItem(STORAGE_KEY);
+function loadData() {
   const defaultData = {
     building: {
       level: 1,
@@ -104,6 +95,12 @@ function loadData(): { building: Building; gold: number } {
     },
     gold: 0,
   };
+
+  if (typeof window === 'undefined') {
+    return defaultData;
+  }
+
+  const raw = localStorage.getItem(STORAGE_KEY);
 
   if (!raw) return defaultData;
 
@@ -122,7 +119,7 @@ function loadData(): { building: Building; gold: number } {
   }
 }
 
-function formatDuration(ms: number) {
+function formatDuration(ms) {
   const sec = Math.max(0, Math.floor(ms / 1000));
   const min = Math.floor(sec / 60);
   const remSec = sec % 60;
@@ -130,16 +127,37 @@ function formatDuration(ms: number) {
 }
 
 export default function GoldMineDemo() {
-  const [building, setBuilding] = useState<Building>(() => loadData().building);
-  const [gold, setGold] = useState(() => loadData().gold);
+  const [mounted, setMounted] = useState(false);
+  const [building, setBuilding] = useState<{
+    level: number;
+    lastCollectedAt: number;
+    upgradedUntil: number | null;
+  }>({
+    level: 1,
+    lastCollectedAt: getNow(),
+    upgradedUntil: null,
+  });
+  const [gold, setGold] = useState(0);
   const [generated, setGenerated] = useState(0);
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ building, gold }));
-  }, [building, gold]);
+    const data = loadData();
+    setBuilding(data.building);
+    setGold(data.gold);
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ building, gold }));
+    }
+  }, [building, gold, mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     function tick() {
       const now = getNow();
 
@@ -149,7 +167,7 @@ export default function GoldMineDemo() {
           lastCollectedAt: now,
           upgradedUntil: null,
         }));
-        setTimeLeft("");
+        setTimeLeft('');
         setGenerated(0);
         return;
       }
@@ -160,14 +178,14 @@ export default function GoldMineDemo() {
         const remaining = building.upgradedUntil - now;
         setTimeLeft(formatDuration(remaining));
       } else {
-        setTimeLeft("");
+        setTimeLeft('');
       }
     }
 
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [building]);
+  }, [building, mounted]);
 
   function collect() {
     const gain = calculateGold(building);
@@ -190,51 +208,81 @@ export default function GoldMineDemo() {
     setGold((g) => g - cost);
     setBuilding((b) => ({
       ...b,
-      upgradedUntil: finishAt,
+      upgradedUntil: finishAt as number,
     }));
     setTimeLeft(formatDuration(duration));
   }
 
-  const isUpgrading = !!(
-    building.upgradedUntil && building.upgradedUntil > getNow()
-  );
+  const isUpgrading = !!(building.upgradedUntil && building.upgradedUntil > getNow());
   const nextLevel = building.level + 1;
   const upgradeCost = UPGRADE_COSTS[nextLevel] ?? Infinity;
-  const canUpgrade =
-    !isUpgrading && building.level < MAX_LEVEL && gold >= upgradeCost;
+  const canUpgrade = !isUpgrading && building.level < MAX_LEVEL && gold >= upgradeCost;
 
-  const level = Math.min(building.level, MAX_LEVEL);
+  if (!mounted) {
+    return <div className="p-6 bg-slate-900 text-white rounded-xl text-center">Loading...</div>;
+  }
 
   return (
-    <div>
-      <h2>Gold Mine (Level {building.level})</h2>
-      <p>Generates: {GOLD_PER_MINUTE[building.level]} gold/min</p>
+    <div className="py-1 px-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
+      <h2 className="text-xl font-bold mb-4">🏗️ Gold Mine (Level {building.level})</h2>
+
+      <p className="text-xs opacity-60 mb-4">
+        Generates {GOLD_PER_MINUTE[building.level]} gold/min • Max capacity{' '}
+        {MAX_CAPACITY[building.level]}
+      </p>
 
       {isUpgrading ? (
-        <p>Upgrading{timeLeft ? `... (${timeLeft} left)` : "..."}</p>
+        <p className="text-yellow-400 mb-3">
+          ⏳ Upgrading {timeLeft ? `(${timeLeft} left)` : '...'}
+        </p>
       ) : (
-        <p>
-          Gold stored: {generated} / {MAX_CAPACITY[building.level]}
+        <p className="mb-3 text-green-400">
+          💰 Gold stored: {generated} / {MAX_CAPACITY[building.level]}
         </p>
       )}
 
-      <p>Gold: {gold}</p>
+      <p className="text-sm opacity-75 mt-0">Total gold:</p>
+      <p className="text-4xl font-semibold mb-6">{gold}</p>
 
-      <div>
-        <button onClick={collect} disabled={generated === 0 || isUpgrading}>
+      <div className="flex gap-3">
+        <button
+          onClick={collect}
+          disabled={generated === 0 || isUpgrading}
+          className={`px-4 py-2 rounded-lg transition ${
+            generated === 0 || isUpgrading
+              ? 'bg-gray-700 cursor-not-allowed opacity-50'
+              : 'bg-green-600 hover:bg-green-500'
+          }`}
+        >
           Collect
         </button>
 
-        <button onClick={upgrade} disabled={!canUpgrade}>
-          {building.level >= MAX_LEVEL
-            ? "Upgrade (max level)"
-            : `Upgrade (${upgradeCost} gold)`}
+        <button
+          onClick={upgrade}
+          disabled={!canUpgrade}
+          className={`px-4 py-2 rounded-lg transition ${
+            !canUpgrade
+              ? 'bg-gray-700 cursor-not-allowed opacity-50'
+              : 'bg-indigo-600 hover:bg-indigo-500'
+          }`}
+        >
+          {building.level >= MAX_LEVEL ? 'Upgrade (max)' : `Upgrade (${upgradeCost} gold)`}
         </button>
       </div>
+
+      <p className="text-xs text-slate-400 mt-6">
+        💡 Collect gold before upgrading. Upgrades increase production rate and capacity.
+      </p>
     </div>
   );
 }
 ```
+
+---
+
+### Playable demo
+
+<GoldMineDemo />
 
 ---
 
@@ -250,12 +298,6 @@ Here’s how you can harden it a bit:
 - Use server time (optional) - If connected to a backend, sync upgrade timestamps with server time instead of `Date.now()`, which is client-editable.
 
 This setup is good enough for casual demos and front-end-only games. For real multiplayer games, you’d move these checks to a backend.
-
----
-
-### Playable demo
-
-<GoldMineDemo />
 
 ---
 
