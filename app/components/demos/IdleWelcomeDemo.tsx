@@ -73,13 +73,15 @@ export default function IdleWelcomeDemo() {
   const { wood, start, stop, welcome, applyWelcome, isRunning } = useIdleDemo();
 
   return (
-    <div className="relative overflow-hidden p-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
-      <h2 className="text-xl font-bold mb-4">🌲 Idle "Welcome Back" Demo</h2>
+    <div className="relative overflow-hidden py-1 px-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
+      <h2 className="text-xl font-bold mb-4">Idle "Welcome Back" Demo</h2>
       <p className="text-xs opacity-60 mb-4">
-        Produces {woodPerMinute} wood/min • {woodPerHour} wood/hour
+        Gathering {woodPerMinute} wood/min • {woodPerHour} wood/hour
       </p>
 
-      <p className="mb-2 text-sm opacity-75">Wood collected:</p>
+      {isRunning && <p className="mt-4 text-green-400">⏳ Chopping in progress...</p>}
+
+      <p className="text-sm opacity-75">Wood collected:</p>
       <p className="text-4xl font-semibold mb-6">{wood}</p>
 
       {!isRunning ? (
@@ -98,8 +100,6 @@ export default function IdleWelcomeDemo() {
         </button>
       )}
 
-      {isRunning && <p className="mt-4 text-sm text-green-400">⏳ Chopping in progress...</p>}
-
       {welcome && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/70 backdrop-blur-sm">
           <div className="bg-slate-800 p-6 rounded-lg text-center max-w-sm w-[90%] shadow-lg">
@@ -116,7 +116,7 @@ export default function IdleWelcomeDemo() {
       )}
 
       <p className="text-xs text-slate-400 mt-6">
-        💡 Try closing or switching tabs for a bit, then come back to see how much wood you’ve
+        💡 Try closing and reopening the page for a bit, then come back to see how much wood you've
         earned.
       </p>
     </div>

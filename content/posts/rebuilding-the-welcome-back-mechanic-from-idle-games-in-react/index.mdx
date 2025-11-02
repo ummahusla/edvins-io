@@ -55,8 +55,6 @@ Here's the full code for the demo.
 When you click "Start chopping", the game records a timestamp.
 If you close or refresh the page, it will greet you on return with the calculated offline progress.
 
-#### `useIdleDemo` hook
-
 ```ts
 import { useEffect, useState } from 'react';
 
@@ -126,22 +124,20 @@ export function useIdleDemo() {
 
   return { wood, start, stop, welcome, applyWelcome, isRunning };
 }
-```
 
-#### `IdleWelcomeDemo` component
-
-```tsx
 export default function IdleWelcomeDemo() {
   const { wood, start, stop, welcome, applyWelcome, isRunning } = useIdleDemo();
 
   return (
-    <div className="p-6 bg-slate-900 text-white rounded-xl max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">🌲 Idle "Welcome Back" Demo</h2>
+    <div className="relative overflow-hidden py-1 px-6 mt-6 mb-6 bg-slate-900 text-white rounded-xl">
+      <h2 className="text-xl font-bold mb-4">Idle "Welcome Back" Demo</h2>
       <p className="text-xs opacity-60 mb-4">
-        Produces {woodPerMinute} wood/min • {woodPerHour} wood/hour
+        Gathering {woodPerMinute} wood/min • {woodPerHour} wood/hour
       </p>
 
-      <p className="mb-2 text-sm opacity-75">Wood collected:</p>
+      {isRunning && <p className="mt-4 text-green-400">⏳ Chopping in progress...</p>}
+
+      <p className="text-sm opacity-75">Wood collected:</p>
       <p className="text-4xl font-semibold mb-6">{wood}</p>
 
       {!isRunning ? (
@@ -160,16 +156,14 @@ export default function IdleWelcomeDemo() {
         </button>
       )}
 
-      {isRunning && <p className="mt-4 text-sm text-green-400">⏳ Chopping in progress...</p>}
-
       {welcome && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-800 p-6 rounded-lg text-center max-w-sm">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-slate-800 p-6 rounded-lg text-center max-w-sm w-[90%] shadow-lg">
             <h3 className="text-lg font-semibold mb-2">Welcome back!</h3>
             <p className="mb-4">{welcome}</p>
             <button
               onClick={applyWelcome}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition"
             >
               Continue
             </button>
@@ -178,13 +172,46 @@ export default function IdleWelcomeDemo() {
       )}
 
       <p className="text-xs text-slate-400 mt-6">
-        💡 Try closing or switching tabs for a bit, then come back to see how much wood you've
+        💡 Try closing and reopening the page for a bit, then come back to see how much wood you've
         earned.
       </p>
     </div>
   );
 }
 ```
+
+---
+
+### Breaking down the code
+
+**1. State structure**
+
+- We track `wood`, `startedAt`, and `isRunning` in state.
+- `wood` represents total resources collected so far, while `startedAt` stores the timestamp of when chopping began.
+- We also use `welcome` to store the "you were away for X seconds" message shown when returning.
+
+**2. Offline progress logic**
+
+- When the page loads, we check `localStorage` for any saved data.
+- If `startedAt` exists, we calculate how much time passed since it was saved using `Date.now() - startedAt`.
+- Then we determine how many 3-second ticks fit into that gap and award the correct amount of wood.
+
+**3.Session control**
+
+- Clicking Start chopping saves the current timestamp and sets `isRunning = true`.
+- Clicking Stop chopping calculates progress up to that moment, adds it to total `wood`, and resets the timer.
+- Everything persists to `localStorage`, so progress isn't lost on refresh.
+
+**4.Welcome back screen**
+
+- When a returning player's elapsed time is detected, we show a small modal with a message like
+  "Welcome back! You were away 120s and earned 40 wood."
+- The player can click Continue to dismiss it and resume chopping automatically.
+
+**5. Persistence and security**
+
+- Since this demo is client-only, everything is stored in `localStorage`.
+- For a production setup, you'd move this logic to a backend (like Supabase, _yes I'm Supabase fanboy_) and rely on server time for accurate, cheat-proof progress calculation. _But that's for another post._
 
 ---
 
@@ -212,5 +239,3 @@ This small demo captures the core of how idle games handle offline progress:
 save a timestamp, calculate elapsed time, reward the player, and resume.
 
 It's **simple**, **cheap**, and **reliable** - exactly why so many games use it.
-
-In the next post, we'll move this logic into Supabase and make it fully server-authoritative, just like real idle or MMO systems.
