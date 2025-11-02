@@ -1,0 +1,218 @@
+---
+title: Rebuilding the "Welcome Back" mechanic from idle games in React
+description: A step-by-step look at how idle games calculate offline progress, recreate the classic "Welcome Back" screen, and make it all work in React.
+date: 2025-11-02
+tags:
+  - React
+  - Game Dev
+---
+
+Idle games like **Melvor Idle** or **Cookie Clicker**, all share that small but satisfying moment when you come back after a break and the game greets you:
+
+> "Welcome back! You were away for 2 hours and earned 240 gold." (example from Cookie Clicker)
+
+In this post, we'll rebuild that _offline progress calculation_ mechanic - the "Welcome Back" screen - in **React**.
+We'll keep it simple, using `localStorage` for persistence, and later talk about how this could be made secure with a backend like Supabase.
+
+---
+
+### The core idea
+
+In an idle game, you don't simulate the world every second. You just record **when** the player started an action, and when they return, you calculate how much time passed.
+
+The whole mechanic can be expressed in a single formula:
+
+```js
+gained = Math.floor((now - last_saved) / tick_ms) * rate;
+```
+
+That's it.
+Whether the player closed the tab, lost connection, or left for a day, the game can instantly compute progress based on timestamps.
+
+---
+
+### Flow overview
+
+Here's what actually happens behind the scenes when you perform an idle action, close the game, and come back later.
+The logic is simple - record the start time, calculate how long you were away, and reward progress accordingly.
+
+![](/posts/building-a-welcome-back-screen-for-idle-games/welcome-back-page-flow.png)
+
+---
+
+### Why this design is clever
+
+- Lightweight - no background timers or intervals needed
+- Scalable - only a few timestamps per player
+- Deterministic - can always be recalculated exactly (as long as the server and client clocks are synced)
+- Cheat-resistant - if stored on the server, local clock tricks don't work
+
+---
+
+### Building it in React
+
+Here's the full code for the demo.
+When you click "Start chopping", the game records a timestamp.
+If you close or refresh the page, it will greet you on return with the calculated offline progress.
+
+#### `hooks/useIdleDemo.ts`
+
+```ts
+import { useEffect, useState } from 'react';
+
+const STORAGE_KEY = 'idleChoppingData';
+const TICK_MS = 3000; // 1 wood every 3s
+const WOOD_PER_TICK = 1;
+export const woodPerMinute = (WOOD_PER_TICK * 60000) / TICK_MS;
+export const woodPerHour = woodPerMinute * 60;
+
+export function useIdleDemo() {
+  const [wood, setWood] = useState(0);
+  const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [welcome, setWelcome] = useState<string | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+
+  // On load — check for ongoing or past session
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (!saved) return;
+
+    const { wood: savedWood, startedAt: savedStartedAt } = saved;
+    setWood(savedWood ?? 0);
+
+    if (savedStartedAt) {
+      const now = Date.now();
+      const diff = now - savedStartedAt;
+      const gained = Math.floor(diff / TICK_MS);
+      if (gained > 0) {
+        setWelcome(
+          `Welcome back! You were away ${Math.floor(diff / 1000)}s and earned ${gained} wood.`
+        );
+        setWood(savedWood + gained);
+      } else {
+        // still running session
+        setStartedAt(savedStartedAt);
+        setIsRunning(true);
+      }
+    }
+  }, []);
+
+  const start = () => {
+    const now = Date.now();
+    setStartedAt(now);
+    setIsRunning(true);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ wood, startedAt: now }));
+  };
+
+  const stop = () => {
+    if (!startedAt) return;
+    const now = Date.now();
+    const diff = now - startedAt;
+    const gained = Math.floor(diff / TICK_MS);
+    const total = wood + gained;
+    setWood(total);
+    setStartedAt(null);
+    setIsRunning(false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ wood: total }));
+  };
+
+  const applyWelcome = () => {
+    const now = Date.now();
+    setWelcome(null);
+    setStartedAt(now);
+    setIsRunning(true);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ wood, startedAt: now }));
+  };
+
+  return { wood, start, stop, welcome, applyWelcome, isRunning };
+}
+```
+
+#### `IdleWelcomeDemo.tsx`
+
+```tsx
+import { useIdleDemo, woodPerMinute, woodPerHour } from './hooks/useIdleDemo';
+
+export default function IdleWelcomeDemo() {
+  const { wood, start, stop, welcome, applyWelcome, isRunning } = useIdleDemo();
+
+  return (
+    <div className="p-6 bg-slate-900 text-white rounded-xl max-w-md mx-auto">
+      <h2 className="text-xl font-bold mb-4">🌲 Idle "Welcome Back" Demo</h2>
+      <p className="text-xs opacity-60 mb-4">
+        Produces {woodPerMinute} wood/min • {woodPerHour} wood/hour
+      </p>
+
+      <p className="mb-2 text-sm opacity-75">Wood collected:</p>
+      <p className="text-4xl font-semibold mb-6">{wood}</p>
+
+      {!isRunning ? (
+        <button
+          onClick={start}
+          className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition"
+        >
+          Start chopping
+        </button>
+      ) : (
+        <button
+          onClick={stop}
+          className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 transition"
+        >
+          Stop chopping
+        </button>
+      )}
+
+      {isRunning && <p className="mt-4 text-sm text-green-400">⏳ Chopping in progress...</p>}
+
+      {welcome && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-slate-800 p-6 rounded-lg text-center max-w-sm">
+            <h3 className="text-lg font-semibold mb-2">Welcome back!</h3>
+            <p className="mb-4">{welcome}</p>
+            <button
+              onClick={applyWelcome}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-slate-400 mt-6">
+        💡 Try closing or switching tabs for a bit, then come back to see how much wood you've
+        earned.
+      </p>
+    </div>
+  );
+}
+```
+
+---
+
+### Playable demo
+
+<IdleWelcomeDemo />
+
+---
+
+### Protecting against cheating
+
+In a real game, relying on the browser's clock means a player could just change their system time and "earn" a week's worth of resources instantly.
+
+That's why production idle games move this logic to the backend.
+The server stores the official `started_at` timestamp and uses server time to calculate the difference.
+The same formula applies - it just uses an authoritative clock instead of `Date.now()`.
+
+If you're using **Supabase**, this becomes a simple RPC call that updates progress based on `now()` on the database side.
+
+---
+
+### Wrapping up
+
+This small demo captures the core of how idle games handle offline progress:
+save a timestamp, calculate elapsed time, reward the player, and resume.
+
+It's **simple**, **cheap**, and **reliable** - exactly why so many games use it.
+
+In the next post, we'll move this logic into Supabase and make it fully server-authoritative, just like real idle or MMO systems.
