@@ -197,7 +197,7 @@ The images are generated on-demand and cached by Vercel.
 
 This was the trickiest part. I had 5 posts with interactive React components embedded in MDX:
 
-- GoldMine (Clash of Clans building demo)
+- GoldMineDemo (Clash of Clans building demo)
 - CultivateDemo (habit tracker with video)
 - Preview (HTML table generator)
 - TextToSpeech + BlogPost
@@ -207,13 +207,13 @@ Gatsby let me import these directly in MDX. Next.js with `next-mdx-remote` needs
 I moved components to `app/components/blog/`, added `'use client'`, then registered them:
 
 ```tsx
-import GoldMine from './blog/GoldMine';
+import GoldMineDemo from './blog/GoldMineDemo';
 import CultivateDemo from './blog/CultivateDemo';
 
 let components = {
   h1: createHeading(1),
   // ... other components
-  GoldMine,
+  GoldMineDemo,
   CultivateDemo,
 };
 

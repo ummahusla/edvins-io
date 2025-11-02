@@ -57,7 +57,7 @@ Show clear UI indicators for production rate, capacity, uncollected gold, upgrad
 
 Here’s the full React component code:
 
-```tsx:title=GoldMine.tsx
+```tsx:title=GoldMineDemo.tsx
 import { useEffect, useState } from "react";
 
 type Building = {
@@ -129,7 +129,7 @@ function formatDuration(ms: number) {
   return `${min}m ${remSec}s`;
 }
 
-export default function GoldMine() {
+export default function GoldMineDemo() {
   const [building, setBuilding] = useState<Building>(() => loadData().building);
   const [gold, setGold] = useState(() => loadData().gold);
   const [generated, setGenerated] = useState(0);
@@ -255,7 +255,7 @@ This setup is good enough for casual demos and front-end-only games. For real mu
 
 ### Playable demo
 
-<GoldMine />
+<GoldMineDemo />
 
 ---
 

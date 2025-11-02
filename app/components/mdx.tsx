@@ -4,11 +4,11 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { highlight } from 'sugar-high';
 import React from 'react';
 import remarkGfm from 'remark-gfm';
-import GoldMine from './blog/GoldMine';
-import CultivateDemo from './blog/CultivateDemo';
+import GoldMineDemo from './demos/GoldMineDemo';
+import CultivateDemo from './demos/CultivateDemo';
 import Preview from './blog/Preview';
 import BlogPost from './blog/BlogPost';
-import IdleWelcomeDemo from './blog/IdleWelcomeDemo';
+import IdleWelcomeDemo from './demos/IdleWelcomeDemo';
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -121,7 +121,7 @@ let components = {
     <td className="border border-neutral-200 dark:border-neutral-700 px-4 py-2" {...props} />
   ),
   tr: (props) => <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50" {...props} />,
-  GoldMine,
+  GoldMineDemo,
   IdleWelcomeDemo,
   CultivateDemo,
   Preview,

@@ -55,7 +55,7 @@ Here's the full code for the demo.
 When you click "Start chopping", the game records a timestamp.
 If you close or refresh the page, it will greet you on return with the calculated offline progress.
 
-#### `hooks/useIdleDemo.ts`
+#### `useIdleDemo` hook
 
 ```ts
 import { useEffect, useState } from 'react';
@@ -128,11 +128,9 @@ export function useIdleDemo() {
 }
 ```
 
-#### `IdleWelcomeDemo.tsx`
+#### `IdleWelcomeDemo` component
 
 ```tsx
-import { useIdleDemo, woodPerMinute, woodPerHour } from './hooks/useIdleDemo';
-
 export default function IdleWelcomeDemo() {
   const { wood, start, stop, welcome, applyWelcome, isRunning } = useIdleDemo();
 

@@ -69,7 +69,7 @@ function formatDuration(ms) {
   return `${min}m ${remSec}s`;
 }
 
-export default function GoldMine() {
+export default function GoldMineDemo() {
   const [mounted, setMounted] = useState(false);
   const [building, setBuilding] = useState<{
     level: number;
@@ -161,8 +161,6 @@ export default function GoldMine() {
   const nextLevel = building.level + 1;
   const upgradeCost = UPGRADE_COSTS[nextLevel] ?? Infinity;
   const canUpgrade = !isUpgrading && building.level < MAX_LEVEL && gold >= upgradeCost;
-
-  const level = Math.min(building.level, MAX_LEVEL);
 
   if (!mounted) {
     return (
