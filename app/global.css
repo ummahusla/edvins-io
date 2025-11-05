@@ -133,14 +133,6 @@ html {
   margin-bottom: 1.25em !important;
 }
 
-pre::-webkit-scrollbar {
-  display: none;
-}
-
-pre {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
 
 /* Remove Safari input shadow on mobile */
 input[type='text'],
