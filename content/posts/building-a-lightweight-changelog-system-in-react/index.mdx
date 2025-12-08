@@ -1,0 +1,292 @@
+---
+title: Building a lightweight changelog system in React
+description: How to build a "What's New" notification system using React, localStorage, and markdown (no backend required)
+date: 2025-12-07
+tags:
+  - React
+---
+
+# Building a lightweight changelog system in React
+
+Most apps need a way to tell users what's new. Big platforms like Discord, Linear, and Notion all have some version of a "What's New" panel - usually a slide-out drawer with a list of recent updates and a notification dot when there's something unseen.
+
+In this post, I'll show you how to build one from scratch in **React** using just `localStorage` for persistence. No database, no CMS, no backend. Just clean client-side logic and a static TypeScript data file.
+
+---
+
+### The core mechanic
+
+A changelog system needs three things:
+
+1. **A list of entries** - stored chronologically, newest first
+2. **Seen/unseen logic** - track what the user has already viewed
+3. **A notification indicator** - show a dot or badge when there's new content
+
+The trick is keeping it simple. We don't need real-time updates or complex state management. We just need to:
+
+- Store entries in a static file (easy to update, version-controlled)
+- Track the last seen entry ID in `localStorage`
+- Compare it against the latest entry on load
+
+If the IDs don't match, show the notification. When the user opens the panel, mark everything as seen. That's it.
+
+---
+
+### Why this design is clever
+
+- **Zero backend cost** - everything runs client-side, no API calls or database queries
+- **Fast to update** - just add a new entry to the data file and deploy
+- **Version-controlled** - your changelog lives in Git alongside your code
+- **Offline-first** - works even if the user has no connection
+- **Lightweight** - only stores a single string in `localStorage` per user
+
+This approach works great for product updates, feature announcements, or any content that doesn't change frequently. For real-time notifications or user-specific messages, you'd need a backend, but for 90% of use cases, this is enough.
+
+---
+
+### Building it in React
+
+Here's the full implementation. We'll create:
+
+1. A data file for changelog entries
+2. A custom hook for state management
+3. A button component with a notification dot
+4. A slide-out panel to display entries
+
+**Data structure (`data/changelog.ts`):**
+
+```ts
+export interface ChangelogEntry {
+  id: string;
+  date: string; // ISO format YYYY-MM-DD
+  title: string;
+  summary: string;
+  links?: Array<{
+    label: string;
+    href: string;
+  }>;
+}
+
+export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
+  {
+    id: '2025-12-07-initial-changelog',
+    date: '2025-12-07',
+    title: 'Changelog System Added',
+    summary:
+      'Introducing a lightweight changelog system to keep you informed about new features and updates.',
+    links: [{ label: 'View Documentation', href: '/about' }],
+  },
+  // Add new entries at the top
+];
+```
+
+**Custom hook (`useChangelog.ts`):**
+
+```ts
+import { useState, useEffect, useMemo } from 'react';
+import { CHANGELOG_ENTRIES } from '../data/changelog';
+
+const STORAGE_KEY = 'changelog:lastSeenId';
+
+export const useChangelog = () => {
+  const [lastSeenId, setLastSeenId] = useState<string | null>(null);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  const entries = useMemo(() => CHANGELOG_ENTRIES.slice(0, 20), []);
+
+  useEffect(() => {
+    setHasMounted(true);
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      setLastSeenId(stored);
+    }
+  }, []);
+
+  const hasUnseen = useMemo(() => {
+    if (!hasMounted || entries.length === 0) return false;
+    const latestId = entries[0].id;
+    return !lastSeenId || latestId !== lastSeenId;
+  }, [entries, lastSeenId, hasMounted]);
+
+  const markAllSeen = () => {
+    if (entries.length > 0) {
+      const latestId = entries[0].id;
+      localStorage.setItem(STORAGE_KEY, latestId);
+      setLastSeenId(latestId);
+    }
+  };
+
+  return { entries, hasUnseen, markAllSeen };
+};
+```
+
+**Button component (`ChangelogButton.tsx`):**
+
+```tsx
+import { useState } from 'react';
+import { Bell } from 'react-feather';
+import { useChangelog } from './useChangelog';
+import { ChangelogPanel } from './ChangelogPanel';
+
+export const ChangelogButton = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { hasUnseen, markAllSeen } = useChangelog();
+
+  const handleClick = () => {
+    setIsOpen(true);
+    if (hasUnseen) {
+      markAllSeen();
+    }
+  };
+
+  return (
+    <>
+      <button onClick={handleClick} aria-label="View changelog">
+        <Bell size={20} />
+        {hasUnseen && <span className="notification-dot" />}
+      </button>
+      {isOpen && <ChangelogPanel onClose={() => setIsOpen(false)} />}
+    </>
+  );
+};
+```
+
+**Panel component (`ChangelogPanel.tsx`):**
+
+_Note: This is just one way to display changelog entries. You can customize this component however you like - make it a modal, a dropdown, a slide-out drawer, or even navigate to a dedicated page. The core logic stays the same._
+
+```tsx
+import { useChangelog } from './useChangelog';
+
+interface ChangelogPanelProps {
+  onClose: () => void;
+}
+
+export const ChangelogPanel = ({ onClose }: ChangelogPanelProps) => {
+  const { entries } = useChangelog();
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-2xl font-bold">What's New</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            ✕
+          </button>
+        </div>
+
+        <div className="overflow-y-auto p-6 space-y-6">
+          {entries.map((entry) => (
+            <article key={entry.id} className="border-b pb-4 last:border-0">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-semibold">{entry.title}</h3>
+                <time className="text-sm text-gray-500">{entry.date}</time>
+              </div>
+              <p className="text-gray-700 mb-3">{entry.summary}</p>
+              {entry.links && (
+                <div className="flex gap-3">
+                  {entry.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      {link.label} →
+                    </a>
+                  ))}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+---
+
+### Playable demo
+
+<ChangelogDemo />
+
+---
+
+### Breaking down the code
+
+**1. Static data file**
+
+- Entries are stored in a plain TypeScript file, sorted newest to oldest
+- Each entry has a unique `id` (format: `YYYY-MM-DD-slug`) that never changes
+- We slice to show only the latest 20 entries, keeping the UI fast
+
+**2. Seen/unseen logic**
+
+- We store only the `lastSeenId` in `localStorage` - a single string
+- On mount, we compare it against the first entry in the array
+- If they don't match, `hasUnseen` becomes `true` and the dot appears
+
+**3. Marking as seen**
+
+- When the user clicks the bell, we immediately call `markAllSeen()`
+- This stores the latest entry ID and hides the notification dot
+- No need to track individual entries - we only care about "have you seen the latest?"
+
+**4. Panel display flexibility**
+
+- The `ChangelogPanel` component shown above is just one implementation
+- You can render entries however you want: slide-out drawer, modal, dropdown, or even a dedicated page
+- The core logic (`useChangelog` hook) works regardless of how you display the UI
+
+---
+
+### Using markdown for content
+
+Instead of storing plain text, we use `react-markdown` to render the summary field. This lets you write richer content without adding complexity:
+
+```tsx
+import ReactMarkdown from 'react-markdown';
+
+<ReactMarkdown>{entry.summary}</ReactMarkdown>;
+```
+
+Now you can write:
+
+```md
+summary: `New features added:
+
+- Improved performance on mobile devices
+- Added dark mode support
+- Fixed navigation menu bugs`
+```
+
+And it renders as a proper list. Just remember: **don't indent your template literals**, or markdown will treat them as code blocks.
+
+---
+
+### Preventing localStorage manipulation
+
+Since we're using `localStorage`, users can technically edit the `lastSeenId` to hide the notification. But that's fine - they're only cheating themselves out of seeing updates.
+
+If you need more control, you could:
+
+- Hash the entry IDs server-side and verify them on load
+- Move `lastSeenId` to a user preferences API
+- Use a signed token to prevent tampering
+
+But for most apps, client-side storage is perfectly fine. The goal isn't security - it's a good user experience.
+
+---
+
+### Wrapping up
+
+This changelog system is simple, fast, and costs nothing to run. It gives you full control over your content, keeps everything in version control, and works offline by default.
+
+The same pattern works for:
+
+- Product announcements
+- Feature tours or onboarding tips
+- Release notes
+- System status updates
+- Any content that doesn't need per-user customization

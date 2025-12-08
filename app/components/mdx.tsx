@@ -9,6 +9,7 @@ import CultivateDemo from './demos/CultivateDemo';
 import Preview from './blog/Preview';
 import BlogPost from './blog/BlogPost';
 import IdleWelcomeDemo from './demos/IdleWelcomeDemo';
+import ChangelogDemo from './demos/ChangelogDemo';
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -124,6 +125,7 @@ let components = {
   GoldMineDemo,
   IdleWelcomeDemo,
   CultivateDemo,
+  ChangelogDemo,
   Preview,
   BlogPost,
 };
