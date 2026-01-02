@@ -1,0 +1,337 @@
+---
+title: How I built in-app feedback capture in React (and why I didn't ship it as a product)
+date: 2026-01-02
+description: A practical breakdown of building in-app feedback capture in React, from payload design and metadata collection to screenshots, delivery strategies, and why this works better as a reusable pattern than a paid SDK.
+tags:
+  - React
+---
+
+In almost every side project or small SaaS I build, I eventually want the same thing: **let users send feedback from inside the app**, with some context attached.
+
+Not a contact form.
+
+Not an external tool.
+
+Just a simple way to say "something feels off here" while the user is actually on the page.
+
+There are plenty of SaaS tools for this, but they usually come with widgets, dashboards, styling constraints, and pricing models that feel heavy for small projects.
+
+So instead of adding yet another tool, I decided to build the core mechanic myself and treat it as a reusable pattern.
+
+In this post, I'll walk through the core idea behind in-app feedback capture, why the design works well for small apps, how I implemented it in React, a minimal reference implementation, and why I ultimately didn't ship this as a paid product.
+
+---
+
+## tl;dr
+
+- Start with the payload schema, not the UI.
+- Capture lightweight metadata by default; make everything else opt-in.
+- Send quickly and reliably (consider `sendBeacon` / `keepalive`).
+- Treat screenshots as optional and messy.
+- The "SDK" part is easy; the operational part is where products get hard.
+
+---
+
+## The core mechanic
+
+At its core, in-app feedback is very simple.
+
+You need to collect:
+
+- a **message**
+- some **context** about where the user was
+- optionally, a **screenshot**
+
+And then send that somewhere you already trust: email, a webhook, your backend, whatever.
+
+The important part is _when_ this happens:
+
+- while the user is still on the page
+- without breaking their flow
+- without forcing them to leave the app
+
+That's it. Everything else is optional.
+
+I also started noticing this pattern more often in products I use myself.
+For example, [Resend](https://resend.com) has a small "Feedback" entry directly in their navbar. It opens a lightweight in-app form, captures context, and sends the message without pushing you to an external tool.
+
+That's when it clicked for me: this isn't about feedback tools. It's about having a simple, in-context way to capture intent while the user is still on the page.
+
+---
+
+## Why this design is clever
+
+The mistake I see often is starting with UI or tools.
+
+Instead, I started with the **data shape**.
+
+If you get the payload right, the rest becomes flexible.
+
+### 1. Design the payload first
+
+A minimal but useful feedback payload looks like this:
+
+```ts
+type FeedbackPayload = {
+  message: string;
+  metadata: {
+    pageUrl: string;
+    pagePath: string;
+    viewportSize: { width: number; height: number };
+    screenSize: { width: number; height: number };
+    userAgent: string;
+    timezone: string;
+    language: string;
+    referrer: string;
+    timestamp: string;
+  };
+  user?: {
+    id?: string;
+    email?: string;
+  };
+  screenshot?: string;
+};
+```
+
+This design is boring on purpose:
+
+- no UI assumptions
+- no backend assumptions
+- no vendor lock-in
+
+It's just structured context.
+
+That makes it easy to reuse across projects and easy to reason about when something goes wrong.
+
+### 2. Keep metadata helpful
+
+My rule of thumb: collect enough context to debug, but don't surprise users. Things like screen size and route are usually fine; things like full DOM dumps or keystrokes are not.
+
+---
+
+## Building it in React
+
+The UI can be anything: modal, drawer, dropdown, slide-in panel.
+
+I like a small button in the navbar that opens a dialog with:
+
+- a textarea
+- an optional "Include screenshot" toggle
+- a send button with `Cmd/Ctrl + Enter` support
+
+### Client-side flow
+
+On the client side, the flow is straightforward:
+
+- user opens the feedback panel
+- types a message
+- hits send (or `Cmd/Ctrl + Enter`)
+- app collects metadata automatically
+- payload is sent in the background
+
+The send handler looks roughly like this:
+
+```ts
+const handleSend = async () => {
+  if (!feedbackText.trim()) return;
+
+  try {
+    const metadata = collectFeedbackMetadata();
+
+    await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: feedbackText,
+        metadata,
+      }),
+    });
+
+    setFeedbackText('');
+    toast.success('Thank you for your feedback!');
+  } catch {
+    toast.error('Failed to send feedback');
+  }
+};
+```
+
+The key point here is that the component only cares about sending a payload.
+Everything else is abstracted away.
+
+---
+
+## Capturing metadata
+
+Most of the useful context is already available in the browser:
+
+```ts
+function collectFeedbackMetadata() {
+  return {
+    pageUrl: window.location.href,
+    pagePath: window.location.pathname,
+    viewportSize: { width: window.innerWidth, height: window.innerHeight },
+    screenSize: { width: window.screen.width, height: window.screen.height },
+    userAgent: navigator.userAgent,
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    referrer: document.referrer,
+    timestamp: new Date().toISOString(),
+  };
+}
+```
+
+This is the part I least want to rewrite in every project, which is why it's worth extracting as a small helper.
+
+If your app has user/session/app version data, you can include it too:
+
+```ts
+type FeedbackUserContext = {
+  userId?: string;
+  email?: string;
+  sessionId?: string;
+  appVersion?: string;
+};
+```
+
+---
+
+## Screenshot capture (optional)
+
+Screenshots are useful, but they're also tricky. Most client-side implementations rely on `html2canvas` (or similar). The tradeoffs are real:
+
+- it's not a "real" screenshot (it's a DOM render)
+- it struggles with cross-origin iframes and some media (images, videos, etc.)
+- it adds bundle weight (html2canvas is around 120KB)
+- you need to think about redaction/PII (personal identifiable information)
+
+Because of that, I treat screenshots as:
+
+- optional
+- explicit opt-in
+- non-blocking (send feedback even if screenshot fails)
+- size-limited (compress and/or cap dimensions)
+
+If you do include screenshots, consider sending them as a separate upload (presigned URL / multipart) instead of stuffing base64 into JSON.
+
+---
+
+## Delivery strategies (what happens after "Send")
+
+You have a few good options, depending on how serious you want to be:
+
+- **Simple POST to your backend**: easiest and usually enough.
+- **Webhook**: great for internal tools (Slack, Discord, Zapier, etc).
+- **Email**: surprisingly effective for small projects (but attachments and threading can get annoying).
+- **DB table + admin view**: best long-term, but more work.
+
+### Reliability tips
+
+If you care about users closing the tab too quickly, consider:
+
+- `navigator.sendBeacon(...)`
+- `fetch(..., { keepalive: true })`
+- a tiny retry queue in `localStorage` (only if you really need it)
+
+You can also make the endpoint return success immediately and process "fan-out" (Slack/email/etc) asynchronously.
+
+---
+
+## Server-side handling (Next.js example)
+
+On the server, I used a simple Next.js API route/handler. The design choices I care about:
+
+- validate input
+- don't block the request on external APIs
+- keep the contract stable (payload schema changes should be intentional)
+
+Here's a minimal App Router handler shape:
+
+```ts
+// app/api/feedback/route.ts
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => null);
+
+  const message = typeof body?.message === 'string' ? body.message.trim() : '';
+  const metadata = typeof body?.metadata === 'object' && body.metadata ? body.metadata : null;
+
+  if (!message || !metadata) {
+    return Response.json({ ok: false, error: 'Invalid payload' }, { status: 400 });
+  }
+
+  // Store it, send it to Slack, email it, etc. (ideally async)
+  return Response.json({ ok: true });
+}
+```
+
+If you expose this publicly, add basic protections (rate limiting, spam filtering, and access control for authenticated users).
+
+Instead of forcing an API route, another option is letting developers pass a handler function:
+
+```ts
+const sendFeedback: (payload: FeedbackPayload) => Promise<void> = async (payload) => {
+  // send to your internal system
+};
+```
+
+This keeps the logic flexible and avoids forcing architectural choices.
+
+---
+
+## Why I didn't ship this as a product
+
+I did consider turning this into a small paid SDK.
+
+After talking to developers, the conclusion was clear:
+
+- this pattern is useful
+- but it's easy to extract
+- and willingness to pay is low
+
+People either want a full SaaS, or they're happy rolling their own once they see the pattern.
+
+For me, this works much better as:
+
+- a blog post
+- a reusable internal pattern
+- a reference implementation
+
+And that's perfectly fine.
+
+---
+
+## When this pattern is worth extracting
+
+If you:
+
+- build multiple React apps
+- work on internal tools
+- want consistent feedback payloads
+- hate adding third-party widgets
+
+Then extracting this logic once makes sense.
+
+Just don't over-engineer it.
+
+---
+
+## Reusable checklist
+
+- Payload schema defined (message + metadata + optional screenshot)
+- Metadata rules agreed (what you do/don't collect)
+- Screenshot is opt-in and safe (redaction + size limit)
+- Delivery is reliable (beacon/keepalive if needed)
+- Triage workflow exists (who reads it and what "done" means)
+
+---
+
+## Wrapping up
+
+In-app feedback doesn't need to be complex.
+
+If you:
+
+- start with the data
+- keep the UI flexible
+- avoid premature abstractions
+
+You can build something that works well, stays small, and fits naturally into your app.
