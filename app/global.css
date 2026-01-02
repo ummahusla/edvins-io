@@ -108,7 +108,7 @@ html {
 }
 
 .prose ul {
-  @apply list-disc pl-6;
+  @apply list-disc pl-6 mb-6;
 }
 
 .prose ol {
