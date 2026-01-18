@@ -7,13 +7,41 @@ tags:
 
 ---
 
-Types and interfaces are two of the essential features of TypeScript that allow you to define the structure and shape of the data that your code will be working with. They are used to ensure that your code works with the correct data types and provide better code documentation. But, despite their similarities, you should be aware of some key differences between types and interfaces.
+Types and interfaces are two essential features of TypeScript that let you define the structure and shape of your data. They help ensure your code works with the correct data types and make your code easier to understand. While they look similar, there are some key differences you should know about.
 
-Interfaces are used to define the structure of an object. They specify the properties and methods an object must have to be considered of that type. Interfaces can also be used to specify the types of function arguments. They are intended to describe the shape of an object and are often used to define contracts for objects that will be passed around in your codebase.
+---
 
-On the other hand, Types in TypeScript are more flexible and versatile, and they can be used for more than just defining the shape of an object. They can be used to determine the type of a variable, class, function, or even array. They are intended to be used as a way to give a name to a specific type and can be used wherever a type is required, such as type annotations or in the implements clause of a class.
+## What are Interfaces?
 
-Here is an example that illustrates the difference between the two:
+Interfaces define the structure of an object. They specify what properties and methods an object must have. Interfaces are great for describing the shape of an object and are often used to define contracts for objects in your codebase.
+
+---
+
+## What are Types?
+
+Types in TypeScript are more flexible. They can be used for more than just defining object shapes. You can use them to define variables, classes, functions, arrays, unions, and more. Types let you give a name to any type and can be used wherever a type is needed.
+
+---
+
+## Quick comparison
+
+Here's a table showing the main differences:
+
+| Feature | Interface | Type |
+|---------|-----------|------|
+| Define object shape | ✅ Yes | ✅ Yes |
+| Extend/inherit | ✅ Yes (using `extends`) | ✅ Yes (using `&`) |
+| Merge declarations | ✅ Yes | ❌ No |
+| Union types | ❌ No | ✅ Yes |
+| Primitive types | ❌ No | ✅ Yes |
+| Tuples | ❌ No | ✅ Yes |
+| Computed properties | ❌ Limited | ✅ Yes |
+
+---
+
+## Example
+
+Here's an example that shows the difference:
 
 ```typescript
 interface Point {
@@ -30,6 +58,68 @@ console.log(point); // Output: { x: 0, y: 0 }
 console.log(tuple); // Output: [0, 0]
 ```
 
-Here, `Point` is an interface that describes an object with two properties, `x` and `y`, both of type `number`. `Tuple` is a type that represents a tuple of two numbers. While both `point` and `tuple` have the same value, they have different types, `Point` and `Tuple`, respectively.
+Here, `Point` is an interface that describes an object with two properties, `x` and `y`, both of type `number`. `Tuple` is a type that represents a tuple of two numbers. While both `point` and `tuple` have similar values, they have different types.
 
-Another difference between types and interfaces is that interfaces can be extended, meaning that you can create new interfaces that inherit the properties and methods of existing interfaces.
+---
+
+## Extending and merging
+
+Interfaces can be extended, meaning you can create new interfaces that inherit properties from existing ones:
+
+```typescript
+interface Animal {
+  name: string;
+}
+
+interface Dog extends Animal {
+  breed: string;
+}
+
+const myDog: Dog = { name: "Buddy", breed: "Golden Retriever" };
+```
+
+Types can be combined using intersections:
+
+```typescript
+type Animal = {
+  name: string;
+};
+
+type Dog = Animal & {
+  breed: string;
+};
+
+const myDog: Dog = { name: "Buddy", breed: "Golden Retriever" };
+```
+
+One unique feature of interfaces is declaration merging. If you declare the same interface twice, TypeScript will merge them:
+
+```typescript
+interface User {
+  name: string;
+}
+
+interface User {
+  age: number;
+}
+
+// User now has both name and age
+const user: User = { name: "John", age: 30 };
+```
+
+---
+
+## When to use which?
+
+**Use interfaces when:**
+- Defining object shapes or class contracts
+- You need declaration merging
+- Working with object-oriented programming patterns
+
+**Use types when:**
+- Creating union or intersection types
+- Defining tuples or primitive types
+- Working with complex type transformations
+- You need computed properties
+
+In most cases, you can use either one for object shapes. Pick one and stay consistent in your codebase!.
