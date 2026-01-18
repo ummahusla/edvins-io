@@ -1,5 +1,14 @@
 [
   {
+    "name": "Keystorm",
+    "status": "Beta",
+    "description": "Roguelike typing game with pressure system.",
+    "tags": ["React", "Next.js", "TypeScript"],
+    "link": "https://keystorm.app/",
+    "year": 2024,
+    "logo": "keystorm.jpg"
+  },
+  {
     "name": "Dungeon Grind",
     "status": "Development",
     "description": "Browser-based RPG game.",
@@ -10,18 +19,20 @@
   {
     "name": "Albion Online Grind",
     "status": "Launched",
-    "description": "Albion Online Grind is an ultimate source for tools to boost player's efficiency in the Albion Online game.",
+    "description": "Set of tools to help players improve their gameplay in the Albion Online game.",
     "tags": ["React", "Next.js", "Chakra UI", "Supabase"],
     "link": "https://albiononlinegrind.com/",
-    "year": 2023
+    "year": 2023,
+    "logo": "albion-online-grind.png"
   },
   {
-    "name": "Edvins's Digital Garden",
+    "name": "My Digital Garden",
     "status": "Launched",
-    "description": "Personal blog about software development and entrepreneurship.",
+    "description": "My space where I write about software development and indie making.",
     "tags": ["React", "Gatsby", "GraphQL"],
-    "link": "https://edvins.io/",
-    "year": 2021
+    "link": "/",
+    "year": 2021,
+    "logo": "edvins.jpg"
   },
   {
     "name": "Stealth Labs",
@@ -29,7 +40,8 @@
     "description": "My umbrella company which I use to work with my clients.",
     "tags": ["React", "TypeScript", "Supabase"],
     "link": "https://stealthlabs.dev/",
-    "year": 2020
+    "year": 2020,
+    "logo": "stealth-labs.png"
   },
   {
     "name": "Cultivate",
@@ -37,7 +49,8 @@
     "description": "Habit tracking application to cultivate new habits.",
     "tags": ["React", "TypeScript", "Redux", "Firebase"],
     "link": "/why-i-regret-not-launching-my-side-project",
-    "year": 2020
+    "year": 2020,
+    "logo": "cultivate.png"
   },
   {
     "name": "Hustle Market",
