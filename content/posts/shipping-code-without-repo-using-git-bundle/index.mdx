@@ -1,0 +1,183 @@
+---
+title: Shipping code without a repo using git bundle
+date: 2026-02-06
+description: How to send complete Git history as a single file using git bundle, and why it's useful for interviews, audits, and private code sharing.
+tags:
+  - Git
+  - Workflow
+---
+
+# Shipping code without a repo using git bundle
+
+Most Git workflows assume you have a remote repository. GitHub, GitLab, Bitbucket – pick one. But Git doesn't actually need a server at all.
+
+`git bundle` lets you package a repository (including full history) into a single file that can be cloned later. No remote. No credentials. No public repo.
+
+I've been using this more often than I expected.
+
+---
+
+## tl;dr
+
+- `git bundle` creates a portable Git archive
+- The bundle contains full commit history
+- You can clone it like a normal repo
+- Great for private tasks, interviews, audits, or offline work
+
+---
+
+## The problem
+
+Sometimes you want to share code, but you don't want to:
+
+- Create a public GitHub repo
+- Invite someone to a private repo
+- Set up access tokens
+- Expose unfinished or throwaway work
+
+Common use cases:
+
+- Sending a take-home task to a candidate
+- Submitting a coding assignment without publishing it
+- Sharing internal tooling with a contractor
+- Archiving a repo for long-term storage
+- Working in restricted or offline environments
+
+Git already solves this. It's just not a common workflow.
+
+---
+
+## Creating a bundle
+
+From inside your repo:
+
+```bash
+git bundle create task.bundle --all
+```
+
+That's it.
+
+This creates a single file called `task.bundle` containing:
+
+- All commits
+- All branches
+- All tags
+- Full history
+
+You can scope it if you want:
+
+```bash
+git bundle create task.bundle main
+```
+
+Or only a range:
+
+```bash
+git bundle create task.bundle main ^v1.0.0
+```
+
+The bundle is just a file. Zip it, email it, drop it in Slack, upload it anywhere.
+
+---
+
+## Cloning from a bundle
+
+On the receiving side:
+
+```bash
+git clone task.bundle my-project
+```
+
+Git treats it like a remote. You get a normal working directory with history intact.
+
+You can inspect it before cloning:
+
+```bash
+git bundle list-heads task.bundle
+```
+
+---
+
+## Why this is useful
+
+### Sending tech tasks
+
+Instead of:
+
+- Creating a repo
+- Making it public or managing access
+- Cleaning it up later
+
+You can:
+
+- Prepare the task locally
+- Bundle it
+- Send a single file
+
+The candidate clones it, works normally, then sends back either:
+
+- Another bundle
+- A patch
+- Or just the updated repo folder
+
+No platform lock-in.
+
+### Private code reviews
+
+You can send a full history without pushing anywhere. Useful for:
+
+- Audits
+- Legal review
+- Consulting work
+- Pre-open-source cleanup
+
+The reviewer gets real commits, not a ZIP of files.
+
+### Offline work
+
+Git bundles work without network access. This matters more than people think:
+
+- Corporate environments
+- Restricted networks
+- Long-term backups
+- Cold storage
+
+A bundle is effectively a portable Git remote.
+
+---
+
+## Things to know
+
+### Bundles are read-only by default
+
+You can't push back into them, but you can create a new bundle in return.
+
+### They can be large
+
+Full history means full history. You can prune or limit refs if needed.
+
+### They're deterministic
+
+Same repo, same bundle hash. Useful for verification.
+
+---
+
+## Mental model
+
+Think of `git bundle` as:
+
+- `git clone`, but offline
+- `git archive`, but with history
+- A USB stick for Git
+
+It's old Git functionality, but surprisingly underused.
+
+---
+
+## Wrapping up
+
+If you ever find yourself creating a repo "just to share something once", try a bundle instead.
+
+It's simpler, more private, and keeps Git doing what it was designed for: moving commits around, not managing platforms.
+
+I now reach for `git bundle` anytime the question is "how do I send this repo to someone" rather than "where should I host this".
