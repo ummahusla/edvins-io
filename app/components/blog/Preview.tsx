@@ -1,20 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const Preview = () => {
   const [requiredRows, setRequiredRows] = useState(0);
   const [requiredColumns, setRequiredColumns] = useState(0);
-  const [tableHTML, setTableHTML] = useState<JSX.Element | null>(null);
+  const [tableHTML, setTableHTML] = useState<React.JSX.Element | null>(null);
 
   const generateTable = () => {
     if (requiredRows !== 0 && requiredColumns !== 0) {
       setTableHTML(null);
 
-      let rows: JSX.Element[] = [];
+      let rows: React.JSX.Element[] = [];
 
       for (let row = 1; row <= requiredRows; row++) {
-        let cells: JSX.Element[] = [];
+        let cells: React.JSX.Element[] = [];
 
         for (let column = 1; column <= requiredColumns; column++) {
           cells.push(
