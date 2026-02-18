@@ -1,0 +1,507 @@
+---
+title: Building automated Patreon subscription sync with Supabase
+date: 2026-02-17
+description: How I automated subscription management for 10k+ Patreon members using Supabase Edge Functions, from OAuth linking to daily cron jobs with email notifications.
+tags:
+  - Supabase
+  - Patreon
+  - Edge Functions
+---
+
+I use Patreon to power paid access to one of my side projects. Across the audience, I had 10k+ total users, with only a small fraction as paid users. Even at that paid scale, manual subscription updates were becoming fragile and time-consuming.
+
+The failure mode was simple: paid users could be blocked, canceled users could stay active, and support load kept growing to the point where I outsourced subscription operations to my wife. This post covers the high-level production sync system I built with Supabase Edge Functions to make access control reliable.
+
+---
+
+## tl;dr
+
+- Users link Patreon through OAuth first
+- A daily Edge Function pulls active patrons and syncs linked users
+- Manual grants are protected via `subscription_source`
+- I get an email summary after every run
+
+## The problem
+
+When someone subscribes on Patreon, I need to give them access on my website. When they unsubscribe, I need to remove that access. Doing this manually for hundreds of users was not sustainable.
+
+Patreon webhooks are useful, but they are not enough for this use case. They only notify you when an event happens on Patreon. If the user has not created an account on my website yet, I cannot activate them with a webhook alone. I also need to handle grace periods correctly.
+
+A better approach for me was to pull members from Patreon on a schedule and match them against users who have already linked their Patreon account in my app.
+
+Today, this runs daily, processes around 10k members in about two minutes, and emails me a summary so issues are easy to spot.
+
+---
+
+## Why I did not rely on webhooks
+
+Webhooks are still useful, but I do not treat them as the source of truth for paid access.
+
+For this system, scheduled reconciliation is safer because it solves problems webhooks do not fully guarantee:
+
+- Orphaned Patreon users: users can subscribe on Patreon before creating an account in my app
+- Missed events: webhook delivery is not a perfect guarantee in long-running production systems
+- Race conditions: subscription events and internal account-linking can happen in the wrong order
+- Backfill: scheduled sync lets me correct historical mismatches without custom recovery scripts
+- Reconciliation guarantees: every run compares current Patreon truth against current app state
+
+I still can use webhook signals for faster UX, but scheduled sync is the reliability layer.
+
+---
+
+## What Patreon docs don't tell you
+
+Patreon docs were the hardest part. It took trial and error to lock down:
+
+1. Which endpoint to use for campaign members
+2. Which token to use (creator token vs user OAuth token)
+3. How pagination works at scale
+
+The approach depends on users linking Patreon first. Once linked, syncing entitlement becomes straightforward.
+
+---
+
+## How this system actually evolved in production
+
+I built this in four phases.
+
+### Phase 1: OAuth linking
+
+First, users needed a way to connect Patreon from account settings.
+
+When a user links, I store Patreon identity + token data in `user_patreon`:
+
+```sql
+CREATE TABLE user_patreon (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  patreon_user_id TEXT NOT NULL UNIQUE,
+  patreon_email TEXT,
+  patreon_tier_id TEXT,
+  patreon_tier_name TEXT,
+  patreon_status TEXT,
+  patreon_access_token TEXT NOT NULL,
+  patreon_refresh_token TEXT NOT NULL,
+  patreon_token_expires_at TIMESTAMPTZ NOT NULL,
+  linked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_synced_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+I also made one deliberate product decision: unlinking Patreon does not retroactively remove any previously granted manual access. Sync only affects linked accounts and only where `subscription_source` allows it.
+
+OAuth callback (simplified):
+
+```typescript
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const code = req.query.code as string | undefined;
+  if (!code) {
+    return res.redirect('/settings?patreon_error=missing_code');
+  }
+
+  const supabase = createServerSupabaseClient({ req, res });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return res.redirect('/settings?patreon_error=not_authenticated');
+  }
+
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const baseUrl = `${protocol}://${req.headers.host}`;
+
+  const client = new PatreonClient(baseUrl);
+  const tokenResponse = await client.exchangeCodeForToken(code);
+  const identity = await client.getIdentity(tokenResponse.access_token);
+  const memberships = await client.getMemberships(tokenResponse.access_token);
+  const activeMembership = getPrimaryActiveMembership(memberships);
+
+  await linkPatreonAccount(supabase, {
+    userId: session.user.id,
+    patreonUserId: identity.id,
+    patreonEmail: identity.attributes.email,
+    accessToken: tokenResponse.access_token,
+    refreshToken: tokenResponse.refresh_token,
+    expiresAt: new Date(Date.now() + tokenResponse.expires_in * 1000),
+    patreonStatus: activeMembership?.patron_status ?? 'former_patron',
+    patreonTierId: activeMembership?.tier_id ?? null,
+    patreonTierName: activeMembership?.tier_name ?? null,
+  });
+
+  return res.redirect('/settings?patreon_connected=1');
+}
+```
+
+### Phase 2: Patreon API debugging
+
+Next I built the campaign sync fetch.
+
+To fetch campaign members, you need:
+
+1. A creator access token
+2. Your campaign ID
+3. `GET /campaigns/{id}/members` with cursor pagination
+
+I use `page[count]=100` to reduce API calls:
+
+```typescript
+const url = new URL(
+  `https://www.patreon.com/api/oauth2/v2/campaigns/${PATREON_CAMPAIGN_ID}/members`,
+);
+
+url.searchParams.append('include', 'currently_entitled_tiers,user');
+url.searchParams.append('fields[member]', 'patron_status,currently_entitled_amount_cents');
+url.searchParams.append('page[count]', '100');
+
+if (cursor) {
+  url.searchParams.append('page[cursor]', cursor);
+}
+
+const response = await fetch(url.toString(), {
+  headers: {
+    Authorization: `Bearer ${PATREON_CREATOR_ACCESS_TOKEN}`,
+    Accept: 'application/json',
+  },
+});
+```
+
+Patreon returns `patron_status` and `currently_entitled_amount_cents`. I treat users as active only when:
+
+- `patron_status === 'active_patron'`
+- `currently_entitled_amount_cents > 0`
+
+The Patreon user ID used for matching is nested at `member.relationships.user.data.id`.
+
+### Phase 3: Migration to edge functions
+
+I started as a Next.js route, but cron + operations were cleaner in Supabase Edge Functions.
+
+Why Edge Functions:
+
+- Easy deploy from Supabase
+- Good logs for scheduled jobs
+- Native scheduling via `pg_cron`
+- Better runtime fit for this background workflow
+- Fast DB access inside Supabase infra
+
+Runtime change:
+
+```typescript
+// Next.js API route
+import { NextApiRequest, NextApiResponse } from 'next';
+import { createClient } from '@supabase/supabase-js';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+  // ...
+}
+
+// Supabase Edge Function (Deno)
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
+import { createClient } from 'npm:@supabase/supabase-js@2';
+
+Deno.serve(async (_req: Request) => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  );
+  // ...
+});
+```
+
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are provided automatically in Supabase Edge Functions.
+
+### Phase 4: Automation and notifications
+
+I run the sync daily with `pg_cron` + `pg_net`:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+CREATE EXTENSION IF NOT EXISTS pg_net;
+
+SELECT cron.schedule(
+  'sync-linked-patrons-daily',
+  '0 6 * * *', -- 06:00 UTC daily
+  $$
+  SELECT net.http_post(
+    url := 'https://YOUR_PROJECT_REF.supabase.co/functions/v1/sync-linked-patrons',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer YOUR_SUPABASE_SERVICE_ROLE_KEY'
+    )
+  ) AS request_id;
+  $$
+);
+```
+
+Important: this job must call the function with a service role key, not an anon key.
+
+For observability, I send a post-run email using Resend with key metrics:
+
+- Total members scanned
+- Active patrons found
+- Linked users checked
+- Kept active / deactivated / protected manual
+- Execution time
+- Any errors
+
+```typescript
+const emailHtml = `
+  <h2>Sync Summary</h2>
+  <ul>
+    <li>Total members scanned: ${totalMembersScanned}</li>
+    <li>Active patrons found: ${activePatronsFound}</li>
+    <li>Linked users checked: ${linkedUsersCount}</li>
+    <li>Kept active: ${keptActive}</li>
+    <li>Deactivated: ${deactivated}</li>
+    <li>Protected manual: ${protectedManual}</li>
+    <li>Execution time: ${executionTime}</li>
+  </ul>
+`;
+```
+
+---
+
+## Core sync flow
+
+![](/posts/building-automated-patreon-subscription-sync-with-supabase/core_flow.png)
+
+High-level logic:
+
+1. Pull campaign members and build a set of active paying Patreon user IDs
+2. Load linked users from `user_patreon`
+3. Match each linked row by `patreon_user_id`
+4. Update `profiles.is_subscribed` only when `subscription_source = 'patreon'` or `subscription_source IS NULL`
+5. Always update `user_patreon.last_synced_at`
+6. Send email summary
+
+---
+
+## Code breakdown
+
+### Part 1: Pagination strategy
+
+```typescript
+const activePatronIds = new Set<string>();
+let cursor: string | undefined;
+let pageCount = 0;
+let totalMembersScanned = 0;
+
+const PAGE_SIZE = 100;
+const MAX_PAGES = 200; // 20,000 members max
+
+while (pageCount < MAX_PAGES) {
+  pageCount += 1;
+
+  const url = new URL(
+    `https://www.patreon.com/api/oauth2/v2/campaigns/${PATREON_CAMPAIGN_ID}/members`,
+  );
+  url.searchParams.set('include', 'currently_entitled_tiers,user');
+  url.searchParams.set('fields[member]', 'patron_status,currently_entitled_amount_cents');
+  url.searchParams.set('page[count]', String(PAGE_SIZE));
+  if (cursor) url.searchParams.set('page[cursor]', cursor);
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${PATREON_CREATOR_ACCESS_TOKEN}`,
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Patreon API error ${response.status}`);
+  }
+
+  const payload: unknown = await response.json();
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid Patreon response payload');
+  }
+
+  const data = (payload as { data?: unknown }).data;
+  const members = Array.isArray(data) ? data : [];
+  totalMembersScanned += members.length;
+
+  for (const member of members) {
+    if (!member || typeof member !== 'object') continue;
+
+    const m = member as {
+      attributes?: {
+        patron_status?: unknown;
+        currently_entitled_amount_cents?: unknown;
+      };
+      relationships?: {
+        user?: { data?: { id?: unknown } | null };
+      };
+    };
+
+    const patronStatus = m.attributes?.patron_status;
+    const entitledAmount = m.attributes?.currently_entitled_amount_cents;
+    const patronUserId = m.relationships?.user?.data?.id;
+
+    const isActivePaid =
+      patronStatus === 'active_patron' && typeof entitledAmount === 'number' && entitledAmount > 0;
+
+    if (isActivePaid && typeof patronUserId === 'string' && patronUserId.length > 0) {
+      activePatronIds.add(patronUserId);
+    }
+  }
+
+  const links = (payload as { links?: { next?: unknown } }).links;
+  const next = typeof links?.next === 'string' ? links.next : null;
+
+  if (!next) break;
+
+  try {
+    const nextUrl = new URL(next);
+    cursor = nextUrl.searchParams.get('page[cursor]') ?? undefined;
+  } catch {
+    cursor = undefined;
+  }
+
+  if (!cursor) break;
+
+  await new Promise((resolve) => setTimeout(resolve, 200));
+}
+```
+
+The 200ms pause helps avoid API spikes while still finishing quickly.
+
+### Part 2: Protecting manual subscriptions
+
+I use `subscription_source` to prevent accidental downgrades of manually granted users:
+
+```sql
+ALTER TABLE profiles ADD COLUMN subscription_source TEXT;
+-- Expected values: 'manual', 'patreon', or null
+
+UPDATE profiles
+SET subscription_source = 'manual'
+WHERE is_subscribed = true
+  AND subscription_source IS NULL;
+```
+
+Sync update logic:
+
+```typescript
+for (const linkedUser of linkedUsers ?? []) {
+  const isActive = activePatronIds.has(linkedUser.patreon_user_id);
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('subscription_source, is_subscribed')
+    .eq('id', linkedUser.user_id)
+    .single();
+
+  if (profileError) {
+    results.errors.push(`Failed to load profile ${linkedUser.user_id}: ${profileError.message}`);
+    continue;
+  }
+
+  const canSync =
+    profile?.subscription_source === 'patreon' || profile?.subscription_source == null;
+
+  if (canSync) {
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({
+        is_subscribed: isActive,
+        subscription_source: 'patreon',
+      })
+      .eq('id', linkedUser.user_id);
+
+    if (updateError) {
+      results.errors.push(`Failed to update profile ${linkedUser.user_id}: ${updateError.message}`);
+    } else if (isActive) {
+      results.kept_active += 1;
+    } else {
+      results.deactivated += 1;
+    }
+  } else {
+    results.protected_manual += 1;
+  }
+
+  await supabase
+    .from('user_patreon')
+    .update({ last_synced_at: new Date().toISOString() })
+    .eq('id', linkedUser.id);
+}
+```
+
+### Part 3: Email notifications
+
+I render HTML summaries and send them via Resend. Email failures are logged but do not fail the sync job.
+
+```typescript
+function generateSuccessEmail(data: {
+  totalMembersScanned: number;
+  activePatronsFound: number;
+  linkedUsersCount: number;
+  keptActive: number;
+  deactivated: number;
+  protectedManual: number;
+  executionTime: string;
+}): string {
+  return `
+    <!doctype html>
+    <html>
+      <body>
+        <h2>Patreon Sync Summary</h2>
+        <ul>
+          <li>Total members scanned: ${data.totalMembersScanned}</li>
+          <li>Active patrons found: ${data.activePatronsFound}</li>
+          <li>Linked users checked: ${data.linkedUsersCount}</li>
+          <li>Kept active: ${data.keptActive}</li>
+          <li>Deactivated: ${data.deactivated}</li>
+          <li>Protected manual: ${data.protectedManual}</li>
+          <li>Execution time: ${data.executionTime}</li>
+        </ul>
+      </body>
+    </html>
+  `;
+}
+```
+
+---
+
+## Handling edge cases
+
+- Timeout: large campaigns may exceed free-tier execution limits
+- Rate limiting: Patreon can return `429`, so backoff strategy matters
+- Inconsistent payloads: validate nested fields before reading them
+
+```typescript
+if (response.status === 429) {
+  const retryAfter = Number(response.headers.get('retry-after') ?? '2');
+  await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+  continue;
+}
+
+if (!payload || typeof payload !== 'object' || !Array.isArray((payload as any).data)) {
+  throw new Error('Unexpected Patreon payload shape');
+}
+```
+
+---
+
+## Deployment checklist
+
+1. Set Edge Function secrets:
+   - `PATREON_CREATOR_ACCESS_TOKEN`
+   - `PATREON_CAMPAIGN_ID`
+   - `RESEND_API_KEY`
+2. Deploy your Edge Function (`sync-linked-patrons`)
+3. Create the `pg_cron` schedule with your real project ref and service role key
+4. Run a manual invocation and verify logs
+5. Confirm summary emails are being delivered
+
+---
+
+## Wrapping up
+
+This setup works better than webhooks for my use case because it syncs only users who have actually linked Patreon in my app, handles entitlement status reliably, and keeps manual grants protected.
+
+It now syncs around 10k members daily in about two minutes with clear reporting. The same architecture applies to other subscription platforms where you need to reconcile external billing state with internal user access.
