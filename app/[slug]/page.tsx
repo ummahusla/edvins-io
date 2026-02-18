@@ -4,6 +4,10 @@ import { formatDate, getBlogPosts } from 'app/(pages)/blog/utils';
 import { baseUrl } from 'app/sitemap';
 import { generatePageMetadata } from 'app/utils/metadata';
 
+type BlogPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
 export async function generateStaticParams() {
   let posts = getBlogPosts();
 
@@ -12,8 +16,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+export async function generateMetadata({ params }: BlogPageProps) {
+  let { slug } = await params;
+  let post = getBlogPosts().find((post) => post.slug === slug);
   if (!post) {
     return;
   }
@@ -30,8 +35,9 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+export default async function Blog({ params }: BlogPageProps) {
+  let { slug } = await params;
+  let post = getBlogPosts().find((post) => post.slug === slug);
 
   if (!post) {
     notFound();
