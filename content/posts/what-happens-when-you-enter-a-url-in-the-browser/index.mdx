@@ -1,0 +1,222 @@
+---
+title: What happens when you enter a website URL in the browser
+date: 2026-02-26
+description: A top-down, framework-agnostic walkthrough from typing a domain to loading HTML, CSS, JS, and an interactive page.
+tags:
+  - Web Performance
+---
+
+You type a domain like `bbc.com` or `edvins.io` and press Enter. A moment later, the page appears.
+
+Under the hood, this is the full chain: DNS, proxy/CDN, TLS, HTML response, CSS and JS discovery, render, then interactivity.
+
+---
+
+## tl;dr
+
+Top-down flow:
+
+1. Browser normalises a domain like `bbc.com` to a full URL like `https://bbc.com/`.
+2. DNS resolves the domain to an IP, usually an edge proxy/CDN.
+3. Browser opens a connection and completes TLS handshake.
+4. Browser requests HTML with `GET /`.
+5. Edge/origin returns HTML.
+6. HTML parser discovers CSS, JS, fonts, and images.
+7. Browser fetches CSS/JS, builds render tree, paints pixels.
+8. JS runs and the page becomes interactive.
+
+---
+
+## Step-by-step from domain to loaded site
+
+### 1. URL input and normalisation
+
+You type a domain, for example `bbc.com`.
+
+Browser turns that into a full URL, normally `https://bbc.com/`. It can also check fast paths first, like cache or back/forward cache, before doing full network work.
+
+### 2. DNS resolution
+
+Browser now needs an IP address for that domain.
+
+An IP address is the numeric address of a server, and DNS is the system that translates human names like `bbc.com` into that number.
+
+Resolution path is typically:
+
+- Browser DNS cache: "Have I looked this up recently?"
+- OS cache: "Has any app on this machine looked it up recently?"
+- Recursive resolver: your DNS provider asks around for the answer
+- Authoritative nameserver: the official source for that domain's DNS records
+
+The answer is often an edge proxy/CDN IP, not your origin server IP.
+
+### 3. Proxy/CDN connection and TLS
+
+Now the browser can connect to that IP and set up a safe channel before sending website data.
+
+It does three things:
+
+- TCP: the standard reliable transport used by HTTP/1.1 and HTTP/2
+- QUIC: newer transport used by HTTP/3, designed for quicker recovery on weak networks
+- TLS handshake: a quick identity and encryption setup step for HTTPS (this is the "S" in HTTPS)
+
+After this, requests and responses can move securely between browser and server.
+
+### 4. Requesting the HTML document
+
+Browser now asks for the main page file (the HTML document).
+
+It sends a request that includes:
+
+- `GET /`
+- Cookies (if relevant for sign-in/personalisation)
+- Language preferences (for localisation)
+- Cache check headers that mean "send new content only if this changed"
+
+Then proxy/CDN does one of two things:
+
+- Returns a cached copy quickly
+- Forwards the request to the origin server and waits for a fresh response
+
+### 5. HTML response starts parsing immediately
+
+As soon as the first part of HTML arrives, the browser starts reading it immediately.
+
+It does not wait for the whole file first.
+
+While reading, it builds the DOM, which is an in-memory tree of the page structure.
+
+This is where your `html -> loads css/js` chain starts.
+
+### 6. HTML discovers CSS/JS/fonts/images
+
+While parsing HTML, the browser finds tags like `<link>`, `<script>`, and `<img>`.
+
+Each of those can trigger extra downloads: CSS, JavaScript, fonts, and images.
+
+Key part:
+
+- CSS usually blocks final rendering until styles are ready
+- JavaScript loading behaviour depends on attributes:
+  - `defer`: download now, run after HTML parsing
+  - `async`: download and run as soon as ready (order not guaranteed)
+  - `module`: modern JS module loading (deferred by default)
+
+If important CSS or JS arrives late, the page can still feel slow even when backend response was fast.
+
+### 7. CSSOM, render tree, layout, paint
+
+Browser turns CSS into a style map called CSSOM, then combines it with DOM to decide what should appear on screen.
+
+Then it runs these stages:
+
+1. Build render tree: choose what is visible
+2. Layout: calculate size and position
+3. Paint: draw pixels
+4. Composite: combine layers into the final frame
+
+This is when the page becomes visually stable.
+
+### 8. JS execution and interactivity
+
+JavaScript runs, click handlers attach, and client-side behaviour starts.
+
+If HTML was pre-rendered on the server, the page can appear quickly but still be only partly interactive until hydration finishes.
+
+Hydration means attaching JavaScript logic to HTML that already exists on screen.
+
+---
+
+## Example trace from this site
+
+I captured a local production trace of this repo's homepage to keep this practical.
+
+Main document request:
+
+- `GET /` returned `200`
+- Header included `x-nextjs-cache: HIT`
+- HTML length was `26160` bytes in this run
+
+Then browser discovered and requested extra files from HTML:
+
+- CSS: `/_next/static/css/af88a0f675cdfb13.css`
+- JS chunks including:
+  - `/_next/static/chunks/webpack-26c7461a6686b918.js`
+  - `/_next/static/chunks/main-app-42faabe1fbeb9210.js`
+  - layout/page chunks
+- Fonts:
+  - `/_next/static/media/27834908180db20f-s.p.woff2`
+  - `/_next/static/media/78fec81b34c4a365.p.woff2`
+
+So the flow is literally:
+
+`domain -> DNS -> proxy -> HTML -> CSS/JS/font fetches -> paint -> interactive`
+
+---
+
+## Cool practical tips
+
+### 1. Debug in this order
+
+1. Check the main HTML request first
+2. Check CSS and script downloads second
+3. Check heavy JavaScript work last
+
+Why this works:
+
+- If HTML is slow, the problem is usually network, CDN, or backend
+- If HTML is fast but screen is slow, the problem is usually CSS or JavaScript
+- If screen appears but page feels laggy, the problem is usually main-thread JavaScript work
+
+### 2. Use Network 'Initiator' aggressively
+
+The `Initiator` column tells you what started each request.
+
+In plain terms, it answers: "What caused this file to load?"
+
+That helps you find the real source fast, for example:
+
+- a `<script>` tag in HTML
+- an import inside another JS file
+- a fetch call triggered by app code
+
+### 3. Keep script semantics explicit
+
+JavaScript loading mode changes page speed a lot.
+
+- Use `defer` when scripts need order and should run after HTML parsing
+- Use `async` when scripts are independent and can run whenever ready
+- Avoid blocking scripts in `<head>` unless truly necessary
+
+### 4. Treat third-party tags as first-class dependencies
+
+Analytics, chat widgets, A/B tools, and tracking scripts are not "free".
+
+They use:
+
+- network bandwidth
+- browser CPU
+- main-thread time
+
+Treat them like product features: measure impact, keep only what is useful, and load late when possible.
+
+---
+
+## Wrapping up
+
+Typing any domain triggers a pipeline, not a single request.
+
+If you keep this model in order, root cause becomes easier to isolate:
+
+`domain -> DNS -> proxy -> HTML -> CSS/JS discovery -> render -> interactive`
+
+That is the top-down path from URL to loaded website.
+
+---
+
+## Sources
+
+- [MDN - How browsers work](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work)
+- [MDN - Critical rendering path](https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path)
+- [MDN - HTTP overview](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
+- [web.dev - bfcache](https://web.dev/articles/bfcache)
