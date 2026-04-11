@@ -1,11 +1,11 @@
 [
   {
     "name": "Keystorm",
-    "status": "Beta",
+    "status": "Launched",
     "description": "Roguelike typing game with pressure system.",
     "tags": ["React", "Next.js", "TypeScript"],
     "link": "https://keystorm.app/",
-    "year": 2024,
+    "year": 2026,
     "logo": "keystorm.png"
   },
   {
