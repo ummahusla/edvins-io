@@ -28,7 +28,7 @@
   {
     "name": "My Digital Garden",
     "status": "Launched",
-    "description": "My space where I write about software development and indie making.",
+    "description": "Personal site and blog on frontend engineering, side projects, and learning.",
     "tags": ["React", "Gatsby", "GraphQL"],
     "link": "/",
     "year": 2021,
@@ -37,7 +37,7 @@
   {
     "name": "Stealth Labs",
     "status": "Launched",
-    "description": "My umbrella company which I use to work with my clients.",
+    "description": "Software consulting for product and engineering work.",
     "tags": ["React", "TypeScript", "Supabase"],
     "link": "https://stealthlabs.dev/",
     "year": 2020,

@@ -96,7 +96,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
       <div>
         <h3 className="text-xl font-medium tracking-tight mb-6 mt-6">2014 — 2023</h3>
         <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-          One day I will make a detailed post about my projects and the lessons I've learned from them.
+          A mix of experiments, shipped products, and abandoned ideas built across web, mobile, npm packages, Chrome extensions, and games.
         </p>
       </div>
     </div>
