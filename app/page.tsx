@@ -5,16 +5,11 @@ export default function Page() {
     <section>
       <h1 className="mb-8 text-2xl font-semibold tracking-tighter">Edvins Antonovs</h1>
       <p className="mb-4">
-        I'm a front-end engineer at{' '}
-        <a
-          href="https://secondmind.ai/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          Secondmind
-        </a>
-        , currently based in 🇱🇻 Riga, Latvia. I build{' '}
+        Senior Front-End Engineer specialising in React, TypeScript, frontend architecture, design
+        systems, developer experience, and product engineering.
+      </p>
+      <p className="mb-4">
+        Based in 🇱🇻 Riga, Latvia. I build{' '}
         <a href="/projects" className="underline">
           side projects
         </a>
@@ -40,6 +35,9 @@ export default function Page() {
           running
         </a>
         , and spending time with my family.
+      </p>
+      <p className="mb-4">
+        Currently open to senior, lead, and founding engineer roles in Latvia and full remote.
       </p>
       <div className="my-8">
         <BlogPosts displayCount={5} />
