@@ -37,7 +37,8 @@ export default function Page() {
         , and spending time with my family.
       </p>
       <p className="mb-4">
-        Currently open to senior, lead, and founding engineer roles in Latvia and full remote.
+        Latvian-British dual citizen, open to senior, lead, and founding engineer roles in Latvia
+        and the United Kingdom. Open to remote, hybrid, and relocation.
       </p>
       <div className="my-8">
         <BlogPosts displayCount={5} />

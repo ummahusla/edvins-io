@@ -1,5 +1,14 @@
 [
   {
+    "name": "Hearthroot Online",
+    "status": "Development",
+    "description": "Browser-based idle medieval MMO RPG with cosy progression.",
+    "tags": ["React", "Next.js", "Supabase"],
+    "link": "https://hearthroot.online/",
+    "year": 2026,
+    "logo": "hearthroot-online.png"
+  },
+  {
     "name": "Keystorm",
     "status": "Launched",
     "description": "Roguelike typing game with pressure system.",
