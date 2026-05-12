@@ -2,9 +2,9 @@
   {
     "name": "Hearthroot Online",
     "status": "Development",
-    "description": "Browser-based idle medieval MMO RPG with cosy progression.",
+    "description": "A medieval idle browser MMORPG built for long, satisfying grinds.",
     "tags": ["React", "Next.js", "Supabase"],
-    "link": "https://hearthroot.online/",
+    "link": "https://dev.hearthroot.online/",
     "year": 2026,
     "logo": "hearthroot-online.png"
   },
