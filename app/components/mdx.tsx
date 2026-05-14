@@ -62,6 +62,21 @@ function RoundedImage(props) {
   return <Image alt={props.alt} className="rounded-lg" {...props} />;
 }
 
+function YouTubeEmbed({ id, title }) {
+  return (
+    <div className="my-8 aspect-video overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
+      <iframe
+        className="h-full w-full"
+        src={`https://www.youtube.com/embed/${id}`}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      />
+    </div>
+  );
+}
+
 function Code({ children, ...props }) {
   let codeHTML = highlight(children);
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
@@ -126,6 +141,7 @@ let components = {
   IdleWelcomeDemo,
   CultivateDemo,
   ChangelogDemo,
+  YouTubeEmbed,
   Preview,
   BlogPost,
 };

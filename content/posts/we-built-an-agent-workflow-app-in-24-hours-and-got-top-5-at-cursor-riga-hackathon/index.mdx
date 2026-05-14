@@ -1,0 +1,112 @@
+---
+title: We built an agent workflow app in 24 hours and got top 5 at Cursor Riga Hackathon
+date: 2026-05-14
+description: How our Flow Build team built Routine, an agent workflow desktop app, in 24 hours at Cursor Riga Hackathon and made it to the top 5.
+tags:
+  - Cursor
+  - Hackathon
+  - AI
+  - UI/UX
+---
+
+I joined Cursor Riga Hackathon, organised by Cursor, Shipyard and Magebit in Riga, Latvia.
+
+Our team was called Flow Build: [Roberts Pumpurs](https://www.linkedin.com/in/roberts-pumpurs-3b24b6159/), [Arina Pumpure](https://www.linkedin.com/in/arinapumpure/), [Kristofers Volkovs](https://www.linkedin.com/in/kristofers-volkovs/), and me.
+
+In 24 hours, we built [Routine](https://github.com/ummahusla/routine) - a desktop app for creating automation workflows by chatting with an agent.
+
+We made it to the top 5 and each got $200 in Cursor credits. Not exactly retirement money, but very useful if your weekend hobby is burning tokens.
+
+---
+
+## What we built
+
+Routine is a desktop app that turns natural-language prompts into runnable visual automation flows.
+
+The rough idea is something like n8n, but with a different bet. Instead of manually wiring blocks together and waiting for a platform to support the exact tool you need, you describe the workflow you want. Routine uses an agent to build the blocks, connect them, and add LLM steps where needed.
+
+Under the hood, Routine is built around [rote](https://www.modiqo.ai/). Rote handles a lot of the hard parts: API access, credentials, sessions, browser support, file access, and turning agent exploration traces into executable code on your machine.
+
+Routine adds the interface and agent harness around that. You chat with it, inspect the graph, tweak the flow, and run it step by step.
+
+In the hackathon version, we only supported Cursor Agent SDK because that was what we had credits for during the event.
+
+---
+
+## Splitting the work
+
+We split the work by ownership.
+
+Roberts focused on the backend, rote, and the agent side. Arina and I worked on the desktop app, UI/UX, and demo recording. Kristofers shaped the product story and pitch.
+
+That helped a lot. In 24 hours, nobody can own everything. You need enough trust to move in parallel and still bring the pieces together into one believable product.
+
+At a hackathon, the UI is usually the artifact people judge first. The backend can be clever, the architecture can be interesting, but during the demo people mostly see the product surface. If that surface is confusing, the idea feels weaker than it really is.
+
+Routine needed to feel like something you could actually use: chat on one side, workflow canvas in the middle, nodes you can inspect, and enough state on screen to make the agent behaviour legible.
+
+---
+
+## Demo scope
+
+We had to be strict with the demo.
+
+<YouTubeEmbed id="rlH-asPq5_I" title="Routine - Shipyard AI 2026" />
+
+Hackathon demos are fragile. Things can break, APIs can lag, screen recordings can fail, and ambitious features can eat the whole presentation.
+
+So we cut some parts from the final demo, even though they were interesting. The story had to stay compact.
+
+The goal was not to show everything. The goal was to show enough that people understood the product and believed the rest.
+
+My biased takeaway: UI/UX can carry a hackathon demo very far.
+
+A strong interface makes the product feel more real. It gives judges something to look at, understand, and remember. Especially with agent products, the UI is not just decoration. It is how you show what the agent is doing, what state it is in, and why the user should trust it.
+
+---
+
+## The best part
+
+The best part of the hackathon was not the prize or even making top 5.
+
+It was the vibe.
+
+Everyone was competing, but it did not feel hostile. People were tired, still building, still joking, still watching each other's demos, and still giving feedback.
+
+That is probably my favourite part of hackathons, besides sleeping on the floor.
+
+You are competing with the people around you, but it still feels like you are all doing the same weird 24-hour side quest. Someone's demo breaks, someone ships a feature at the last minute, someone explains a half-working idea with full confidence, and everyone gets it because they are in the same state.
+
+That kind of builder comradery is hard to fake.
+
+---
+
+## What I took away
+
+My main lesson from this hackathon: clarity beats scope.
+
+A smaller product that people understand is better than a bigger product that needs five minutes of setup before anyone sees the value.
+
+We had 3 minutes to pitch the product, so there was no room for a long explanation. You had to make the problem, product, and demo click fast.
+
+Also, most of the jury came from VC, so the question came up a lot: "Where is the money?"
+
+That was a useful reminder. A hackathon product still needs a simple commercial story. Who needs this? Why now? Would they pay for it? Is this a feature, a tool, or a company?
+
+The second lesson: for agent products, show the state.
+
+Do not hide everything behind a chat box. If the app is doing work, show the graph, steps, inputs, outputs, logs, or whatever makes the invisible parts visible. People trust agentic systems more when they can see what is happening.
+
+Routine is still a hackathon build. The repo needs more polish, the integration can go deeper, and some parts were built under hackathon constraints.
+
+But I like the direction.
+
+"Workflow builder where the agent builds the blocks" feels like a useful idea. It is not just another chat wrapper. It points at a different way to build automations: describe intent, inspect the generated workflow, adjust it, then run it locally.
+
+Huge thanks to Roberts Pumpurs, Arina Pumpure, and Kristofers Volkovs.
+
+Also thanks to Cursor, Shipyard and Magebit for organising the event in Riga.
+
+Repo: [github.com/ummahusla/routine](https://github.com/ummahusla/routine)
+
+Demo: [Routine - Shipyard AI 2026](https://youtu.be/rlH-asPq5_I)
