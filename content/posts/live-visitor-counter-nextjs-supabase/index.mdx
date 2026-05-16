@@ -1,0 +1,426 @@
+---
+title: How to build a live visitor counter with Next.js and Supabase
+date: 2026-05-16
+description: Build a live "active now" visitor counter in Next.js using Supabase, Postgres RPC, anonymous browser IDs, and a simple heartbeat.
+tags:
+  - Next.js
+  - Supabase
+  - Postgres
+---
+
+I wanted a live visitor counter on one of my sites.
+
+Not pageviews. Not GA. Not a fake vanity number. Just a small "X active now" signal that updates whilst people are actually on the site.
+
+You can build this with websockets. You can also overbuild it very quickly.
+
+For this use case, I did not need full realtime presence infrastructure. A simple heartbeat into Supabase plus a Postgres RPC was enough.
+
+This post shows the version I would start with first. The number animation uses [NumberFlow](https://number-flow.barvian.me/) to make the count feel alive rather than just swapping digits.
+
+<ActiveVisitorsBadgeDemo />
+
+---
+
+## tl;dr
+
+- Store one anonymous `visitorId` in `localStorage`
+- Send a heartbeat every 60 seconds whilst the tab is visible
+- Upsert `last_seen_at` in Postgres through a Supabase RPC
+- Return the count of visitors active in the last 5 minutes
+- Hide the badge when the client cannot refresh the count
+- Keep table access private and expose only the RPC
+
+---
+
+## What "live" means here
+
+Before writing any code, define what you are counting.
+
+In this version, an "active visitor" means:
+
+1. the page is open in a browser tab
+2. the tab is visible
+3. the client has refreshed its heartbeat recently
+4. the last heartbeat is still inside the active window
+
+That means this is not:
+
+- unique visitors
+- pageviews
+- authenticated users
+- a perfect count of real humans
+
+It is a lightweight approximation of "who is active right now".
+
+For a small badge, that is usually enough.
+
+---
+
+## Why I did not use websockets
+
+Realtime Presence is a good option, but I did not think it was the right first move here.
+
+I only needed a site-wide count with minute-level freshness. I did not need:
+
+- per-room presence
+- sub-second updates
+- presence metadata
+- direct peer awareness
+
+The heartbeat approach is simpler:
+
+- one table
+- one RPC
+- one browser interval
+- easy to debug in SQL
+- easy to reason about when things go wrong
+
+That trade-off is often worth it.
+
+If later you want per-page reader counts, collaborative presence, or richer live state, then websockets start making more sense.
+
+---
+
+## The architecture
+
+Each heartbeat calls one RPC. That RPC upserts the visitor row and returns the current active count. The client never reads or writes the table directly — only the RPC is exposed.
+
+One thing worth setting as an expectation upfront: when a visitor closes or hides their tab, heartbeats stop immediately — but they will remain in the active count for up to 5 minutes, the length of the active window. That lag is the trade-off of a polling-based approach. For a small badge, it is usually acceptable.
+
+---
+
+## Step 1: Create the table
+
+Start with a tiny table:
+
+```sql
+create table if not exists public.website_active_visitors (
+  visitor_id text primary key,
+  created_at timestamptz not null default clock_timestamp(),
+  last_seen_at timestamptz not null default clock_timestamp()
+);
+
+create index if not exists idx_website_active_visitors_last_seen_at
+  on public.website_active_visitors (last_seen_at);
+```
+
+That is enough for the live count.
+
+If all you want is "active now", do not turn this into an analytics schema.
+
+---
+
+## Step 2: Expose a narrow RPC
+
+Now add an RPC that:
+
+- validates the input
+- upserts the visitor row
+- counts active visitors inside a time window
+- returns a single integer
+
+```sql
+create or replace function public.touch_website_active_visitor(
+  _visitor_id text,
+  _window_minutes integer default 5
+)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $function$
+declare
+  active_visitor_count integer;
+  safe_window_minutes integer := least(greatest(coalesce(_window_minutes, 5), 1), 60);
+  sanitized_visitor_id text := btrim(coalesce(_visitor_id, ''));
+begin
+  if sanitized_visitor_id = '' then
+    raise exception 'visitor_id is required';
+  end if;
+
+  if char_length(sanitized_visitor_id) > 128 then
+    raise exception 'visitor_id is too long';
+  end if;
+
+  insert into public.website_active_visitors (visitor_id, last_seen_at)
+  values (sanitized_visitor_id, clock_timestamp())
+  on conflict (visitor_id)
+  do update set last_seen_at = excluded.last_seen_at;
+
+  select count(*)::integer
+  into active_visitor_count
+  from public.website_active_visitors
+  where last_seen_at > clock_timestamp() - make_interval(mins => safe_window_minutes);
+
+  return active_visitor_count;
+end;
+$function$;
+```
+
+This is the whole backend.
+
+No Edge Function. No queue. No extra API route.
+
+---
+
+## Step 3: Lock down direct table access
+
+The client should not have direct access to `website_active_visitors`.
+
+Revoke table access and grant execute only on the RPC:
+
+```sql
+alter table public.website_active_visitors enable row level security;
+
+revoke all on table public.website_active_visitors from public;
+revoke all on table public.website_active_visitors from anon;
+revoke all on table public.website_active_visitors from authenticated;
+
+revoke execute on function public.touch_website_active_visitor(text, integer) from public;
+grant execute on function public.touch_website_active_visitor(text, integer) to anon;
+grant execute on function public.touch_website_active_visitor(text, integer) to authenticated;
+```
+
+That keeps the surface area tight.
+
+---
+
+## Step 4: Create a browser Supabase client
+
+Use your usual browser client:
+
+```ts
+import { createClient } from '@supabase/supabase-js';
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
+```
+
+Nothing special here.
+
+---
+
+## Step 5: Generate a stable anonymous visitor ID
+
+You need one stable ID per browser, not per render.
+
+```ts
+const STORAGE_KEY = 'active-visitor-id';
+
+export function getOrCreateVisitorId() {
+  const existingValue = window.localStorage.getItem(STORAGE_KEY);
+
+  if (existingValue) {
+    return existingValue;
+  }
+
+  const newValue = crypto.randomUUID();
+  window.localStorage.setItem(STORAGE_KEY, newValue);
+
+  return newValue;
+}
+```
+
+This is intentionally anonymous and low ceremony.
+
+If the same person opens the site in two browsers, you will count two visitors. That is usually acceptable for this kind of widget.
+
+---
+
+## Step 6: Send a heartbeat from the client
+
+This hook does the real work:
+
+- starts only when the tab is visible
+- refreshes every 60 seconds
+- avoids overlapping RPC calls
+- stores the latest count
+- marks the badge as disconnected if refresh fails
+
+```tsx
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/lib/supabase-browser';
+import { getOrCreateVisitorId } from '@/lib/visitor-id';
+
+const ACTIVE_WINDOW_MINUTES = 5;
+const HEARTBEAT_INTERVAL_MS = 60_000;
+
+export function useActiveVisitors() {
+  const [count, setCount] = useState(0);
+  const [connected, setConnected] = useState(false);
+
+  const visitorIdRef = useRef<string | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const isTouchInFlightRef = useRef(false);
+
+  const stop = useCallback(() => {
+    if (intervalRef.current !== null) {
+      window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const touch = useCallback(async () => {
+    if (
+      document.visibilityState !== 'visible' ||
+      !visitorIdRef.current ||
+      isTouchInFlightRef.current
+    ) {
+      return;
+    }
+
+    isTouchInFlightRef.current = true;
+
+    try {
+      const { data, error } = await supabase.rpc('touch_website_active_visitor', {
+        _visitor_id: visitorIdRef.current,
+        _window_minutes: ACTIVE_WINDOW_MINUTES,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (typeof data === 'number') {
+        setCount(data);
+      }
+
+      setConnected(true);
+    } catch (error) {
+      console.error('Failed to refresh active visitors', error);
+      setConnected(false);
+    } finally {
+      isTouchInFlightRef.current = false;
+    }
+  }, []);
+
+  const start = useCallback(() => {
+    stop();
+
+    if (document.visibilityState !== 'visible') {
+      return;
+    }
+
+    void touch();
+
+    intervalRef.current = window.setInterval(() => {
+      void touch();
+    }, HEARTBEAT_INTERVAL_MS);
+  }, [stop, touch]);
+
+  useEffect(() => {
+    visitorIdRef.current = getOrCreateVisitorId();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        start();
+        return;
+      }
+
+      stop();
+      setConnected(false);
+    };
+
+    start();
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      stop();
+      setConnected(false);
+    };
+  }, [start, stop]);
+
+  return { count, connected };
+}
+```
+
+Two details matter here:
+
+### Only count visible tabs
+
+If you keep heartbeats running in background tabs, your counter will drift upwards and become less honest.
+
+### Hide the widget on disconnect
+
+If the heartbeat fails, I prefer not to render `0`.
+
+`0` looks like a real measurement. A disconnected client is not a real measurement.
+
+---
+
+## Step 7: Render the badge
+
+The UI can stay tiny:
+
+```tsx
+'use client';
+
+import { useActiveVisitors } from '@/hooks/use-active-visitors';
+
+export function ActiveVisitorsBadge() {
+  const { count, connected } = useActiveVisitors();
+
+  if (!connected || count <= 0) {
+    return null;
+  }
+
+  return (
+    <div>
+      <span aria-hidden="true">●</span> {count} active now
+    </div>
+  );
+}
+```
+
+That is enough.
+
+The implementation details can grow later. The product surface should stay simple.
+
+---
+
+## Production notes
+
+There are a few non-obvious details worth keeping:
+
+- This is presence, not analytics. If you want trends, write aggregates separately.
+- Old rows are harmless for counting, but you may still want a periodic cleanup job.
+- Browser storage means this is visitor-per-browser, not visitor-per-person.
+- A 60 second heartbeat with a 5 minute active window is a practical default, not a law.
+- If your traffic is large, move from "count rows every heartbeat" to pre-aggregated counters or a more ephemeral store.
+
+If you want a cleanup task, even a simple daily delete is fine:
+
+```sql
+delete from public.website_active_visitors
+where last_seen_at < now() - interval '7 days';
+```
+
+---
+
+## Other options
+
+This pattern is not the only answer.
+
+- `Supabase Realtime Presence` - Use this when you want richer live presence, per-page rooms, or faster updates without polling. It is stronger for "people reading this exact post right now" than for a simple site-wide badge.
+- `Redis` or `Upstash` - Use this when you want more ephemeral counters, higher write volume, or already have Redis in the stack.
+- `Your analytics tool` - Use Plausible, PostHog, or GA if what you actually want is traffic analysis, retention, funnels, or historical reports. That is a different problem from live presence.
+- `Websockets` or `SSE` - Use these when minute-level freshness is not enough and the UI genuinely benefits from lower latency updates.
+
+---
+
+## Final thought
+
+When a problem looks "realtime", it is tempting to reach for the most realtime-looking tool in the box. Sometimes that is right. Sometimes the better answer is just:
+
+- one table
+- one RPC
+- one heartbeat
+
+That was enough here, and I would still start there again.

@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@number-flow/react": "^0.6.0",
     "@tailwindcss/postcss": "4.0.0-alpha.13",
     "@types/node": "20.11.17",
     "@types/react": "^19.2.13",

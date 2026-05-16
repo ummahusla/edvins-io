@@ -10,6 +10,7 @@ import Preview from './blog/Preview';
 import BlogPost from './blog/BlogPost';
 import IdleWelcomeDemo from './demos/IdleWelcomeDemo';
 import ChangelogDemo from './demos/ChangelogDemo';
+import ActiveVisitorsBadgeDemo from './demos/ActiveVisitorsBadgeDemo';
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -141,6 +142,7 @@ let components = {
   IdleWelcomeDemo,
   CultivateDemo,
   ChangelogDemo,
+  ActiveVisitorsBadgeDemo,
   YouTubeEmbed,
   Preview,
   BlogPost,
