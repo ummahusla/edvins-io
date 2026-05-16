@@ -394,6 +394,7 @@ There are a few non-obvious details worth keeping:
 - Browser storage means this is visitor-per-browser, not visitor-per-person.
 - A 60 second heartbeat with a 5 minute active window is a practical default, not a law.
 - If your traffic is large, move from "count rows every heartbeat" to pre-aggregated counters or a more ephemeral store.
+- Adding a Next.js Route Handler with `unstable_cache` and a 60s TTL reduces N count queries per minute down to 1 — credit to [Yangshun Tay](https://www.linkedin.com/in/yangshun/) for this one.
 
 If you want a cleanup task, even a simple daily delete is fine:
 
