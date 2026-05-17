@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { highlight } from 'sugar-high';
 import React from 'react';
 import remarkGfm from 'remark-gfm';
+import rehypePrettyCode from 'rehype-pretty-code';
 import GoldMineDemo from './demos/GoldMineDemo';
 import CultivateDemo from './demos/CultivateDemo';
 import Preview from './blog/Preview';
@@ -78,11 +78,6 @@ function YouTubeEmbed({ id, title }) {
   );
 }
 
-function Code({ children, ...props }) {
-  let codeHTML = highlight(children);
-  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
-}
-
 function slugify(str) {
   return str
     .toString()
@@ -125,7 +120,6 @@ let components = {
   h6: createHeading(6),
   Image: RoundedImage,
   a: CustomLink,
-  code: Code,
   Table,
   table: (props) => <table className="w-full border-collapse my-6 text-sm" {...props} />,
   th: (props) => (
@@ -156,6 +150,18 @@ export function CustomMDX(props) {
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm],
+          rehypePlugins: [
+            [
+              rehypePrettyCode,
+              {
+                theme: {
+                  dark: 'github-dark',
+                  light: 'github-light',
+                },
+                keepBackground: false,
+              },
+            ],
+          ],
         },
       }}
     />
