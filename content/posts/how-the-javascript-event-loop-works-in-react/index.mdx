@@ -1,0 +1,143 @@
+---
+title: How the JavaScript event loop works in React
+description: Understanding how the JavaScript event loop works under the hood helps explain React's rendering behaviour, state batching, and why blocking the main thread tanks your UI performance.
+date: 2026-05-21
+tags:
+  - JavaScript
+  - React
+
+---
+
+### tl;dr
+
+- The event loop processes the call stack, flushes all microtasks, then picks one macrotask - in that order
+- React rendering is synchronous call stack work; effects are deferred macrotasks
+- React 18 batches all state updates by default, reducing unnecessary re-renders
+- Blocking the call stack with heavy synchronous code freezes the entire UI
+- `startTransition` lets React deprioritise expensive updates and keep the UI responsive
+
+---
+
+JavaScript is single-threaded, meaning it can only execute one piece of code at a time. The event loop is the mechanism that allows it to handle asynchronous work without blocking. Understanding it is key to reasoning about how React schedules renders, batches updates, and runs effects.
+
+---
+
+### The event loop in a nutshell
+
+There are four main players:
+
+- **Call stack** - where your code runs, one frame at a time
+- **Web APIs** - handles async work like `setTimeout`, `fetch`, and DOM events outside the stack
+- **Microtask queue** - holds resolved promise callbacks (`then`, `catch`, `async/await`)
+- **Macrotask queue** - holds callbacks from `setTimeout`, `setInterval`, and I/O events
+
+The loop works like this: run everything on the call stack, drain the entire microtask queue, then pick one macrotask, repeat.
+
+```js
+console.log('1');
+
+setTimeout(() => console.log('2'), 0);
+
+Promise.resolve().then(() => console.log('3'));
+
+console.log('4');
+
+// Output: 1, 4, 3, 2
+```
+
+`setTimeout(..., 0)` does not mean "run immediately" - it means "schedule as a macrotask". The promise callback fires first because microtasks flush before the next macrotask.
+
+---
+
+### How React fits in
+
+React's rendering is synchronous work on the call stack. When you call `setState`, React does not re-render immediately - it schedules a re-render. In React 18, this scheduling runs through its own internal scheduler built on top of `MessageChannel` (a macrotask), giving the browser a chance to paint between updates.
+
+This is the foundation of **Concurrent Mode**: React can yield to the browser mid-render, preventing long renders from blocking user interactions.
+
+---
+
+### State batching
+
+React batches multiple `setState` calls in the same synchronous block into a single re-render.
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  const [label, setLabel] = useState('');
+
+  const handleClick = () => {
+    setCount((c) => c + 1);
+    setLabel('updated');
+    // Only one re-render happens here, not two
+  };
+
+  return <button onClick={handleClick}>{label}: {count}</button>;
+}
+```
+
+Prior to React 18, batching only happened inside React event handlers. Code inside `setTimeout` or `fetch` callbacks would trigger separate re-renders per `setState` call. React 18 introduced **automatic batching** everywhere.
+
+```jsx
+// React 18 - both setStates are batched even inside setTimeout
+setTimeout(() => {
+  setCount((c) => c + 1);
+  setLabel('updated');
+  // Still only one re-render
+}, 1000);
+```
+
+This works because React defers the actual render to a scheduled task, accumulating all state changes that happen synchronously first.
+
+---
+
+### useEffect and the event loop
+
+`useEffect` callbacks run after the browser has painted. React schedules them as macrotasks, which is why they never block the render.
+
+```jsx
+useEffect(() => {
+  console.log('effect');
+}, []);
+
+console.log('render');
+
+// Output: render, then (after paint): effect
+```
+
+`useLayoutEffect` is different - it fires synchronously after the DOM mutation but before the browser paints, similar to how microtasks flush before the next macrotask.
+
+Use `useLayoutEffect` when you need to read layout (e.g. element dimensions) before the user sees the screen. Use `useEffect` for everything else.
+
+---
+
+### Blocking the event loop breaks React
+
+Because rendering happens on the same thread, a long-running synchronous operation will freeze your UI - no re-renders, no event handling, nothing.
+
+```jsx
+function ExpensiveComponent() {
+  const handleClick = () => {
+    // This blocks the event loop for ~2 seconds
+    const start = Date.now();
+    while (Date.now() - start < 2000) {}
+
+    setDone(true);
+  };
+
+  return <button onClick={handleClick}>Run</button>;
+}
+```
+
+The fix is to move heavy work off the main thread using `setTimeout`, `requestIdleCallback`, Web Workers, or React's own `startTransition` to mark updates as non-urgent.
+
+```jsx
+import { startTransition } from 'react';
+
+startTransition(() => {
+  setFilteredList(computeHeavyFilter(data));
+});
+```
+
+`startTransition` tells React this update can be interrupted - if a higher-priority update arrives (like a keypress), React will pause and handle it first.
+
