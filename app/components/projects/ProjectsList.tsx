@@ -15,6 +15,7 @@ export interface Project {
 
 interface ProjectsListProps {
   projects: Project[];
+  compact?: boolean;
 }
 
 // Only show these specific projects
@@ -38,15 +39,12 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destr
   'In Development': 'outline',
 };
 
-export function ProjectsList({ projects }: ProjectsListProps) {
+export function ProjectsList({ projects, compact = false }: ProjectsListProps) {
   const displayedProjects = filterDisplayedProjects(projects);
 
-  return (
-    <div className="space-y-12">
-      <div>
-        <h3 className="text-xl font-medium tracking-tight mb-6 mt-6">2023 — Present</h3>
-        <div className="space-y-1">
-          {displayedProjects.map((project) => {
+  const rows = (
+    <div className="space-y-1">
+      {displayedProjects.map((project) => {
             const isExternalLink = project.link.startsWith('http');
             const logoUrl = project.logo ? `/projects/${project.logo}` : null;
             const statusType = project.status as keyof typeof statusVariant;
@@ -92,7 +90,18 @@ export function ProjectsList({ projects }: ProjectsListProps) {
               </Link>
             );
           })}
-        </div>
+    </div>
+  );
+
+  if (compact) {
+    return rows;
+  }
+
+  return (
+    <div className="space-y-12">
+      <div>
+        <h3 className="text-xl font-medium tracking-tight mb-6 mt-6">2023 — Present</h3>
+        {rows}
       </div>
       <div>
         <h3 className="text-xl font-medium tracking-tight mb-6 mt-6">2014 — 2023</h3>

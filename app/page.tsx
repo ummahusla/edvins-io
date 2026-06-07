@@ -1,6 +1,16 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { BlogPosts } from 'app/components/posts';
+import { ProjectsList } from 'app/components/projects/ProjectsList';
+
+function getProjects() {
+  const projectsPath = join(process.cwd(), 'content', 'projects.json');
+  return JSON.parse(readFileSync(projectsPath, 'utf8'));
+}
 
 export default function Page() {
+  const projects = getProjects();
+
   return (
     <section>
       <h1 className="mb-8 text-2xl font-semibold tracking-tighter">Edvins Antonovs</h1>
@@ -38,7 +48,22 @@ export default function Page() {
       </p>
 
       <div className="my-8">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold tracking-tight">Writing</h2>
+          <a href="/blog" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors">
+            View all
+          </a>
+        </div>
         <BlogPosts displayCount={5} />
+      </div>
+      <div className="my-8">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold tracking-tight">Projects</h2>
+          <a href="/projects" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors">
+            View all
+          </a>
+        </div>
+        <ProjectsList projects={projects} compact />
       </div>
     </section>
   );
