@@ -36,10 +36,7 @@ export default function Page() {
         </a>
         , and spending time with my family.
       </p>
-      <p className="mb-4">
-        Latvian-British dual citizen, open to senior, lead, and founding engineer roles in Latvia
-        and the United Kingdom. Open to remote, hybrid, and relocation.
-      </p>
+
       <div className="my-8">
         <BlogPosts displayCount={5} />
       </div>
