@@ -47,7 +47,7 @@ export default function Page() {
         , and spending time with my family.
       </p>
 
-      <div className="my-8">
+      <div className="my-16">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold tracking-tight">Writing</h2>
           <a href="/blog" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors">
@@ -56,7 +56,7 @@ export default function Page() {
         </div>
         <BlogPosts displayCount={5} />
       </div>
-      <div className="my-8">
+      <div className="my-16">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold tracking-tight">Projects</h2>
           <a href="/projects" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors">
