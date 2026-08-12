@@ -10,11 +10,11 @@ tags:
 
 ### tl;dr
 
-- The event loop processes the call stack, flushes all microtasks, then picks one macrotask - in that order
-- React rendering is synchronous call stack work; effects are deferred macrotasks
-- React 18 batches all state updates by default, reducing unnecessary re-renders
+- The event loop runs one task, drains queued microtasks, may update rendering, then selects another task
+- React's render phase can be interrupted during concurrent rendering; the commit phase applies DOM changes synchronously, then effects run after commit. Paint timing is contextual, and React does not promise a macrotask implementation
+- Modern React batches many state updates automatically, but not every update under every condition
 - Blocking the call stack with heavy synchronous code freezes the entire UI
-- `startTransition` lets React deprioritise expensive updates and keep the UI responsive
+- [`startTransition`](https://react.dev/reference/react/startTransition) lets React deprioritise state updates and keep the UI responsive
 
 ---
 
@@ -29,9 +29,9 @@ There are four main players:
 - **Call stack** - where your code runs, one frame at a time
 - **Web APIs** - handles async work like `setTimeout`, `fetch`, and DOM events outside the stack
 - **Microtask queue** - holds resolved promise callbacks (`then`, `catch`, `async/await`)
-- **Macrotask queue** - holds callbacks from `setTimeout`, `setInterval`, and I/O events
+- **Task queues** - hold work from sources such as timers, user interactions and networking
 
-The loop works like this: run everything on the call stack, drain the entire microtask queue, then pick one macrotask, repeat.
+In simplified terms, the loop selects and runs one task, drains the entire microtask queue, may update rendering, then selects another task. "Macrotask" is common shorthand for a task, but browsers can maintain multiple task queues and choose between them.
 
 ```js
 console.log('1');
@@ -45,21 +45,21 @@ console.log('4');
 // Output: 1, 4, 3, 2
 ```
 
-`setTimeout(..., 0)` does not mean "run immediately" - it means "schedule as a macrotask". The promise callback fires first because microtasks flush before the next macrotask.
+`setTimeout(..., 0)` does not mean "run immediately" - it queues a timer task after the minimum delay. The promise callback fires first because microtasks are drained after the current script task completes and before the timer task runs.
 
 ---
 
 ### How React fits in
 
-React's rendering is synchronous work on the call stack. When you call `setState`, React does not re-render immediately - it schedules a re-render. In React 18, this scheduling runs through its own internal scheduler built on top of `MessageChannel` (a macrotask), giving the browser a chance to paint between updates.
+React's render phase calculates what the next UI should look like. When you call `setState`, React schedules an update rather than immediately changing the DOM. During concurrent rendering, React may pause, restart or abandon render work so the browser can handle other work. The commit phase then applies the selected changes to the DOM synchronously.
 
-This is the foundation of **Concurrent Mode**: React can yield to the browser mid-render, preventing long renders from blocking user interactions.
+React does not guarantee a browser paint between updates, and the mechanism it uses to schedule work is an implementation detail rather than part of its public API.
 
 ---
 
 ### State batching
 
-React batches multiple `setState` calls in the same synchronous block into a single re-render.
+React can batch multiple `setState` calls made before it processes an update, often producing a single render and commit.
 
 ```jsx
 function Counter() {
@@ -69,31 +69,33 @@ function Counter() {
   const handleClick = () => {
     setCount((c) => c + 1);
     setLabel('updated');
-    // Only one re-render happens here, not two
+    // React will usually process these as one batched update
   };
 
   return <button onClick={handleClick}>{label}: {count}</button>;
 }
 ```
 
-Prior to React 18, batching only happened inside React event handlers. Code inside `setTimeout` or `fetch` callbacks would trigger separate re-renders per `setState` call. React 18 introduced **automatic batching** everywhere.
+Prior to React 18, React automatically batched updates in React event handlers, but not generally in asynchronous callbacks. With React 18's `createRoot`, React also batches many updates from sources such as `setTimeout`, promises and native event handlers. This is broader automatic batching, not a guarantee that every update is batched in every condition.
 
 ```jsx
-// React 18 - both setStates are batched even inside setTimeout
+// React 18+ with createRoot - these are generally batched together
 setTimeout(() => {
   setCount((c) => c + 1);
   setLabel('updated');
-  // Still only one re-render
+  // React may process both updates in one render and commit
 }, 1000);
 ```
 
-This works because React defers the actual render to a scheduled task, accumulating all state changes that happen synchronously first.
+The exact point at which React renders depends on the update's context and priority. Batching groups updates that React can process together; it does not define a universal event-loop rule.
 
 ---
 
 ### useEffect and the event loop
 
-`useEffect` callbacks run after the browser has painted. React schedules them as macrotasks, which is why they never block the render.
+After React commits an update, the [`useEffect`](https://react.dev/reference/react/useEffect) setup function runs when its dependencies have changed. For an Effect not caused by an interaction, React will generally let the browser paint the updated screen first. An Effect caused by an interaction may run before the browser paints.
+
+This timing is contextual. React's public API does not guarantee that `useEffect` is implemented as a macrotask or that it always runs after paint. Once an Effect starts, its synchronous code runs on the main thread, so a long Effect can delay subsequent paints, input handling and other work.
 
 ```jsx
 useEffect(() => {
@@ -102,12 +104,11 @@ useEffect(() => {
 
 console.log('render');
 
-// Output: render, then (after paint): effect
+// Ordering: render, then (after commit): effect
+// The browser may paint before or after the Effect, depending on context.
 ```
 
-`useLayoutEffect` is different - it fires synchronously after the DOM mutation but before the browser paints, similar to how microtasks flush before the next macrotask.
-
-Use `useLayoutEffect` when you need to read layout (e.g. element dimensions) before the user sees the screen. Use `useEffect` for everything else.
+The [`useLayoutEffect`](https://react.dev/reference/react/useLayoutEffect) Hook runs after React has updated the DOM and before the browser repaints. Its code, and any synchronous state updates scheduled from it, block repainting. Reserve it for work that must happen before paint, such as measuring layout and synchronously correcting visual positioning. Prefer `useEffect` unless the work must happen before paint.
 
 ---
 
@@ -129,15 +130,39 @@ function ExpensiveComponent() {
 }
 ```
 
-The fix is to move heavy work off the main thread using `setTimeout`, `requestIdleCallback`, Web Workers, or React's own `startTransition` to mark updates as non-urgent.
+Scheduling heavy work later is not the same as moving it off the main thread:
+
+- `setTimeout` schedules later work on the main thread.
+- [`requestIdleCallback`](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback) schedules low-priority work during idle periods, also on the main thread.
+- Chunking work and yielding between chunks can improve responsiveness, but the chunks still run on the main thread.
+- [`Web Workers`](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) can run CPU-heavy JavaScript on another thread.
+- [`startTransition`](https://react.dev/reference/react/startTransition) marks React state updates as non-urgent, so React can interrupt the rendering they cause. It does not move arbitrary calculations off the main thread or make CPU-heavy calculations faster. The function passed to it is called immediately.
 
 ```jsx
-import { startTransition } from 'react';
+import { useState, startTransition } from 'react';
 
-startTransition(() => {
-  setFilteredList(computeHeavyFilter(data));
-});
+function SearchResults({ items }) {
+  const [query, setQuery] = useState('');
+  const [resultsQuery, setResultsQuery] = useState('');
+
+  const handleChange = (event) => {
+    const nextQuery = event.target.value;
+
+    setQuery(nextQuery); // Keep the input update urgent
+
+    startTransition(() => {
+      // Results renders a potentially expensive list
+      setResultsQuery(nextQuery);
+    });
+  };
+
+  return (
+    <>
+      <input value={query} onChange={handleChange} />
+      <Results items={items} query={resultsQuery} />
+    </>
+  );
+}
 ```
 
-`startTransition` tells React this update can be interrupted - if a higher-priority update arrives (like a keypress), React will pause and handle it first.
-
+`startTransition` tells React that the update can be interrupted - if a higher-priority update arrives, React can handle it first. The rendering work still runs on the main thread, so a CPU-heavy calculation must be optimised, chunked or moved to a Worker separately.
