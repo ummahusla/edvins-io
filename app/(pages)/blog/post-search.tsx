@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
+import { interactiveRowClassName } from 'app/components/ui/interactive-row';
+import { cn } from 'app/lib/utils';
 
 type BlogPost = {
   slug: string;
@@ -147,9 +149,14 @@ function PostList({ posts }: { posts: BlogPost[] }) {
 
 function PostRow({ post }: { post: BlogPost }) {
   return (
-    <Link key={post.slug} className="flex flex-col space-y-1 mb-4" href={`/${post.slug}`}>
+    <Link
+      className={cn(interactiveRowClassName, 'mb-1 flex flex-col space-y-1 px-3 py-2')}
+      href={`/${post.slug}`}
+    >
       <div className="w-full flex flex-col">
-        <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">{post.title}</p>
+        <p className="text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:underline underline-offset-4">
+          {post.title}
+        </p>
         <p className="text-neutral-600 dark:text-neutral-500 text-sm">
           {formatDate(post.publishedAt)} — {post.tags?.join(', ')}
         </p>

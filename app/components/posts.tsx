@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { interactiveRowClassName } from 'app/components/ui/interactive-row';
+import { cn } from 'app/lib/utils';
 import {
   formatDate,
   getBlogPosts,
@@ -26,9 +28,13 @@ export function BlogPosts({
           <div key={year} className="mb-8">
             <h3 className="text-xl font-semibold mb-4">{year}</h3>
             {postsByYear[year].map((post) => (
-              <Link key={post.slug} className="flex flex-col space-y-1 mb-4" href={`/${post.slug}`}>
+              <Link
+                key={post.slug}
+                className={cn(interactiveRowClassName, 'mb-1 flex flex-col space-y-1 px-3 py-2')}
+                href={`/${post.slug}`}
+              >
                 <div className="w-full flex flex-col">
-                  <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
+                  <p className="text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:underline underline-offset-4">
                     {post.metadata.title}
                   </p>
                   <p className="text-neutral-600 dark:text-neutral-500 text-sm">
@@ -47,9 +53,13 @@ export function BlogPosts({
   return (
     <div>
       {postsToDisplay.map((post) => (
-        <Link key={post.slug} className="flex flex-col space-y-1 mb-4" href={`/${post.slug}`}>
+        <Link
+          key={post.slug}
+          className={cn(interactiveRowClassName, 'mb-1 flex flex-col space-y-1 px-3 py-2')}
+          href={`/${post.slug}`}
+        >
           <div className="w-full flex flex-col">
-            <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
+            <p className="text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:underline underline-offset-4">
               {post.metadata.title}
             </p>
             <p className="text-neutral-600 dark:text-neutral-500 text-sm">

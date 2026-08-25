@@ -54,7 +54,7 @@
   },
   {
     "name": "Cultivate",
-    "status": "Abandoned",
+    "status": "Archived",
     "description": "Habit tracking application to cultivate new habits.",
     "tags": ["React", "TypeScript", "Redux", "Firebase"],
     "link": "/why-i-regret-not-launching-my-side-project",
@@ -63,7 +63,7 @@
   },
   {
     "name": "Hustle Market",
-    "status": "Abandoned",
+    "status": "Archived",
     "description": "Newsletter marketplace for buying and selling profitable online businesses.",
     "tags": ["React", "Redux", "Next", "Firebase"],
     "link": "https://hustle.market/",
@@ -79,7 +79,7 @@
   },
   {
     "name": "Kale",
-    "status": "Abandoned",
+    "status": "Archived",
     "description": "Expense tracking bot for Telegram.",
     "tags": ["Node", "Firebase"],
     "link": "https://kale.money/",
@@ -95,7 +95,7 @@
   },
   {
     "name": "Hacker Hype",
-    "status": "Abandoned",
+    "status": "Archived",
     "description": "Online hackathon platform, unleash your potential.",
     "tags": ["react", "node", "express", "mongo"],
     "link": "https://hackerhype.com/",

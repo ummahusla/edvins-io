@@ -17,7 +17,7 @@ const navItems = {
     name: 'books',
   },
   '/self-education': {
-    name: 'self-education',
+    name: 'learning',
   },
 };
 
@@ -26,16 +26,16 @@ export function Navbar() {
     <aside className="-ml-[8px] mb-16 tracking-tight">
       <div className="lg:sticky lg:top-20">
         <nav
-          className="flex flex-row items-start relative px-0 pb-0 fade md:overflow-auto scroll-pr-6 md:relative"
+          className="fade relative flex flex-row items-start overflow-x-auto px-0 pb-0 scroll-pr-6"
           id="nav"
         >
-          <div className="flex flex-row flex-wrap space-x-0">
+          <div className="flex flex-row flex-nowrap space-x-0">
             {Object.entries(navItems).map(([path, { name }]) => {
               return (
                 <Link
                   key={path}
                   href={path}
-                  className="transition-all hover:text-neutral-800 dark:hover:text-neutral-200 flex align-middle relative py-1 px-2 m-1"
+                  className="relative my-1 flex px-1 py-1 align-middle transition-all hover:text-neutral-800 sm:m-1 sm:px-2 dark:hover:text-neutral-200"
                 >
                   {name}
                 </Link>
