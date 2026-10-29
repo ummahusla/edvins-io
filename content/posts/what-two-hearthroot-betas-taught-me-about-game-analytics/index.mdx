@@ -17,6 +17,16 @@ Does more activity mean players are enjoying themselves? If I introduce longer F
 
 A [discussion on r/PBBG](https://www.reddit.com/r/PBBG/comments/1wzpeb9/devs_what_stats_do_you_actually_keep_an_eye_on/) about the statistics developers monitor prompted me to look more closely at game analytics, then revisit Hearthroot's own data.
 
+The examples below come from Hearthroot, but the same questions apply to other games: what counts as a useful first experience, who returns, and whether a balance change improves play even when activity falls.
+
+## tl;dr
+
+- Measure the first completed gameplay loop, not just registrations or time with a tab open.
+- Define retention precisely and compare cohorts by acquisition source, previous participation and game version.
+- Track both item volume and traded value. Player-to-player payments move currency; fees can remove it.
+- Read activity counts alongside outcomes. Longer timers or bulk actions can reduce clicks while making a game easier to fit around daily life.
+- Start with existing server records, preserve the history you need and use player feedback to investigate the gaps.
+
 ## Start with a question
 
 Established tools provide a useful vocabulary. [GameAnalytics](https://docs.gameanalytics.com/events-metrics-and-filtering/metrics/) covers engagement, retention, progression, currency flows and errors. [Roblox's economy analytics](https://create.roblox.com/docs/production/analytics/economy-events) track resource sources, sinks and wallet balances. [Steamworks UTM Analytics](https://partner.steamgames.com/doc/marketing/utm_analytics) connects marketing links to wishlists, purchases and activations.
@@ -42,7 +52,7 @@ For the second beta, I queried records from 31 August until the scheduled closin
 I started with gathering:
 
 | Milestone | Accounts | Share of registrations |
-| --- | --- | --- |
+| --- | ---: | ---: |
 | Registered | 353 | 100% |
 | Created a character | 348 | 98.6% |
 | Started gathering | 310 | 87.8% |
@@ -56,6 +66,8 @@ Perhaps the waiting period was unclear, the collection action was hard to find, 
 
 These are milestones reached at any point during the beta, rather than a timed onboarding funnel. Next time, I'd measure how long someone takes to start an activity, collect its result and use the resources.
 
+For another game, that loop might be finishing a match or crafting a first upgrade. Choose a sequence that delivers the game's promise, then measure where people stop and how long each step takes.
+
 ## One retention figure hid different audiences
 
 For this analysis, D1 means performing a qualifying gameplay action on the next UTC calendar day after registration. D7 means doing so exactly seven calendar days later.
@@ -63,7 +75,7 @@ For this analysis, D1 means performing a qualifying gameplay action on the next 
 I counted selected successful actions across gathering, crafting, Farming, Combat, quests, stations, travel and trading. Pageviews and purchases didn't qualify. Accounts whose target day wasn't fully observable before closing were excluded.
 
 | Registration group | D1 retention | D7 retention |
-| --- | --- | --- |
+| --- | ---: | ---: |
 | Opening day | 92/136 = 67.6% | 54/136 = 39.7% |
 | Later registrations | 95/214 = 44.4% | 35/184 = 19.0% |
 | Combined | 187/350 = 53.4% | 89/320 = 27.8% |
@@ -83,7 +95,7 @@ During the second beta, **145 accounts** participated in completed trades, about
 Together, they traded almost **1.48 million item units**, with a recorded base value of **41.54 million Silver**.
 
 | Trading mechanism | Item units | Base value in Silver |
-| --- | --- | --- |
+| --- | ---: | ---: |
 | Sell listings | 255,358 | 20,931,140 |
 | Buy orders | 1,220,797 | 20,611,731 |
 
@@ -114,6 +126,8 @@ Fewer planting actions could mean the new schedule was working as intended. Lowe
 The logs also showed that **ten accounts generated about 34% of planting and harvesting actions**. That doesn't prove automation, but it shows how strongly a small group can influence totals.
 
 I'd want production and consumption per account alongside those totals. I'd also distinguish individual planting from Plant All: one recorded action can affect several beds.
+
+The same issue appears when any game adds batch crafting, automatic collection or shorter menus. Record the outcome, such as items produced or upgrades completed, alongside the action count. Otherwise, removing busywork can look like losing engagement.
 
 ## I already had enough data to begin
 
