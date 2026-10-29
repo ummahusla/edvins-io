@@ -1,0 +1,141 @@
+---
+title: What two Hearthroot betas taught me about game analytics
+date: 2026-10-29
+description: What Hearthroot Online's beta data revealed about onboarding, retention, trading and the limits of measuring player activity.
+tags:
+  - Side Projects
+  - Game Development
+---
+
+I'm building [Hearthroot Online](https://hearthroot.online/), a medieval idle browser MMORPG.
+
+After two open betas, I have plenty of numbers: accounts created, resources gathered, items crafted and Silver traded. During the second beta, players produced more than six million Earthworms.
+
+These totals are fun to share. Working out what they say about the game is harder.
+
+Does more activity mean players are enjoying themselves? If I introduce longer Farming timers and people return less frequently, have I improved the idle game or made it less interesting?
+
+A [discussion on r/PBBG](https://www.reddit.com/r/PBBG/comments/1wzpeb9/devs_what_stats_do_you_actually_keep_an_eye_on/) about the statistics developers monitor prompted me to look more closely at game analytics, then revisit Hearthroot's own data.
+
+## Start with a question
+
+Established tools provide a useful vocabulary. [GameAnalytics](https://docs.gameanalytics.com/events-metrics-and-filtering/metrics/) covers engagement, retention, progression, currency flows and errors. [Roblox's economy analytics](https://create.roblox.com/docs/production/analytics/economy-events) track resource sources, sinks and wallet balances. [Steamworks UTM Analytics](https://partner.steamgames.com/doc/marketing/utm_analytics) connects marketing links to wishlists, purchases and activations.
+
+Those categories helped me narrow down the questions that matter for Hearthroot:
+
+- Do people experience the first gameplay loop?
+- Do they find reasons to return?
+- Can they progress without getting confused or blocked?
+- Do resources have useful destinations?
+- Can players successfully complete their intended actions?
+
+For an idle browser game, session duration alone answers very little. Someone can leave a tab open while working or close the browser while an activity continues.
+
+Even counting players needs care. Hearthroot's first open beta snapshot contained **548 accounts and 983 characters**. Characters are useful for analysing progression, but treating them as players would considerably overstate the audience.
+
+For retention, I count accounts. Even those aren't guaranteed to represent distinct people.
+
+## Registration isn't the first gameplay loop
+
+For the second beta, I queried records from 31 August until the scheduled closing time of 06:00 UTC on 5 October 2026. Later records exist, so querying the entire database would produce different totals. Unless stated otherwise, the figures below use that window.
+
+I started with gathering:
+
+| Milestone | Accounts | Share of registrations |
+| --- | --- | --- |
+| Registered | 353 | 100% |
+| Created a character | 348 | 98.6% |
+| Started gathering | 310 | 87.8% |
+| Subsequently collected a gathering result | 282 | 79.9% |
+
+Character creation lost relatively few accounts. The more interesting gap came afterwards.
+
+Of the 310 accounts that started gathering, 282 collected a result: about **91%**. What happened to the other 28?
+
+Perhaps the waiting period was unclear, the collection action was hard to find, or something failed. Perhaps they simply decided the game wasn't for them. The numbers identify somewhere to investigate; they don't explain the cause.
+
+These are milestones reached at any point during the beta, rather than a timed onboarding funnel. Next time, I'd measure how long someone takes to start an activity, collect its result and use the resources.
+
+## One retention figure hid different audiences
+
+For this analysis, D1 means performing a qualifying gameplay action on the next UTC calendar day after registration. D7 means doing so exactly seven calendar days later.
+
+I counted selected successful actions across gathering, crafting, Farming, Combat, quests, stations, travel and trading. Pageviews and purchases didn't qualify. Accounts whose target day wasn't fully observable before closing were excluded.
+
+| Registration group | D1 retention | D7 retention |
+| --- | --- | --- |
+| Opening day | 92/136 = 67.6% | 54/136 = 39.7% |
+| Later registrations | 95/214 = 44.4% | 35/184 = 19.0% |
+| Combined | 187/350 = 53.4% | 89/320 = 27.8% |
+
+The combined figures hide a substantial difference. It would be tempting to conclude that onboarding became worse during the beta, but these results don't establish that.
+
+Opening day may have attracted more existing community members or returning testers. Later registrations may have come through different channels. The game itself also changed.
+
+These are exploratory calculations: test accounts and possible automation haven't been separately excluded. Registration in a fresh beta world doesn't necessarily mean someone's first experience of Hearthroot.
+
+For the next beta, I'd want acquisition source, prior participation and game version connected to each cohort. Otherwise, changes in the audience can look like changes in the game.
+
+## The Market depended on what I counted
+
+During the second beta, **145 accounts** participated in completed trades, about **41.1% of registrations**.
+
+Together, they traded almost **1.48 million item units**, with a recorded base value of **41.54 million Silver**.
+
+| Trading mechanism | Item units | Base value in Silver |
+| --- | --- | --- |
+| Sell listings | 255,358 | 20,931,140 |
+| Buy orders | 1,220,797 | 20,611,731 |
+
+Buy orders handled **82.7% of item volume**, but only **49.6% of traded value**. Both figures are correct. They describe different aspects of the Market.
+
+Sell listings moved far fewer units at a much higher average value per unit. That suggests investigating the item mix: which resources depend on bulk buy orders, and which equipment or scarce materials rely on sell listings?
+
+Completed trades don't tell me how easily players find a buyer. I'd also want time to first sale, partial fills and the proportion of listings that never trade.
+
+Currency accounting needs similar care. A payment between players transfers existing Silver. A transaction fee can remove it from circulation. Treating the whole payment as a currency sink would misrepresent the economy.
+
+## Fewer clicks can be a better outcome
+
+Farming provided the clearest example of a metric moving in an ambiguous direction.
+
+The old Carrot loop encouraged harvesting roughly every five minutes. The initial rework introduced one-hour and eight-hour cycles so players could leave their garden while working or sleeping.
+
+That addressed a real complaint: an idle game was demanding too much attention. But it also changed ingredient supply.
+
+As recorded in the [Farming devlog](https://hearthroot.online/devlog/farming-that-fits-your-day), constant harvesting under the old system averaged about **60 Carrots per bed per hour**. The new hourly cycle produced **seven**, before bonuses.
+
+That's an **88.3% reduction** in that continuously harvested comparison. It isn't a measured reduction across all players: someone checking hourly behaved very differently from someone collecting every few minutes.
+
+The garden became easier to leave alone, while frequent harvesters lost substantial output and Cooking initially retained its existing requirements.
+
+Fewer planting actions could mean the new schedule was working as intended. Lower ingredient supply could mean Cooking needed attention. Both could happen together.
+
+The logs also showed that **ten accounts generated about 34% of planting and harvesting actions**. That doesn't prove automation, but it shows how strongly a small group can influence totals.
+
+I'd want production and consumption per account alongside those totals. I'd also distinguish individual planting from Plant All: one recorded action can affect several beds.
+
+## I already had enough data to begin
+
+Much of this analysis came from records Hearthroot already needed:
+
+- Account creation dates for registration cohorts.
+- Server action logs for gameplay activity.
+- Inventory events and currency ledgers for economic changes.
+- Market settlements for completed trades.
+
+I didn't need a separate analytics pipeline to start asking useful questions.
+
+Those records have limits. Current state may show a character's level without recording when they reached it. Successful action logs don't capture every abandoned or failed attempt. Operational history may be compacted or removed during a reset.
+
+Before adding more tooling, I want consistent definitions and a clear policy for which historical facts to preserve. Retries shouldn't inflate event counts, and a new definition of "active" shouldn't silently change the meaning of an old chart.
+
+The next step is a small dashboard around onboarding, cohort retention, progression milestones, resource flows, market liquidity and failed actions.
+
+Each metric should support a decision. Recipe usage needs the number of eligible characters as its denominator. Progression needs time since reaching a milestone. Retention needs context about who arrived and when.
+
+Player feedback remains essential. Data can show that ingredients accumulate or accounts stop after starting an activity. Conversations help explain what those situations feel like.
+
+The betas have given me more specific questions than "are people playing?" I can investigate where the first loop loses people, why cohorts return at different rates and whether ingredient supply supports Cooking.
+
+If someone can plant their garden, close the browser and return later to a useful harvest, fewer clicks may be evidence that Hearthroot is working better.
