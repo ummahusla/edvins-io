@@ -4,7 +4,7 @@
     "status": "Development",
     "description": "A medieval idle browser MMORPG built for long, satisfying grinds.",
     "tags": ["React", "Next.js", "Supabase"],
-    "link": "https://dev.hearthroot.online/",
+    "link": "https://hearthroot.online/",
     "year": 2026,
     "logo": "hearthroot-online.png"
   },
