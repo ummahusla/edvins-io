@@ -12,32 +12,35 @@ import IdleWelcomeDemo from './demos/IdleWelcomeDemo';
 import ChangelogDemo from './demos/ChangelogDemo';
 import ActiveVisitorsBadgeDemo from './demos/ActiveVisitorsBadgeDemo';
 
+function MarkdownTable(props: React.ComponentPropsWithoutRef<'table'>) {
+  return (
+    <div className="table-scroll" role="region" aria-label="Scrollable table" tabIndex={0}>
+      <table {...props} />
+    </div>
+  );
+}
+
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
-    <th
-      key={index}
-      className="border border-neutral-200 dark:border-neutral-700 px-4 py-2 text-left font-semibold bg-neutral-50 dark:bg-neutral-800"
-    >
+    <th key={index} scope="col">
       {header}
     </th>
   ));
   let rows = data.rows.map((row, index) => (
-    <tr key={index} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+    <tr key={index}>
       {row.map((cell, cellIndex) => (
-        <td key={cellIndex} className="border border-neutral-200 dark:border-neutral-700 px-4 py-2">
-          {cell}
-        </td>
+        <td key={cellIndex}>{cell}</td>
       ))}
     </tr>
   ));
 
   return (
-    <table className="w-full border-collapse my-6 text-sm">
+    <MarkdownTable>
       <thead>
         <tr>{headers}</tr>
       </thead>
       <tbody>{rows}</tbody>
-    </table>
+    </MarkdownTable>
   );
 }
 
@@ -121,17 +124,8 @@ let components = {
   Image: RoundedImage,
   a: CustomLink,
   Table,
-  table: (props) => <table className="w-full border-collapse my-6 text-sm" {...props} />,
-  th: (props) => (
-    <th
-      className="border border-neutral-200 dark:border-neutral-700 px-4 py-2 text-left font-semibold bg-neutral-50 dark:bg-neutral-800"
-      {...props}
-    />
-  ),
-  td: (props) => (
-    <td className="border border-neutral-200 dark:border-neutral-700 px-4 py-2" {...props} />
-  ),
-  tr: (props) => <tr className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50" {...props} />,
+  table: MarkdownTable,
+  th: (props: React.ComponentPropsWithoutRef<'th'>) => <th scope="col" {...props} />,
   GoldMineDemo,
   IdleWelcomeDemo,
   CultivateDemo,

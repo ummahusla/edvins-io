@@ -146,11 +146,49 @@ input[type='email'] {
   appearance: none;
 }
 
-table {
-  display: block;
-  max-width: fit-content;
+.prose .table-scroll {
+  margin: 1.5rem 0;
+  max-width: 100%;
   overflow-x: auto;
-  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.prose .table-scroll:focus-visible {
+  @apply outline-2 outline-neutral-400 dark:outline-neutral-600;
+  outline-offset: 4px;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose th,
+.prose td {
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.prose th {
+  @apply border-b border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 font-medium;
+}
+
+.prose td {
+  @apply border-b border-neutral-100 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200;
+}
+
+.prose th:first-child,
+.prose td:first-child {
+  padding-left: 0;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  padding-right: 0;
 }
 
 .title {

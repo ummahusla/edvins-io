@@ -1,0 +1,124 @@
+---
+title: What two Hearthroot betas taught me about game analytics
+date: 2026-10-29
+description: What Hearthroot Online's beta data revealed about onboarding, retention, trading and the limits of measuring player activity.
+tags:
+  - Side Projects
+  - Game Development
+---
+
+I'm building [Hearthroot Online](https://hearthroot.online/), a medieval idle browser MMORPG. During its second open beta, players produced more than six million Earthworms.
+
+These totals are fun to share. Working out what they say about the game is harder.
+
+Does more activity mean more enjoyment? If longer Farming timers let players return less frequently, have I improved the idle game or made it less interesting?
+
+A [discussion on r/PBBG](https://www.reddit.com/r/PBBG/comments/1wzpeb9/devs_what_stats_do_you_actually_keep_an_eye_on/) prompted me to revisit the beta data. Four lessons stood out, with applications beyond Hearthroot.
+
+---
+
+## tl;dr
+
+- Measure the first completed gameplay loop, not just registrations.
+- Compare similar audiences before attributing retention changes to the game.
+- Measure how easily players trade, alongside how much they trade.
+- Track useful outcomes when timers or interface changes reduce activity.
+
+---
+
+## Measure the first completed loop
+
+Creating an account tells me someone was interested. It doesn't tell me whether they experienced the game.
+
+For Hearthroot, I started with gathering: begin an activity, wait, then collect resources.
+
+| Milestone | Accounts | Share of registrations |
+| --- | ---: | ---: |
+| Registered | 353 | 100% |
+| Created a character | 348 | 98.6% |
+| Started gathering | 310 | 87.8% |
+| Subsequently collected a gathering result | 282 | 79.9% |
+
+Character creation lost relatively few accounts. The more interesting gap came afterwards: **28 accounts started gathering without collecting a result**.
+
+Was the wait unclear? Was collection hard to find? Did something fail, or did they simply lose interest? The numbers identify somewhere to investigate; they don't explain the cause.
+
+For another game, that first loop might be finishing a match or crafting an upgrade. Choose a sequence that delivers the game's promise, then measure completion and the time between steps.
+
+Session duration is especially weak evidence in an idle game. A tab can stay open while someone works, and progress can continue after they close it.
+
+---
+
+## Compare audiences before judging retention
+
+A combined retention figure can hide different audiences. In Hearthroot's second beta, opening-day accounts returned much more often than later registrations.
+
+| Registration group | Next day (D1) | Day seven (D7) |
+| --- | ---: | ---: |
+| Opening day | 67.6% | 39.7% |
+| Later registrations | 44.4% | 19.0% |
+| Combined | 53.4% | 27.8% |
+
+It would be tempting to conclude that onboarding became worse. These results don't establish that.
+
+Opening day may have attracted existing community members or returning testers. Later accounts may have arrived through different channels. The game also changed during the beta.
+
+Before crediting a feature for better retention, compare acquisition source, previous participation and game version. Otherwise, an audience change can look like a product improvement.
+
+The unit matters too. The first beta snapshot contained **548 accounts and 983 characters**. I measure retention by account; counting characters would overstate the audience. Multiple accounts still aren't guaranteed to represent different people.
+
+---
+
+## Trading volume doesn't tell you how easily things sell
+
+A busy market can still be frustrating to use. Completed trades show what found a buyer, while unsuccessful listings disappear from that picture.
+
+Hearthroot also showed why volume needs a definition. Buy orders, where buyers request items, handled **82.7% of item units but 49.6% of traded value**. Sell listings moved fewer units at a much higher average value per unit.
+
+That suggests investigating the item mix before deciding which trading mechanism matters most. Bulk resources and expensive equipment could tell very different stories.
+
+Neither total answers whether players can sell what they want. I'd measure time to first sale, partial fills and the proportion of listings that never trade.
+
+Currency flows need separate accounting. Player-to-player payments transfer existing currency. A fee can remove it from circulation. Treating the whole payment as a currency sink would misrepresent the economy.
+
+---
+
+## Fewer clicks can mean a better game
+
+An idle game should fit around someone's day. Measuring success by frequent interaction can work against that goal.
+
+Hearthroot's old Carrot loop encouraged harvesting roughly every five minutes. The initial rework introduced one-hour and eight-hour cycles so players could leave their garden while working or sleeping.
+
+That addressed a real complaint, but it also changed ingredient supply. As recorded in the [Farming devlog](https://hearthroot.online/devlog/farming-that-fits-your-day), constant harvesting previously averaged about **60 Carrots per bed per hour**. The new hourly cycle produced **seven**, before bonuses.
+
+That comparison assumes continuous harvesting under the old system. It isn't a measured reduction across all players.
+
+Frequent harvesters lost substantial output, while Cooking initially kept its existing ingredient requirements. Fewer planting actions could mean the schedule was working; insufficient ingredients could mean recipes needed attention. Both could happen together.
+
+For any game introducing longer timers or less repetitive interaction, measure whether players can still achieve their goals. Here, that means useful harvests and enough ingredients to cook, alongside the number of planting actions.
+
+---
+
+## What I'll measure next
+
+I could start this analysis with existing account records, server logs, inventory events and market settlements. The next step is three focused views:
+
+- **First loop:** completion time, drop-off and failed attempts.
+- **Retention:** return rates split by acquisition source, prior participation and game version.
+- **Economy:** time to first sale, plus production and consumption per account.
+
+Event counts need context too. Batch crafting or Plant All can turn several actions into one. Record the resulting output so removing busywork doesn't look like losing engagement.
+
+Player feedback helps explain what those numbers feel like. If someone can plant a garden, close the browser and return to a useful harvest, fewer clicks may be evidence that Hearthroot is working better.
+
+---
+
+> **About the data**
+>
+> Second-beta figures cover 31 August to the scheduled close at 06:00 UTC on 5 October 2026. The gathering milestones could be reached at any point in that window; they aren't a timed onboarding funnel.
+>
+> D1 and D7 count selected successful gameplay actions exactly one and seven UTC calendar days after registration. Pageviews and payment events didn't qualify. Accounts without a fully observable target day were excluded: D1 had 350 eligible accounts and D7 had 320; both included 136 opening-day accounts.
+>
+> Test accounts and possible automation haven't been separately excluded. These are exploratory results, and registration in a fresh beta world doesn't necessarily mean someone's first experience of the game.
+
+Further reading: [GameAnalytics metrics](https://docs.gameanalytics.com/events-metrics-and-filtering/metrics/), [Roblox economy events](https://create.roblox.com/docs/production/analytics/economy-events) and [Steamworks UTM Analytics](https://partner.steamgames.com/doc/marketing/utm_analytics).
