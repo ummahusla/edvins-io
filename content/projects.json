@@ -1,5 +1,14 @@
 [
   {
+    "name": "MentionJar",
+    "status": "Development",
+    "description": "Early-stage social listening tool for founders.",
+    "tags": ["SaaS", "Social Listening"],
+    "link": "https://mentionjar.com/",
+    "year": 2026,
+    "logo": "mentionjar.png"
+  },
+  {
     "name": "Hearthroot Online",
     "status": "Development",
     "description": "A medieval idle browser MMORPG built for long, satisfying grinds.",
