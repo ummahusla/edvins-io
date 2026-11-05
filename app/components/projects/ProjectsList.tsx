@@ -22,6 +22,7 @@ interface ProjectsListProps {
 
 // Only show these specific projects
 const DISPLAYED_PROJECTS = [
+  'MentionJar',
   'Hearthroot Online',
   'Keystorm',
   'Albion Online Grind',
