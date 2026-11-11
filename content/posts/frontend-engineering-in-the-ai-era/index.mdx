@@ -1,0 +1,52 @@
+---
+title: Frontend Engineering in the AI Era
+date: 2026-11-11
+description: As AI makes code cheaper to write, frontend engineering depends more on judgement about what to build, how to review it and when to ship.
+tags:
+  - Notes
+  - AI
+  - Frontend
+---
+
+> The typing got cheap. The thinking got expensive.
+
+I opened my DevClub.lv talk with a table I asked Claude to build. It had sorting, search and pagination, and the demo looked good. It took thirty seconds. Using it exposed problems with keyboard navigation, performance on real data and what happened when a search returned nothing.
+
+I had a working first draft. I still had to decide what the table needed to do for the people using it and whether it was ready to ship.
+
+<figure className="mx-auto my-8 max-w-sm">
+  <Image
+    src="/posts/frontend-engineering-in-the-ai-era/devclub-talk.jpg"
+    alt="Edvins Antonovs gesturing during his DevClub.lv talk in Riga"
+    width="1365"
+    height="2048"
+    sizes="(min-width: 432px) 384px, calc(100vw - 48px)"
+    className="block h-auto w-full rounded-lg"
+  />
+  <figcaption className="mt-2 text-center text-sm text-neutral-600 dark:text-neutral-400">
+    Speaking at the Applied AI DevClub.lv meetup in Riga on 2 July 2026.
+  </figcaption>
+</figure>
+
+## Where the work moved
+
+Writing code used to take up much of my time. Syntax, boilerplate and wiring all came before I could try the interaction. Now an agent can put a first draft on screen in seconds. The bottleneck is shifting to the decisions that need engineering judgement, from what to build and test to when the work is done.
+
+AI is good at producing familiar patterns. Frontend work gets specific quickly. A prominent button makes sense when it helps someone complete their main task. The same control can get in the way if most people came to do something else. Taste is knowing which applies on this screen, for these users.
+
+An agent can work towards a goal and run the tests. Someone still needs to decide what the tests should cover, which compromises are acceptable and whether another round of work will help the user. A green test suite answers the questions we thought to ask.
+
+## Cognitive debt
+
+In the talk, I called it *cognitive debt* when an agent fixes a bug and I ship the fix without understanding why it works. The next time that part of the system breaks, I have to reconstruct the context before I can judge a new fix.
+
+The same tool can help me build that understanding. It can trace a state change or find where a value first goes wrong. I still need to be able to explain what caused the bug and why the change fixes it.
+
+## What to get better at
+
+1. **Understand the code deeply enough to review it.** When you can generate a draft in seconds, reading code and following its behaviour become more valuable.
+2. **Treat editing as part of engineering.** A draft gives you something to inspect. Decide what holds up, what needs to change and where to stop.
+3. **Learn the business.** Know why the feature exists, who depends on it and what would make it successful. Those answers guide what you build and how you judge it.
+4. **Use the tools and keep your understanding.** Let the agent take on routine work. Stay able to answer "Why does this work?"
+
+I'd happily ask Claude to build that table again. I'd still want an engineer who knows the product to decide what the table should do and when it's ready for people to use.

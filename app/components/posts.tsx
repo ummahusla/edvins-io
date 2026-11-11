@@ -1,26 +1,17 @@
 import Link from 'next/link';
 import { interactiveRowClassName } from 'app/components/ui/interactive-row';
 import { cn } from 'app/lib/utils';
-import {
-  formatDate,
-  getBlogPosts,
-  sortPostsByDate,
-  groupPostsByYear,
-} from 'app/(pages)/blog/utils';
+import { formatDate, groupPostsByYear, type getBlogPosts } from 'app/(pages)/blog/utils';
 
 export function BlogPosts({
-  displayCount = 0,
+  posts,
   groupByYear = false,
 }: {
-  displayCount?: number;
+  posts: ReturnType<typeof getBlogPosts>;
   groupByYear?: boolean;
 }) {
-  const allPosts = getBlogPosts();
-  const sortedPosts = sortPostsByDate(allPosts);
-  const postsToDisplay = displayCount > 0 ? sortedPosts.slice(0, displayCount) : sortedPosts;
-
   if (groupByYear) {
-    const { postsByYear, years } = groupPostsByYear(postsToDisplay);
+    const { postsByYear, years } = groupPostsByYear(posts);
 
     return (
       <div>
@@ -37,7 +28,7 @@ export function BlogPosts({
                   <p className="text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:underline underline-offset-4">
                     {post.metadata.title}
                   </p>
-                  <p className="text-neutral-600 dark:text-neutral-500 text-sm">
+                  <p className="text-neutral-600 dark:text-neutral-400 text-sm">
                     {formatDate(post.metadata.publishedAt, false)} —{' '}
                     {post.metadata.tags?.join(', ')}
                   </p>
@@ -52,7 +43,7 @@ export function BlogPosts({
 
   return (
     <div>
-      {postsToDisplay.map((post) => (
+      {posts.map((post) => (
         <Link
           key={post.slug}
           className={cn(interactiveRowClassName, 'mb-1 flex flex-col space-y-1 px-3 py-2')}
@@ -62,7 +53,7 @@ export function BlogPosts({
             <p className="text-neutral-900 dark:text-neutral-100 tracking-tight group-hover:underline underline-offset-4">
               {post.metadata.title}
             </p>
-            <p className="text-neutral-600 dark:text-neutral-500 text-sm">
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
               {formatDate(post.metadata.publishedAt, false)} — {post.metadata.tags?.join(', ')}
             </p>
           </div>
