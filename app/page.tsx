@@ -83,7 +83,7 @@ export default function Page() {
               src={devClubPhoto}
               alt="Edvins Antonovs speaking at DevClub.lv in front of his slides and a seated audience"
               unoptimized
-              className="block aspect-[4/5] h-auto w-full origin-[40%_75%] scale-[1.22] object-cover object-[50%_62%] sm:aspect-[5/7]"
+              className="block aspect-[4/5] h-auto w-full origin-[37%_76%] scale-[1.48] object-cover object-[50%_62%] sm:aspect-[5/7]"
             />
           </div>
           <figcaption className="mt-2 text-center text-sm text-neutral-600 dark:text-neutral-400">
